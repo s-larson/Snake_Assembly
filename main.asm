@@ -25,24 +25,32 @@ jmp init
 nop
 
 init:
+	// Enable DDR registers
     ldi r16, 0b11111111
     out DDRC, r16
-
     ldi r16, 0b11111111
     out DDRD, r16
-
     ldi r16, 0b11111111
     out DDRB, r16
+
+	// Enable Joystick
+	ldi r16, 0b01100000
+	sts ADMUX, r16
+	ldi r16, 0b10000111
+	sts ADCSRA, r16
+
 main:
-ldi row0, 0b11110000	;D6 och D7 är switchade
-ldi row1, 0b11111111
-ldi row2, 0b11111111
-ldi row3, 0b11111100
-ldi row4, 0b11111111
-ldi row5, 0b11111111
-ldi row6, 0b11111111
-ldi row7, 0b11111111
- 
+ldi row0, 0b00000000	;D6 och D7 är switchade
+ldi row1, 0b00000000
+ldi row2, 0b00000000
+ldi row3, 0b00000000
+ldi row4, 0b00010000
+ldi row5, 0b00000000
+ldi row6, 0b00000000
+ldi row7, 0b00000000
+
+
+
 calcrow_0:
 	mov r17, row0
 	ldi end, 0b00000000
@@ -90,6 +98,7 @@ calc8_0:
 	neg r26
 	sub end, r26
 	;ta bort 8
+
 	subi r17, 0b00001000
 calc4_0:
 	cpi r17, 0b00000100
@@ -762,10 +771,48 @@ calcloopexit_7:
 
 	call calcloop
 	nop 
+
+
+/*joyinputX://Listen to joystick
+	lds r18, ADMUX
+	ori r18, 0b00000101
+	sts ADMUX, r18
+	lds r18, ADCSRA
+	ori	r18, 0b00100000
+	sts ADCSRA, r18
+
+wait1://Wait until "read" is finished
+	lds r18, ADCSRA
+	sbrc r18, 6 //Check 6th bit if 0
+	jmp wait1
+	lds r29, ADCH
+	*/
+joyinputY://Listen to joystick
+	ldi r18, 0b01100100
+	sts ADMUX, r18
+
+	lds r18, ADCSRA
+	ori	r18, 0b01000000
+	sts ADCSRA, r18
+wait2://Wait until "read" is finished
+	lds r18, ADCSRA
+	sbrc r18, 6 //Check 6th bit if 0
+	jmp wait2
+	lds r29, ADCH
+	cpi r29, 128
+	brge light
+	ldi r17, 0b00000000
+	out PORTD, r17
+	jmp main
+	nop
+light:
+	ldi r17, 0b11111111
+	out PORTD, r17
+	call calcloop
 	jmp main
 
 calcloop:// Delay called after each output
-    ldi  r27, 13
+    ldi  r27, 150
     ldi  r28, 252
 L1: dec  r28
     brne L1
