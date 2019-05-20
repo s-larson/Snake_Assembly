@@ -744,7 +744,7 @@ calc2_7:
 	subi r17, 0b00000010
 calc1_7:
 	cpi r17, 0b00000001
-	//brlo calcloopexit_7
+	brlo calcloopexit_7
 	;lägg till 32
 	ldi r26, 0b00100000
 	neg r26
@@ -754,7 +754,7 @@ calc1_7:
 
 	jmp calcrow_7
 
-	/*
+	
 calcloopexit_7:
 
 	out PORTC, r1 ;?
@@ -768,4 +768,4 @@ calcloopexit_7:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	jmp calcloopexit_7*/
+	jmp calcloopexit_7

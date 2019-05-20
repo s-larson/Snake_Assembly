@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Mon May 20 11:08:50 2019
+AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Mon May 20 11:15:16 2019
 
 
 EQU  SIGNATURE_000 0000001e
@@ -714,3 +714,4 @@ CSEG calc8_7      00000023
 CSEG calc4_7      00000029
 CSEG calc2_7      0000002f
 CSEG calc1_7      00000035
+CSEG calcloopexit_7 0000003d
