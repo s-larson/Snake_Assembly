@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Mon May 20 11:15:16 2019
+AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Mon May 20 11:30:53 2019
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc'
@@ -1019,718 +1019,75 @@ AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Mon May 20 11:15:1
 000007 ef8b                      ldi row6, 0b11111011
 000008 ed9f                      ldi row7, 0b11011111
                                   
-                                  /*calcrow_0:
-                                 mov r17, row0
-                                 ldi end, 0b00000000
-                                 
-                                 cpi r17, 0b10000000
-                                 brlo calc64_0
-                                 ;lägg till 64 till end
-                                 ldi r26, 0b01000000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 128 från r17
-                                 subi r17, 0b10000000
-                                 calc64_0:
-                                 cpi r17, 0b01000000
-                                 brlo calc32_0
-                                 ;lägg till 128
-                                 ldi r26, 0b10000000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 64
-                                 subi r17, 0b01000000
-                                 calc32_0:
-                                 cpi r17, 0b00100000
-                                 brlo calc16_0
-                                 ;lägg till 1
-                                 ldi r26, 0b00000001
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 32
-                                 subi r17, 0b00100000
-                                 calc16_0:
-                                 cpi r17, 0b00010000
-                                 brlo calc8_0
-                                 ;lägg till 2
-                                 ldi r26, 0b00000010
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 16
-                                 subi r17, 0b00010000
-                                 calc8_0:
-                                 cpi r17, 0b00001000
-                                 brlo calc4_0
-                                 ;lägg till 4
-                                 ldi r26, 0b00000100
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 8
-                                 subi r17, 0b00001000
-                                 calc4_0:
-                                 cpi r17, 0b00000100
-                                 brlo calc2_0
-                                 ;lägg till 8
-                                 ldi r26, 0b00001000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 4
-                                 subi r17, 0b00000100
-                                 calc2_0:
-                                 cpi r17, 0b00000010
-                                 brlo calc1_0
-                                 ;lägg till 16
-                                 ldi r26, 0b00010000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 2
-                                 subi r17, 0b00000010
-                                 calc1_0:
-                                 cpi r17, 0b00000001
-                                 brlo calcloopexit_0
-                                 ;lägg till 32
-                                 ldi r26, 0b00100000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 1
-                                 subi r17, 0b00000001
-                                 
-                                 calcloopexit_0:
-                                  
-                                 ldi r17, 0b00000001
-                                 out PORTC, r17
-                                 
-                                 mov r17, end
-                                 ANDI r17, 0b11000000
-                                 out PORTD, r17
-                                 
-                                 mov r17, end
-                                 ANDI r17, 0b00111111
-                                 out PORTB, r17
-                                 
-                                 nop
-                                 
-                                 out PORTB, r1
-                                 out PORTC, r1
-                                 out PORTD, r1
-                                 ;jmp endloop
-                                 
-                                 
-                                     //jmp calcloopexit_0*/
-                                 
-                                 /*calcrow_1:
-                                 mov r17, row1
-                                 ldi end, 0b00000000
-                                 
-                                 cpi r17, 0b10000000
-                                 brlo calc64_1
-                                 ;lägg till 64 till end
-                                 ldi r26, 0b01000000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 128 från r17
-                                 subi r17, 0b10000000
-                                 calc64_1:
-                                 cpi r17, 0b01000000
-                                 brlo calc32_1
-                                 ;lägg till 128
-                                 ldi r26, 0b10000000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 64
-                                 subi r17, 0b01000000
-                                 calc32_1:
-                                 cpi r17, 0b00100000
-                                 brlo calc16_1
-                                 ;lägg till 1
-                                 ldi r26, 0b00000001
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 32
-                                 subi r17, 0b00100000
-                                 calc16_1:
-                                 cpi r17, 0b00010000
-                                 brlo calc8_1
-                                 ;lägg till 2
-                                 ldi r26, 0b00000010
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 16
-                                 subi r17, 0b00010000
-                                 calc8_1:
-                                 cpi r17, 0b00001000
-                                 brlo calc4_1
-                                 ;lägg till 4
-                                 ldi r26, 0b00000100
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 8
-                                 subi r17, 0b00001000
-                                 calc4_1:
-                                 cpi r17, 0b00000100
-                                 brlo calc2_1
-                                 ;lägg till 8
-                                 ldi r26, 0b00001000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 4
-                                 subi r17, 0b00000100
-                                 calc2_1:
-                                 cpi r17, 0b00000010
-                                 brlo calc1_1
-                                 ;lägg till 16
-                                 ldi r26, 0b00010000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 2
-                                 subi r17, 0b00000010
-                                 calc1_1:
-                                 cpi r17, 0b00000001
-                                 brlo calcloopexit_1
-                                 ;lägg till 32
-                                 ldi r26, 0b00100000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 1
-                                 subi r17, 0b00000001
-                                 
-                                 calcloopexit_1:
-                                  
-                                 ldi r17, 0b00000010
-                                 out PORTC, r17
-                                 
-                                 mov r17, end
-                                 ANDI r17, 0b11000000
-                                 out PORTD, r17
-                                 
-                                 mov r17, end
-                                 ANDI r17, 0b00111111
-                                 out PORTB, r17
-                                 
-                                 jmp calcloopexit_1*/
-                                 
-                                 /*calcrow_2:
-                                 mov r17, row2
-                                 ldi end, 0b00000000
-                                 
-                                 cpi r17, 0b10000000
-                                 brlo calc64_2
-                                 ;lägg till 64 till end
-                                 ldi r26, 0b01000000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 128 från r17
-                                 subi r17, 0b10000000
-                                 calc64_2:
-                                 cpi r17, 0b01000000
-                                 brlo calc32_2
-                                 ;lägg till 128
-                                 ldi r26, 0b10000000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 64
-                                 subi r17, 0b01000000
-                                 calc32_2:
-                                 cpi r17, 0b00100000
-                                 brlo calc16_2
-                                 ;lägg till 1
-                                 ldi r26, 0b00000001
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 32
-                                 subi r17, 0b00100000
-                                 calc16_2:
-                                 cpi r17, 0b00010000
-                                 brlo calc8_2
-                                 ;lägg till 2
-                                 ldi r26, 0b00000010
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 16
-                                 subi r17, 0b00010000
-                                 calc8_2:
-                                 cpi r17, 0b00001000
-                                 brlo calc4_2
-                                 ;lägg till 4
-                                 ldi r26, 0b00000100
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 8
-                                 subi r17, 0b00001000
-                                 calc4_2:
-                                 cpi r17, 0b00000100
-                                 brlo calc2_2
-                                 ;lägg till 8
-                                 ldi r26, 0b00001000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 4
-                                 subi r17, 0b00000100
-                                 calc2_2:
-                                 cpi r17, 0b00000010
-                                 brlo calc1_2
-                                 ;lägg till 16
-                                 ldi r26, 0b00010000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 2
-                                 subi r17, 0b00000010
-                                 calc1_2:
-                                 cpi r17, 0b00000001
-                                 brlo calcloopexit_2
-                                 ;lägg till 32
-                                 ldi r26, 0b00100000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 1
-                                 subi r17, 0b00000001
-                                 
-                                 calcloopexit_2:
-                                  
-                                 ldi r17, 0b00000100
-                                 out PORTC, r17
-                                 
-                                 mov r17, end
-                                 ANDI r17, 0b11000000
-                                 out PORTD, r17
-                                 
-                                 mov r17, end
-                                 ANDI r17, 0b00111111
-                                 out PORTB, r17
-                                 
-                                 jmp calcloopexit_2*/
-                                 
-                                 /*calcrow_3:
-                                 mov r17, row3
-                                 ldi end, 0b00000000
-                                 
-                                 cpi r17, 0b10000000
-                                 brlo calc64_3
-                                 ;lägg till 64 till end
-                                 ldi r26, 0b01000000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 128 från r17
-                                 subi r17, 0b10000000
-                                 calc64_3:
-                                 cpi r17, 0b01000000
-                                 brlo calc32_3
-                                 ;lägg till 128
-                                 ldi r26, 0b10000000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 64
-                                 subi r17, 0b01000000
-                                 calc32_3:
-                                 cpi r17, 0b00100000
-                                 brlo calc16_3
-                                 ;lägg till 1
-                                 ldi r26, 0b00000001
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 32
-                                 subi r17, 0b00100000
-                                 calc16_3:
-                                 cpi r17, 0b00010000
-                                 brlo calc8_3
-                                 ;lägg till 2
-                                 ldi r26, 0b00000010
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 16
-                                 subi r17, 0b00010000
-                                 calc8_3:
-                                 cpi r17, 0b00001000
-                                 brlo calc4_3
-                                 ;lägg till 4
-                                 ldi r26, 0b00000100
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 8
-                                 subi r17, 0b00001000
-                                 calc4_3:
-                                 cpi r17, 0b00000100
-                                 brlo calc2_3
-                                 ;lägg till 8
-                                 ldi r26, 0b00001000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 4
-                                 subi r17, 0b00000100
-                                 calc2_3:
-                                 cpi r17, 0b00000010
-                                 brlo calc1_3
-                                 ;lägg till 16
-                                 ldi r26, 0b00010000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 2
-                                 subi r17, 0b00000010
-                                 calc1_3:
-                                 cpi r17, 0b00000001
-                                 brlo calcloopexit_3
-                                 ;lägg till 32
-                                 ldi r26, 0b00100000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 1
-                                 subi r17, 0b00000001
-                                 
-                                 calcloopexit_3:
-                                  
-                                 ldi r17, 0b00000100
-                                 out PORTC, r17
-                                 
-                                 mov r17, end
-                                 ANDI r17, 0b11000000
-                                 out PORTD, r17
-                                 
-                                 mov r17, end
-                                 ANDI r17, 0b00111111
-                                 out PORTB, r17
-                                 
-                                 jmp calcloopexit_3*/
-                                 
-                                 /*calcrow_4:
-                                 mov r17, row4
-                                 ldi end, 0b00000000
-                                 
-                                 cpi r17, 0b10000000
-                                 brlo calc64_4
-                                 ;lägg till 64 till end
-                                 ldi r26, 0b01000000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 128 från r17
-                                 subi r17, 0b10000000
-                                 calc64_4:
-                                 cpi r17, 0b01000000
-                                 brlo calc32_4
-                                 ;lägg till 128
-                                 ldi r26, 0b10000000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 64
-                                 subi r17, 0b01000000
-                                 calc32_4:
-                                 cpi r17, 0b00100000
-                                 brlo calc16_4
-                                 ;lägg till 1
-                                 ldi r26, 0b00000001
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 32
-                                 subi r17, 0b00100000
-                                 calc16_4:
-                                 cpi r17, 0b00010000
-                                 brlo calc8_4
-                                 ;lägg till 2
-                                 ldi r26, 0b00000010
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 16
-                                 subi r17, 0b00010000
-                                 calc8_4:
-                                 cpi r17, 0b00001000
-                                 brlo calc4_4
-                                 ;lägg till 4
-                                 ldi r26, 0b00000100
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 8
-                                 subi r17, 0b00001000
-                                 calc4_4:
-                                 cpi r17, 0b00000100
-                                 brlo calc2_4
-                                 ;lägg till 8
-                                 ldi r26, 0b00001000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 4
-                                 subi r17, 0b00000100
-                                 calc2_4:
-                                 cpi r17, 0b00000010
-                                 brlo calc1_4
-                                 ;lägg till 16
-                                 ldi r26, 0b00010000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 2
-                                 subi r17, 0b00000010
-                                 calc1_4:
-                                 cpi r17, 0b00000001
-                                 brlo calcloopexit_4
-                                 ;lägg till 32
-                                 ldi r26, 0b00100000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 1
-                                 subi r17, 0b00000001
-                                 
-                                 calcloopexit_4:
-                                 out PORTC, r1 ;?
-                                 
-                                 mov r17, end
-                                 ANDI r17, 0b11000000
-                                 ORI r17, 0b00000100
-                                 out PORTD, r17
-                                 
-                                 mov r17, end
-                                 ANDI r17, 0b00111111
-                                 out PORTB, r17
-                                 
-                                 jmp calcloopexit_4*/
-                                 
-                                 /*calcrow_5:
-                                 mov r17, row5
-                                 ldi end, 0b00000000
-                                 
-                                 cpi r17, 0b10000000
-                                 brlo calc64_5
-                                 ;lägg till 64 till end
-                                 ldi r26, 0b01000000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 128 från r17
-                                 subi r17, 0b10000000
-                                 calc64_5:
-                                 cpi r17, 0b01000000
-                                 brlo calc32_5
-                                 ;lägg till 128
-                                 ldi r26, 0b10000000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 64
-                                 subi r17, 0b01000000
-                                 calc32_5:
-                                 cpi r17, 0b00100000
-                                 brlo calc16_5
-                                 ;lägg till 1
-                                 ldi r26, 0b00000001
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 32
-                                 subi r17, 0b00100000
-                                 calc16_5:
-                                 cpi r17, 0b00010000
-                                 brlo calc8_5
-                                 ;lägg till 2
-                                 ldi r26, 0b00000010
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 16
-                                 subi r17, 0b00010000
-                                 calc8_5:
-                                 cpi r17, 0b00001000
-                                 brlo calc4_5
-                                 ;lägg till 4
-                                 ldi r26, 0b00000100
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 8
-                                 subi r17, 0b00001000
-                                 calc4_5:
-                                 cpi r17, 0b00000100
-                                 brlo calc2_5
-                                 ;lägg till 8
-                                 ldi r26, 0b00001000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 4
-                                 subi r17, 0b00000100
-                                 calc2_5:
-                                 cpi r17, 0b00000010
-                                 brlo calc1_5
-                                 ;lägg till 16
-                                 ldi r26, 0b00010000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 2
-                                 subi r17, 0b00000010
-                                 calc1_5:
-                                 cpi r17, 0b00000001
-                                 brlo calcloopexit_5
-                                 ;lägg till 32
-                                 ldi r26, 0b00100000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 1
-                                 subi r17, 0b00000001
-                                 
-                                 calcloopexit_5:
-                                 out PORTC, r1 ;?
-                                 
-                                 mov r17, end
-                                 ANDI r17, 0b11000000
-                                 ORI r17, 0b00001000
-                                 out PORTD, r17
-                                 
-                                 mov r17, end
-                                 ANDI r17, 0b00111111
-                                 out PORTB, r17
-                                 
-                                 jmp calcloopexit_5*/
-                                 
-                                 /*calcrow_6:
-                                 mov r17, row6
-                                 ldi end, 0b00000000
-                                 
-                                 cpi r17, 0b10000000
-                                 brlo calc64_6
-                                 ;lägg till 64 till end
-                                 ldi r26, 0b01000000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 128 från r17
-                                 subi r17, 0b10000000
-                                 calc64_6:
-                                 cpi r17, 0b01000000
-                                 brlo calc32_6
-                                 ;lägg till 128
-                                 ldi r26, 0b10000000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 64
-                                 subi r17, 0b01000000
-                                 calc32_6:
-                                 cpi r17, 0b00100000
-                                 brlo calc16_6
-                                 ;lägg till 1
-                                 ldi r26, 0b00000001
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 32
-                                 subi r17, 0b00100000
-                                 calc16_6:
-                                 cpi r17, 0b00010000
-                                 brlo calc8_6
-                                 ;lägg till 2
-                                 ldi r26, 0b00000010
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 16
-                                 subi r17, 0b00010000
-                                 calc8_6:
-                                 cpi r17, 0b00001000
-                                 brlo calc4_6
-                                 ;lägg till 4
-                                 ldi r26, 0b00000100
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 8
-                                 subi r17, 0b00001000
-                                 calc4_6:
-                                 cpi r17, 0b00000100
-                                 brlo calc2_6
-                                 ;lägg till 8
-                                 ldi r26, 0b00001000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 4
-                                 subi r17, 0b00000100
-                                 calc2_6:
-                                 cpi r17, 0b00000010
-                                 brlo calc1_6
-                                 ;lägg till 16
-                                 ldi r26, 0b00010000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 2
-                                 subi r17, 0b00000010
-                                 calc1_6:
-                                 cpi r17, 0b00000001
-                                 brlo calcloopexit_6
-                                 ;lägg till 32
-                                 ldi r26, 0b00100000
-                                 neg r26
-                                 sub end, r26
-                                 ;ta bort 1
-                                 subi r17, 0b00000001
-                                 
-                                 calcloopexit_6:
-                                  
-                                 out PORTC, r1 ;?
-                                 
-                                 mov r17, end
-                                 ANDI r17, 0b11000000
-                                 ORI r17, 0b00010000
-                                 out PORTD, r17
-                                 
-                                 mov r17, end
-                                 ANDI r17, 0b00111111
-                                 out PORTB, r17
-                                 
-                                 jmp calcloopexit_6*/
-                                 
-                                 calcrow_7:
-000009 2f19                      	mov r17, row7
+                                 calcrow_0:
+000009 2f12                      	mov r17, row0
 00000a e000                      	ldi end, 0b00000000
                                  
 00000b 3810                      	cpi r17, 0b10000000
-00000c f020                      	brlo calc64_7
+00000c f020                      	brlo calc64_0
                                  	;lägg till 64 till end
 00000d e4a0                      	ldi r26, 0b01000000
 00000e 95a1                      	neg r26
 00000f 1b0a                      	sub end, r26
                                  	;ta bort 128 från r17
 000010 5810                      	subi r17, 0b10000000
-                                 calc64_7:
+                                 calc64_0:
 000011 3410                      	cpi r17, 0b01000000
-000012 f020                      	brlo calc32_7
+000012 f020                      	brlo calc32_0
                                  	;lägg till 128
 000013 e8a0                      	ldi r26, 0b10000000
 000014 95a1                      	neg r26
 000015 1b0a                      	sub end, r26
                                  	;ta bort 64
 000016 5410                      	subi r17, 0b01000000
-                                 calc32_7:
+                                 calc32_0:
 000017 3210                      	cpi r17, 0b00100000
-000018 f020                      	brlo calc16_7
+000018 f020                      	brlo calc16_0
                                  	;lägg till 1
 000019 e0a1                      	ldi r26, 0b00000001
 00001a 95a1                      	neg r26
 00001b 1b0a                      	sub end, r26
                                  	;ta bort 32
 00001c 5210                      	subi r17, 0b00100000
-                                 calc16_7:
+                                 calc16_0:
 00001d 3110                      	cpi r17, 0b00010000
-00001e f020                      	brlo calc8_7
+00001e f020                      	brlo calc8_0
                                  	;lägg till 2
 00001f e0a2                      	ldi r26, 0b00000010
 000020 95a1                      	neg r26
 000021 1b0a                      	sub end, r26
                                  	;ta bort 16
 000022 5110                      	subi r17, 0b00010000
-                                 calc8_7:
+                                 calc8_0:
 000023 3018                      	cpi r17, 0b00001000
-000024 f020                      	brlo calc4_7
+000024 f020                      	brlo calc4_0
                                  	;lägg till 4
 000025 e0a4                      	ldi r26, 0b00000100
 000026 95a1                      	neg r26
 000027 1b0a                      	sub end, r26
                                  	;ta bort 8
 000028 5018                      	subi r17, 0b00001000
-                                 calc4_7:
+                                 calc4_0:
 000029 3014                      	cpi r17, 0b00000100
-00002a f020                      	brlo calc2_7
+00002a f020                      	brlo calc2_0
                                  	;lägg till 8
 00002b e0a8                      	ldi r26, 0b00001000
 00002c 95a1                      	neg r26
 00002d 1b0a                      	sub end, r26
                                  	;ta bort 4
 00002e 5014                      	subi r17, 0b00000100
-                                 calc2_7:
+                                 calc2_0:
 00002f 3012                      	cpi r17, 0b00000010
-000030 f020                      	brlo calc1_7
+000030 f020                      	brlo calc1_0
                                  	;lägg till 16
 000031 e1a0                      	ldi r26, 0b00010000
 000032 95a1                      	neg r26
 000033 1b0a                      	sub end, r26
                                  	;ta bort 2
 000034 5012                      	subi r17, 0b00000010
-                                 calc1_7:
+                                 calc1_0:
 000035 3011                      	cpi r17, 0b00000001
-000036 f030                      	brlo calcloopexit_7
+000036 f020                      	brlo calcloopexit_0
                                  	;lägg till 32
 000037 e2a0                      	ldi r26, 0b00100000
 000038 95a1                      	neg r26
@@ -1738,21 +1095,663 @@ AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Mon May 20 11:15:1
                                  	;ta bort 1
 00003a 5011                      	subi r17, 0b00000001
                                  
-00003b 940c 0009                 	jmp calcrow_7
+                                 calcloopexit_0:
+                                  
+00003b e011                      	ldi r17, 0b00000001
+00003c b918                      	out PORTC, r17
                                  
-                                 	
+00003d 2f10                      	mov r17, end
+00003e 7c10                      	ANDI r17, 0b11000000
+00003f b91b                      	out PORTD, r17
+                                 
+000040 2f10                      	mov r17, end
+000041 731f                      	ANDI r17, 0b00111111
+000042 b915                      	out PORTB, r17
+                                 
+000043 0000                      	nop
+                                 
+000044 b815                      	out PORTB, r1
+000045 b818                      	out PORTC, r1
+000046 b81b                      	out PORTD, r1
+                                 	;jmp endloop
+                                 
+                                 
+                                     //jmp calcloopexit_0
+                                 
+                                 calcrow_1:
+000047 2f13                      	mov r17, row1
+000048 e000                      	ldi end, 0b00000000
+                                 
+000049 3810                      	cpi r17, 0b10000000
+00004a f020                      	brlo calc64_1
+                                 	;lägg till 64 till end
+00004b e4a0                      	ldi r26, 0b01000000
+00004c 95a1                      	neg r26
+00004d 1b0a                      	sub end, r26
+                                 	;ta bort 128 från r17
+00004e 5810                      	subi r17, 0b10000000
+                                 calc64_1:
+00004f 3410                      	cpi r17, 0b01000000
+000050 f020                      	brlo calc32_1
+                                 	;lägg till 128
+000051 e8a0                      	ldi r26, 0b10000000
+000052 95a1                      	neg r26
+000053 1b0a                      	sub end, r26
+                                 	;ta bort 64
+000054 5410                      	subi r17, 0b01000000
+                                 calc32_1:
+000055 3210                      	cpi r17, 0b00100000
+000056 f020                      	brlo calc16_1
+                                 	;lägg till 1
+000057 e0a1                      	ldi r26, 0b00000001
+000058 95a1                      	neg r26
+000059 1b0a                      	sub end, r26
+                                 	;ta bort 32
+00005a 5210                      	subi r17, 0b00100000
+                                 calc16_1:
+00005b 3110                      	cpi r17, 0b00010000
+00005c f020                      	brlo calc8_1
+                                 	;lägg till 2
+00005d e0a2                      	ldi r26, 0b00000010
+00005e 95a1                      	neg r26
+00005f 1b0a                      	sub end, r26
+                                 	;ta bort 16
+000060 5110                      	subi r17, 0b00010000
+                                 calc8_1:
+000061 3018                      	cpi r17, 0b00001000
+000062 f020                      	brlo calc4_1
+                                 	;lägg till 4
+000063 e0a4                      	ldi r26, 0b00000100
+000064 95a1                      	neg r26
+000065 1b0a                      	sub end, r26
+                                 	;ta bort 8
+000066 5018                      	subi r17, 0b00001000
+                                 calc4_1:
+000067 3014                      	cpi r17, 0b00000100
+000068 f020                      	brlo calc2_1
+                                 	;lägg till 8
+000069 e0a8                      	ldi r26, 0b00001000
+00006a 95a1                      	neg r26
+00006b 1b0a                      	sub end, r26
+                                 	;ta bort 4
+00006c 5014                      	subi r17, 0b00000100
+                                 calc2_1:
+00006d 3012                      	cpi r17, 0b00000010
+00006e f020                      	brlo calc1_1
+                                 	;lägg till 16
+00006f e1a0                      	ldi r26, 0b00010000
+000070 95a1                      	neg r26
+000071 1b0a                      	sub end, r26
+                                 	;ta bort 2
+000072 5012                      	subi r17, 0b00000010
+                                 calc1_1:
+000073 3011                      	cpi r17, 0b00000001
+000074 f020                      	brlo calcloopexit_1
+                                 	;lägg till 32
+000075 e2a0                      	ldi r26, 0b00100000
+000076 95a1                      	neg r26
+000077 1b0a                      	sub end, r26
+                                 	;ta bort 1
+000078 5011                      	subi r17, 0b00000001
+                                 
+                                 calcloopexit_1:
+                                  
+000079 e012                      	ldi r17, 0b00000010
+00007a b918                      	out PORTC, r17
+                                 
+00007b 2f10                      	mov r17, end
+00007c 7c10                      	ANDI r17, 0b11000000
+00007d b91b                      	out PORTD, r17
+                                 
+00007e 2f10                      	mov r17, end
+00007f 731f                      	ANDI r17, 0b00111111
+000080 b915                      	out PORTB, r17
+                                 
+000081 940c 0079                 	jmp calcloopexit_1
+                                 
+                                 calcrow_2:
+000083 2f14                      	mov r17, row2
+000084 e000                      	ldi end, 0b00000000
+                                 
+000085 3810                      	cpi r17, 0b10000000
+000086 f020                      	brlo calc64_2
+                                 	;lägg till 64 till end
+000087 e4a0                      	ldi r26, 0b01000000
+000088 95a1                      	neg r26
+000089 1b0a                      	sub end, r26
+                                 	;ta bort 128 från r17
+00008a 5810                      	subi r17, 0b10000000
+                                 calc64_2:
+00008b 3410                      	cpi r17, 0b01000000
+00008c f020                      	brlo calc32_2
+                                 	;lägg till 128
+00008d e8a0                      	ldi r26, 0b10000000
+00008e 95a1                      	neg r26
+00008f 1b0a                      	sub end, r26
+                                 	;ta bort 64
+000090 5410                      	subi r17, 0b01000000
+                                 calc32_2:
+000091 3210                      	cpi r17, 0b00100000
+000092 f020                      	brlo calc16_2
+                                 	;lägg till 1
+000093 e0a1                      	ldi r26, 0b00000001
+000094 95a1                      	neg r26
+000095 1b0a                      	sub end, r26
+                                 	;ta bort 32
+000096 5210                      	subi r17, 0b00100000
+                                 calc16_2:
+000097 3110                      	cpi r17, 0b00010000
+000098 f020                      	brlo calc8_2
+                                 	;lägg till 2
+000099 e0a2                      	ldi r26, 0b00000010
+00009a 95a1                      	neg r26
+00009b 1b0a                      	sub end, r26
+                                 	;ta bort 16
+00009c 5110                      	subi r17, 0b00010000
+                                 calc8_2:
+00009d 3018                      	cpi r17, 0b00001000
+00009e f020                      	brlo calc4_2
+                                 	;lägg till 4
+00009f e0a4                      	ldi r26, 0b00000100
+0000a0 95a1                      	neg r26
+0000a1 1b0a                      	sub end, r26
+                                 	;ta bort 8
+0000a2 5018                      	subi r17, 0b00001000
+                                 calc4_2:
+0000a3 3014                      	cpi r17, 0b00000100
+0000a4 f020                      	brlo calc2_2
+                                 	;lägg till 8
+0000a5 e0a8                      	ldi r26, 0b00001000
+0000a6 95a1                      	neg r26
+0000a7 1b0a                      	sub end, r26
+                                 	;ta bort 4
+0000a8 5014                      	subi r17, 0b00000100
+                                 calc2_2:
+0000a9 3012                      	cpi r17, 0b00000010
+0000aa f020                      	brlo calc1_2
+                                 	;lägg till 16
+0000ab e1a0                      	ldi r26, 0b00010000
+0000ac 95a1                      	neg r26
+0000ad 1b0a                      	sub end, r26
+                                 	;ta bort 2
+0000ae 5012                      	subi r17, 0b00000010
+                                 calc1_2:
+0000af 3011                      	cpi r17, 0b00000001
+0000b0 f020                      	brlo calcloopexit_2
+                                 	;lägg till 32
+0000b1 e2a0                      	ldi r26, 0b00100000
+0000b2 95a1                      	neg r26
+0000b3 1b0a                      	sub end, r26
+                                 	;ta bort 1
+0000b4 5011                      	subi r17, 0b00000001
+                                 
+                                 calcloopexit_2:
+                                  
+0000b5 e014                      	ldi r17, 0b00000100
+0000b6 b918                      	out PORTC, r17
+                                 
+0000b7 2f10                      	mov r17, end
+0000b8 7c10                      	ANDI r17, 0b11000000
+0000b9 b91b                      	out PORTD, r17
+                                 
+0000ba 2f10                      	mov r17, end
+0000bb 731f                      	ANDI r17, 0b00111111
+0000bc b915                      	out PORTB, r17
+                                 
+0000bd 940c 00b5                 	jmp calcloopexit_2
+                                 
+                                 calcrow_3:
+0000bf 2f15                      	mov r17, row3
+0000c0 e000                      	ldi end, 0b00000000
+                                 
+0000c1 3810                      	cpi r17, 0b10000000
+0000c2 f020                      	brlo calc64_3
+                                 	;lägg till 64 till end
+0000c3 e4a0                      	ldi r26, 0b01000000
+0000c4 95a1                      	neg r26
+0000c5 1b0a                      	sub end, r26
+                                 	;ta bort 128 från r17
+0000c6 5810                      	subi r17, 0b10000000
+                                 calc64_3:
+0000c7 3410                      	cpi r17, 0b01000000
+0000c8 f020                      	brlo calc32_3
+                                 	;lägg till 128
+0000c9 e8a0                      	ldi r26, 0b10000000
+0000ca 95a1                      	neg r26
+0000cb 1b0a                      	sub end, r26
+                                 	;ta bort 64
+0000cc 5410                      	subi r17, 0b01000000
+                                 calc32_3:
+0000cd 3210                      	cpi r17, 0b00100000
+0000ce f020                      	brlo calc16_3
+                                 	;lägg till 1
+0000cf e0a1                      	ldi r26, 0b00000001
+0000d0 95a1                      	neg r26
+0000d1 1b0a                      	sub end, r26
+                                 	;ta bort 32
+0000d2 5210                      	subi r17, 0b00100000
+                                 calc16_3:
+0000d3 3110                      	cpi r17, 0b00010000
+0000d4 f020                      	brlo calc8_3
+                                 	;lägg till 2
+0000d5 e0a2                      	ldi r26, 0b00000010
+0000d6 95a1                      	neg r26
+0000d7 1b0a                      	sub end, r26
+                                 	;ta bort 16
+0000d8 5110                      	subi r17, 0b00010000
+                                 calc8_3:
+0000d9 3018                      	cpi r17, 0b00001000
+0000da f020                      	brlo calc4_3
+                                 	;lägg till 4
+0000db e0a4                      	ldi r26, 0b00000100
+0000dc 95a1                      	neg r26
+0000dd 1b0a                      	sub end, r26
+                                 	;ta bort 8
+0000de 5018                      	subi r17, 0b00001000
+                                 calc4_3:
+0000df 3014                      	cpi r17, 0b00000100
+0000e0 f020                      	brlo calc2_3
+                                 	;lägg till 8
+0000e1 e0a8                      	ldi r26, 0b00001000
+0000e2 95a1                      	neg r26
+0000e3 1b0a                      	sub end, r26
+                                 	;ta bort 4
+0000e4 5014                      	subi r17, 0b00000100
+                                 calc2_3:
+0000e5 3012                      	cpi r17, 0b00000010
+0000e6 f020                      	brlo calc1_3
+                                 	;lägg till 16
+0000e7 e1a0                      	ldi r26, 0b00010000
+0000e8 95a1                      	neg r26
+0000e9 1b0a                      	sub end, r26
+                                 	;ta bort 2
+0000ea 5012                      	subi r17, 0b00000010
+                                 calc1_3:
+0000eb 3011                      	cpi r17, 0b00000001
+0000ec f020                      	brlo calcloopexit_3
+                                 	;lägg till 32
+0000ed e2a0                      	ldi r26, 0b00100000
+0000ee 95a1                      	neg r26
+0000ef 1b0a                      	sub end, r26
+                                 	;ta bort 1
+0000f0 5011                      	subi r17, 0b00000001
+                                 
+                                 calcloopexit_3:
+                                  
+0000f1 e014                      	ldi r17, 0b00000100
+0000f2 b918                      	out PORTC, r17
+                                 
+0000f3 2f10                      	mov r17, end
+0000f4 7c10                      	ANDI r17, 0b11000000
+0000f5 b91b                      	out PORTD, r17
+                                 
+0000f6 2f10                      	mov r17, end
+0000f7 731f                      	ANDI r17, 0b00111111
+0000f8 b915                      	out PORTB, r17
+                                 
+0000f9 940c 00f1                 	jmp calcloopexit_3
+                                 
+                                 calcrow_4:
+0000fb 2f16                      	mov r17, row4
+0000fc e000                      	ldi end, 0b00000000
+                                 
+0000fd 3810                      	cpi r17, 0b10000000
+0000fe f020                      	brlo calc64_4
+                                 	;lägg till 64 till end
+0000ff e4a0                      	ldi r26, 0b01000000
+000100 95a1                      	neg r26
+000101 1b0a                      	sub end, r26
+                                 	;ta bort 128 från r17
+000102 5810                      	subi r17, 0b10000000
+                                 calc64_4:
+000103 3410                      	cpi r17, 0b01000000
+000104 f020                      	brlo calc32_4
+                                 	;lägg till 128
+000105 e8a0                      	ldi r26, 0b10000000
+000106 95a1                      	neg r26
+000107 1b0a                      	sub end, r26
+                                 	;ta bort 64
+000108 5410                      	subi r17, 0b01000000
+                                 calc32_4:
+000109 3210                      	cpi r17, 0b00100000
+00010a f020                      	brlo calc16_4
+                                 	;lägg till 1
+00010b e0a1                      	ldi r26, 0b00000001
+00010c 95a1                      	neg r26
+00010d 1b0a                      	sub end, r26
+                                 	;ta bort 32
+00010e 5210                      	subi r17, 0b00100000
+                                 calc16_4:
+00010f 3110                      	cpi r17, 0b00010000
+000110 f020                      	brlo calc8_4
+                                 	;lägg till 2
+000111 e0a2                      	ldi r26, 0b00000010
+000112 95a1                      	neg r26
+000113 1b0a                      	sub end, r26
+                                 	;ta bort 16
+000114 5110                      	subi r17, 0b00010000
+                                 calc8_4:
+000115 3018                      	cpi r17, 0b00001000
+000116 f020                      	brlo calc4_4
+                                 	;lägg till 4
+000117 e0a4                      	ldi r26, 0b00000100
+000118 95a1                      	neg r26
+000119 1b0a                      	sub end, r26
+                                 	;ta bort 8
+00011a 5018                      	subi r17, 0b00001000
+                                 calc4_4:
+00011b 3014                      	cpi r17, 0b00000100
+00011c f020                      	brlo calc2_4
+                                 	;lägg till 8
+00011d e0a8                      	ldi r26, 0b00001000
+00011e 95a1                      	neg r26
+00011f 1b0a                      	sub end, r26
+                                 	;ta bort 4
+000120 5014                      	subi r17, 0b00000100
+                                 calc2_4:
+000121 3012                      	cpi r17, 0b00000010
+000122 f020                      	brlo calc1_4
+                                 	;lägg till 16
+000123 e1a0                      	ldi r26, 0b00010000
+000124 95a1                      	neg r26
+000125 1b0a                      	sub end, r26
+                                 	;ta bort 2
+000126 5012                      	subi r17, 0b00000010
+                                 calc1_4:
+000127 3011                      	cpi r17, 0b00000001
+000128 f020                      	brlo calcloopexit_4
+                                 	;lägg till 32
+000129 e2a0                      	ldi r26, 0b00100000
+00012a 95a1                      	neg r26
+00012b 1b0a                      	sub end, r26
+                                 	;ta bort 1
+00012c 5011                      	subi r17, 0b00000001
+                                 
+                                 calcloopexit_4:
+00012d b818                      	out PORTC, r1 ;?
+                                 
+00012e 2f10                      	mov r17, end
+00012f 7c10                      	ANDI r17, 0b11000000
+000130 6014                      	ORI r17, 0b00000100
+000131 b91b                      	out PORTD, r17
+                                 
+000132 2f10                      	mov r17, end
+000133 731f                      	ANDI r17, 0b00111111
+000134 b915                      	out PORTB, r17
+                                 
+000135 940c 012d                 	jmp calcloopexit_4
+                                 
+                                 calcrow_5:
+000137 2f17                      	mov r17, row5
+000138 e000                      	ldi end, 0b00000000
+                                 
+000139 3810                      	cpi r17, 0b10000000
+00013a f020                      	brlo calc64_5
+                                 	;lägg till 64 till end
+00013b e4a0                      	ldi r26, 0b01000000
+00013c 95a1                      	neg r26
+00013d 1b0a                      	sub end, r26
+                                 	;ta bort 128 från r17
+00013e 5810                      	subi r17, 0b10000000
+                                 calc64_5:
+00013f 3410                      	cpi r17, 0b01000000
+000140 f020                      	brlo calc32_5
+                                 	;lägg till 128
+000141 e8a0                      	ldi r26, 0b10000000
+000142 95a1                      	neg r26
+000143 1b0a                      	sub end, r26
+                                 	;ta bort 64
+000144 5410                      	subi r17, 0b01000000
+                                 calc32_5:
+000145 3210                      	cpi r17, 0b00100000
+000146 f020                      	brlo calc16_5
+                                 	;lägg till 1
+000147 e0a1                      	ldi r26, 0b00000001
+000148 95a1                      	neg r26
+000149 1b0a                      	sub end, r26
+                                 	;ta bort 32
+00014a 5210                      	subi r17, 0b00100000
+                                 calc16_5:
+00014b 3110                      	cpi r17, 0b00010000
+00014c f020                      	brlo calc8_5
+                                 	;lägg till 2
+00014d e0a2                      	ldi r26, 0b00000010
+00014e 95a1                      	neg r26
+00014f 1b0a                      	sub end, r26
+                                 	;ta bort 16
+000150 5110                      	subi r17, 0b00010000
+                                 calc8_5:
+000151 3018                      	cpi r17, 0b00001000
+000152 f020                      	brlo calc4_5
+                                 	;lägg till 4
+000153 e0a4                      	ldi r26, 0b00000100
+000154 95a1                      	neg r26
+000155 1b0a                      	sub end, r26
+                                 	;ta bort 8
+000156 5018                      	subi r17, 0b00001000
+                                 calc4_5:
+000157 3014                      	cpi r17, 0b00000100
+000158 f020                      	brlo calc2_5
+                                 	;lägg till 8
+000159 e0a8                      	ldi r26, 0b00001000
+00015a 95a1                      	neg r26
+00015b 1b0a                      	sub end, r26
+                                 	;ta bort 4
+00015c 5014                      	subi r17, 0b00000100
+                                 calc2_5:
+00015d 3012                      	cpi r17, 0b00000010
+00015e f020                      	brlo calc1_5
+                                 	;lägg till 16
+00015f e1a0                      	ldi r26, 0b00010000
+000160 95a1                      	neg r26
+000161 1b0a                      	sub end, r26
+                                 	;ta bort 2
+000162 5012                      	subi r17, 0b00000010
+                                 calc1_5:
+000163 3011                      	cpi r17, 0b00000001
+000164 f020                      	brlo calcloopexit_5
+                                 	;lägg till 32
+000165 e2a0                      	ldi r26, 0b00100000
+000166 95a1                      	neg r26
+000167 1b0a                      	sub end, r26
+                                 	;ta bort 1
+000168 5011                      	subi r17, 0b00000001
+                                 
+                                 calcloopexit_5:
+000169 b818                      	out PORTC, r1 ;?
+                                 
+00016a 2f10                      	mov r17, end
+00016b 7c10                      	ANDI r17, 0b11000000
+00016c 6018                      	ORI r17, 0b00001000
+00016d b91b                      	out PORTD, r17
+                                 
+00016e 2f10                      	mov r17, end
+00016f 731f                      	ANDI r17, 0b00111111
+000170 b915                      	out PORTB, r17
+                                 
+000171 940c 0169                 	jmp calcloopexit_5
+                                 
+                                 calcrow_6:
+000173 2f18                      	mov r17, row6
+000174 e000                      	ldi end, 0b00000000
+                                 
+000175 3810                      	cpi r17, 0b10000000
+000176 f020                      	brlo calc64_6
+                                 	;lägg till 64 till end
+000177 e4a0                      	ldi r26, 0b01000000
+000178 95a1                      	neg r26
+000179 1b0a                      	sub end, r26
+                                 	;ta bort 128 från r17
+00017a 5810                      	subi r17, 0b10000000
+                                 calc64_6:
+00017b 3410                      	cpi r17, 0b01000000
+00017c f020                      	brlo calc32_6
+                                 	;lägg till 128
+00017d e8a0                      	ldi r26, 0b10000000
+00017e 95a1                      	neg r26
+00017f 1b0a                      	sub end, r26
+                                 	;ta bort 64
+000180 5410                      	subi r17, 0b01000000
+                                 calc32_6:
+000181 3210                      	cpi r17, 0b00100000
+000182 f020                      	brlo calc16_6
+                                 	;lägg till 1
+000183 e0a1                      	ldi r26, 0b00000001
+000184 95a1                      	neg r26
+000185 1b0a                      	sub end, r26
+                                 	;ta bort 32
+000186 5210                      	subi r17, 0b00100000
+                                 calc16_6:
+000187 3110                      	cpi r17, 0b00010000
+000188 f020                      	brlo calc8_6
+                                 	;lägg till 2
+000189 e0a2                      	ldi r26, 0b00000010
+00018a 95a1                      	neg r26
+00018b 1b0a                      	sub end, r26
+                                 	;ta bort 16
+00018c 5110                      	subi r17, 0b00010000
+                                 calc8_6:
+00018d 3018                      	cpi r17, 0b00001000
+00018e f020                      	brlo calc4_6
+                                 	;lägg till 4
+00018f e0a4                      	ldi r26, 0b00000100
+000190 95a1                      	neg r26
+000191 1b0a                      	sub end, r26
+                                 	;ta bort 8
+000192 5018                      	subi r17, 0b00001000
+                                 calc4_6:
+000193 3014                      	cpi r17, 0b00000100
+000194 f020                      	brlo calc2_6
+                                 	;lägg till 8
+000195 e0a8                      	ldi r26, 0b00001000
+000196 95a1                      	neg r26
+000197 1b0a                      	sub end, r26
+                                 	;ta bort 4
+000198 5014                      	subi r17, 0b00000100
+                                 calc2_6:
+000199 3012                      	cpi r17, 0b00000010
+00019a f020                      	brlo calc1_6
+                                 	;lägg till 16
+00019b e1a0                      	ldi r26, 0b00010000
+00019c 95a1                      	neg r26
+00019d 1b0a                      	sub end, r26
+                                 	;ta bort 2
+00019e 5012                      	subi r17, 0b00000010
+                                 calc1_6:
+00019f 3011                      	cpi r17, 0b00000001
+0001a0 f020                      	brlo calcloopexit_6
+                                 	;lägg till 32
+0001a1 e2a0                      	ldi r26, 0b00100000
+0001a2 95a1                      	neg r26
+0001a3 1b0a                      	sub end, r26
+                                 	;ta bort 1
+0001a4 5011                      	subi r17, 0b00000001
+                                 
+                                 calcloopexit_6:
+                                  
+0001a5 b818                      	out PORTC, r1 ;?
+                                 
+0001a6 2f10                      	mov r17, end
+0001a7 7c10                      	ANDI r17, 0b11000000
+0001a8 6110                      	ORI r17, 0b00010000
+0001a9 b91b                      	out PORTD, r17
+                                 
+0001aa 2f10                      	mov r17, end
+0001ab 731f                      	ANDI r17, 0b00111111
+0001ac b915                      	out PORTB, r17
+                                 
+0001ad 940c 01a5                 	jmp calcloopexit_6
+                                 
+                                 calcrow_7:
+0001af 2f19                      	mov r17, row7
+0001b0 e000                      	ldi end, 0b00000000
+                                 
+0001b1 3810                      	cpi r17, 0b10000000
+0001b2 f020                      	brlo calc64_7
+                                 	;lägg till 64 till end
+0001b3 e4a0                      	ldi r26, 0b01000000
+0001b4 95a1                      	neg r26
+0001b5 1b0a                      	sub end, r26
+                                 	;ta bort 128 från r17
+0001b6 5810                      	subi r17, 0b10000000
+                                 calc64_7:
+0001b7 3410                      	cpi r17, 0b01000000
+0001b8 f020                      	brlo calc32_7
+                                 	;lägg till 128
+0001b9 e8a0                      	ldi r26, 0b10000000
+0001ba 95a1                      	neg r26
+0001bb 1b0a                      	sub end, r26
+                                 	;ta bort 64
+0001bc 5410                      	subi r17, 0b01000000
+                                 calc32_7:
+0001bd 3210                      	cpi r17, 0b00100000
+0001be f020                      	brlo calc16_7
+                                 	;lägg till 1
+0001bf e0a1                      	ldi r26, 0b00000001
+0001c0 95a1                      	neg r26
+0001c1 1b0a                      	sub end, r26
+                                 	;ta bort 32
+0001c2 5210                      	subi r17, 0b00100000
+                                 calc16_7:
+0001c3 3110                      	cpi r17, 0b00010000
+0001c4 f020                      	brlo calc8_7
+                                 	;lägg till 2
+0001c5 e0a2                      	ldi r26, 0b00000010
+0001c6 95a1                      	neg r26
+0001c7 1b0a                      	sub end, r26
+                                 	;ta bort 16
+0001c8 5110                      	subi r17, 0b00010000
+                                 calc8_7:
+0001c9 3018                      	cpi r17, 0b00001000
+0001ca f020                      	brlo calc4_7
+                                 	;lägg till 4
+0001cb e0a4                      	ldi r26, 0b00000100
+0001cc 95a1                      	neg r26
+0001cd 1b0a                      	sub end, r26
+                                 	;ta bort 8
+0001ce 5018                      	subi r17, 0b00001000
+                                 calc4_7:
+0001cf 3014                      	cpi r17, 0b00000100
+0001d0 f020                      	brlo calc2_7
+                                 	;lägg till 8
+0001d1 e0a8                      	ldi r26, 0b00001000
+0001d2 95a1                      	neg r26
+0001d3 1b0a                      	sub end, r26
+                                 	;ta bort 4
+0001d4 5014                      	subi r17, 0b00000100
+                                 calc2_7:
+0001d5 3012                      	cpi r17, 0b00000010
+0001d6 f020                      	brlo calc1_7
+                                 	;lägg till 16
+0001d7 e1a0                      	ldi r26, 0b00010000
+0001d8 95a1                      	neg r26
+0001d9 1b0a                      	sub end, r26
+                                 	;ta bort 2
+0001da 5012                      	subi r17, 0b00000010
+                                 calc1_7:
+0001db 3011                      	cpi r17, 0b00000001
+0001dc f030                      	brlo calcloopexit_7
+                                 	;lägg till 32
+0001dd e2a0                      	ldi r26, 0b00100000
+0001de 95a1                      	neg r26
+0001df 1b0a                      	sub end, r26
+                                 	;ta bort 1
+0001e0 5011                      	subi r17, 0b00000001
+                                 
+0001e1 940c 01af                 	jmp calcrow_7
+                                 
                                  calcloopexit_7:
                                  
-00003d b818                      	out PORTC, r1 ;?
+0001e3 b818                      	out PORTC, r1 ;?
                                  
-00003e 2f10                      	mov r17, end
-00003f 7c10                      	ANDI r17, 0b11000000
-000040 6210                      	ORI r17, 0b00100000
-000041 b91b                      	out PORTD, r17
+0001e4 2f10                      	mov r17, end
+0001e5 7c10                      	ANDI r17, 0b11000000
+0001e6 6210                      	ORI r17, 0b00100000
+0001e7 b91b                      	out PORTD, r17
                                  
-000042 2f10                      	mov r17, end
-000043 731f                      	ANDI r17, 0b00111111
-000044 b915                      	out PORTB, r17
+0001e8 2f10                      	mov r17, end
+0001e9 731f                      	ANDI r17, 0b00111111
+0001ea b915                      	out PORTB, r17
                                  
 
 
@@ -1771,39 +1770,39 @@ counted separately from r26..r31 here.
 .dseg memory usage only counts static data declared with .byte
 
 "ATmega328P" register use summary:
-x  :   0 y  :   0 z  :   0 r0 :   0 r1 :   1 r2 :   0 r3 :   0 r4 :   0 
+x  :   0 y  :   0 z  :   0 r0 :   0 r1 :   7 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:  11 r17:  24 r18:   1 r19:   1 r20:   1 
-r21:   1 r22:   1 r23:   1 r24:   1 r25:   2 r26:  24 r27:   0 r28:   0 
+r13:   0 r14:   0 r15:   0 r16:  88 r17: 196 r18:   2 r19:   2 r20:   2 
+r21:   2 r22:   2 r23:   2 r24:   2 r25:   2 r26: 192 r27:   0 r28:   0 
 r29:   0 r30:   0 r31:   0 
 Registers used: 12 out of 35 (34.3%)
 
 "ATmega328P" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
-andi  :   2 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
+andi  :  16 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
 brcc  :   0 brcs  :   0 break :   0 breq  :   0 brge  :   0 brhc  :   0 
-brhs  :   0 brid  :   0 brie  :   0 brlo  :   8 brlt  :   0 brmi  :   0 
+brhs  :   0 brid  :   0 brie  :   0 brlo  :  64 brlt  :   0 brmi  :   0 
 brne  :   0 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :   0 call  :   0 cbi   :   0 cbr   :   0 
 clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
-cpi   :   8 cpse  :   0 dec   :   0 eor   :   0 fmul  :   0 fmuls :   0 
-fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   0 jmp   :   2 
-ld    :   0 ldd   :   0 ldi   :  17 lds   :   0 lpm   :   0 lsl   :   0 
-lsr   :   0 mov   :   3 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
-neg   :   8 nop   :   1 or    :   0 ori   :   1 out   :   3 pop   :   0 
+cpi   :  64 cpse  :   0 dec   :   0 eor   :   0 fmul  :   0 fmuls :   0 
+fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   0 jmp   :   8 
+ld    :   0 ldd   :   0 ldi   :  84 lds   :   0 lpm   :   0 lsl   :   0 
+lsr   :   0 mov   :  24 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
+neg   :  64 nop   :   2 or    :   0 ori   :   4 out   :  27 pop   :   0 
 push  :   0 rcall :   0 ret   :   0 reti  :   0 rjmp  :   0 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
 sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   0 seh   :   0 
 sei   :   0 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
 sez   :   0 sleep :   0 spm   :   0 st    :   0 std   :   0 sts   :   0 
-sub   :   8 subi  :   8 swap  :   0 tst   :   0 wdr   :   0 
+sub   :  64 subi  :  64 swap  :   0 tst   :   0 wdr   :   0 
 Instructions used: 12 out of 113 (10.6%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x00008e    142      0    142   32768   0.4%
+[.cseg] 0x000000 0x0003da    986      0    986   32768   3.0%
 [.dseg] 0x000100 0x000108      0      8      8    2048   0.4%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 

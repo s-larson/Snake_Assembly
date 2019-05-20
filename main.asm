@@ -33,7 +33,7 @@ ldi row5, 0b01110110
 ldi row6, 0b11111011
 ldi row7, 0b11011111
  
-/*calcrow_0:
+calcrow_0:
 	mov r17, row0
 	ldi end, 0b00000000
 
@@ -130,9 +130,9 @@ calcloopexit_0:
 	;jmp endloop
 
 
-    //jmp calcloopexit_0*/
+    //jmp calcloopexit_0
 
-/*calcrow_1:
+calcrow_1:
 	mov r17, row1
 	ldi end, 0b00000000
 
@@ -221,9 +221,9 @@ calcloopexit_1:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	jmp calcloopexit_1*/
+	jmp calcloopexit_1
 
-/*calcrow_2:
+calcrow_2:
 	mov r17, row2
 	ldi end, 0b00000000
 
@@ -312,9 +312,9 @@ calcloopexit_2:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	jmp calcloopexit_2*/
+	jmp calcloopexit_2
 
-/*calcrow_3:
+calcrow_3:
 	mov r17, row3
 	ldi end, 0b00000000
 
@@ -403,9 +403,9 @@ calcloopexit_3:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	jmp calcloopexit_3*/
+	jmp calcloopexit_3
 
-/*calcrow_4:
+calcrow_4:
 	mov r17, row4
 	ldi end, 0b00000000
 
@@ -493,9 +493,9 @@ calcloopexit_4:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	jmp calcloopexit_4*/
+	jmp calcloopexit_4
 
-/*calcrow_5:
+calcrow_5:
 	mov r17, row5
 	ldi end, 0b00000000
 
@@ -583,9 +583,9 @@ calcloopexit_5:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	jmp calcloopexit_5*/
+	jmp calcloopexit_5
 
-/*calcrow_6:
+calcrow_6:
 	mov r17, row6
 	ldi end, 0b00000000
 
@@ -674,7 +674,7 @@ calcloopexit_6:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	jmp calcloopexit_6*/
+	jmp calcloopexit_6
 
 calcrow_7:
 	mov r17, row7
@@ -754,7 +754,6 @@ calc1_7:
 
 	jmp calcrow_7
 
-	
 calcloopexit_7:
 
 	out PORTC, r1 ;?
