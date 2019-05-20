@@ -21,17 +21,27 @@ matrix:   .BYTE 8
 
 .CSEG
 .ORG 0x0000
+jmp init
 nop
 
+init:
+    ldi r16, 0b11111111
+    out DDRC, r16
+
+    ldi r16, 0b11111111
+    out DDRD, r16
+
+    ldi r16, 0b11111111
+    out DDRB, r16
 main:
-ldi row0, 0b10101010	;D6 och D7 är switchade
-ldi row1, 0b11110111
-ldi row2, 0b10111011
-ldi row3, 0b11001011
-ldi row4, 0b10111001
-ldi row5, 0b01110110
-ldi row6, 0b11111011
-ldi row7, 0b11011111
+ldi row0, 0b11110000	;D6 och D7 är switchade
+ldi row1, 0b11111111
+ldi row2, 0b11111111
+ldi row3, 0b11111100
+ldi row4, 0b11111111
+ldi row5, 0b11111111
+ldi row6, 0b11111111
+ldi row7, 0b11111111
  
 calcrow_0:
 	mov r17, row0
@@ -121,17 +131,9 @@ calcloopexit_0:
 	mov r17, end
 	ANDI r17, 0b00111111
 	out PORTB, r17
-
-	nop
-
-	out PORTB, r1
-	out PORTC, r1
-	out PORTD, r1
-	;jmp endloop
-
-
-    //jmp calcloopexit_0
-
+	
+	call calcloop
+	
 calcrow_1:
 	mov r17, row1
 	ldi end, 0b00000000
@@ -221,7 +223,7 @@ calcloopexit_1:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	jmp calcloopexit_1
+	call calcloop
 
 calcrow_2:
 	mov r17, row2
@@ -312,7 +314,7 @@ calcloopexit_2:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	jmp calcloopexit_2
+	call calcloop
 
 calcrow_3:
 	mov r17, row3
@@ -392,7 +394,7 @@ calc1_3:
 
 calcloopexit_3:
  
-	ldi r17, 0b00000100
+	ldi r17, 0b00001000
 	out PORTC, r17
 
 	mov r17, end
@@ -403,7 +405,7 @@ calcloopexit_3:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	jmp calcloopexit_3
+	call calcloop
 
 calcrow_4:
 	mov r17, row4
@@ -493,7 +495,7 @@ calcloopexit_4:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	jmp calcloopexit_4
+	call calcloop
 
 calcrow_5:
 	mov r17, row5
@@ -572,8 +574,6 @@ calc1_5:
 	subi r17, 0b00000001
 
 calcloopexit_5:
-	out PORTC, r1 ;?
-
 	mov r17, end
 	ANDI r17, 0b11000000
 	ORI r17, 0b00001000
@@ -583,7 +583,7 @@ calcloopexit_5:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	jmp calcloopexit_5
+	call calcloop
 
 calcrow_6:
 	mov r17, row6
@@ -662,9 +662,6 @@ calc1_6:
 	subi r17, 0b00000001
 
 calcloopexit_6:
- 
-	out PORTC, r1 ;?
-
 	mov r17, end
 	ANDI r17, 0b11000000
 	ORI r17, 0b00010000
@@ -674,7 +671,7 @@ calcloopexit_6:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	jmp calcloopexit_6
+	call calcloop
 
 calcrow_7:
 	mov r17, row7
@@ -752,11 +749,7 @@ calc1_7:
 	;ta bort 1
 	subi r17, 0b00000001
 
-	jmp calcrow_7
-
 calcloopexit_7:
-
-	out PORTC, r1 ;?
 
 	mov r17, end
 	ANDI r17, 0b11000000
@@ -767,4 +760,15 @@ calcloopexit_7:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	jmp calcloopexit_7
+	call calcloop
+	nop 
+	jmp main
+
+calcloop:// Delay called after each output
+    ldi  r27, 13
+    ldi  r28, 252
+L1: dec  r28
+    brne L1
+    dec  r27
+    brne L1
+	ret
