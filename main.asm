@@ -120,7 +120,7 @@ calc2_0:
 	subi r17, 0b00000010
 calc1_0:
 	cpi r17, 0b00000001
-	brlo calcloopexit_0
+	brlo outputrow_0
 	;lägg till 32
 	ldi r26, 0b00100000
 	neg r26
@@ -128,7 +128,7 @@ calc1_0:
 	;ta bort 1
 	subi r17, 0b00000001
 
-calcloopexit_0:
+outputrow_0:
  
 	ldi r17, 0b00000001
 	out PORTC, r17
@@ -141,7 +141,7 @@ calcloopexit_0:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 	
-	call calcloop
+	call delay1
 	
 calcrow_1:
 	mov r17, row1
@@ -211,7 +211,7 @@ calc2_1:
 	subi r17, 0b00000010
 calc1_1:
 	cpi r17, 0b00000001
-	brlo calcloopexit_1
+	brlo outputrow_1
 	;lägg till 32
 	ldi r26, 0b00100000
 	neg r26
@@ -219,7 +219,7 @@ calc1_1:
 	;ta bort 1
 	subi r17, 0b00000001
 
-calcloopexit_1:
+outputrow_1:
  
 	ldi r17, 0b00000010
 	out PORTC, r17
@@ -232,7 +232,7 @@ calcloopexit_1:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	call calcloop
+	call delay1
 
 calcrow_2:
 	mov r17, row2
@@ -302,7 +302,7 @@ calc2_2:
 	subi r17, 0b00000010
 calc1_2:
 	cpi r17, 0b00000001
-	brlo calcloopexit_2
+	brlo outputrow_2
 	;lägg till 32
 	ldi r26, 0b00100000
 	neg r26
@@ -310,7 +310,7 @@ calc1_2:
 	;ta bort 1
 	subi r17, 0b00000001
 
-calcloopexit_2:
+outputrow_2:
  
 	ldi r17, 0b00000100
 	out PORTC, r17
@@ -323,7 +323,7 @@ calcloopexit_2:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	call calcloop
+	call delay1
 
 calcrow_3:
 	mov r17, row3
@@ -393,7 +393,7 @@ calc2_3:
 	subi r17, 0b00000010
 calc1_3:
 	cpi r17, 0b00000001
-	brlo calcloopexit_3
+	brlo outputrow_3
 	;lägg till 32
 	ldi r26, 0b00100000
 	neg r26
@@ -401,7 +401,7 @@ calc1_3:
 	;ta bort 1
 	subi r17, 0b00000001
 
-calcloopexit_3:
+outputrow_3:
  
 	ldi r17, 0b00001000
 	out PORTC, r17
@@ -414,7 +414,7 @@ calcloopexit_3:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	call calcloop
+	call delay1
 
 calcrow_4:
 	mov r17, row4
@@ -484,7 +484,7 @@ calc2_4:
 	subi r17, 0b00000010
 calc1_4:
 	cpi r17, 0b00000001
-	brlo calcloopexit_4
+	brlo outputrow_4
 	;lägg till 32
 	ldi r26, 0b00100000
 	neg r26
@@ -492,7 +492,7 @@ calc1_4:
 	;ta bort 1
 	subi r17, 0b00000001
 
-calcloopexit_4:
+outputrow_4:
 	out PORTC, r1 ;?
 
 	mov r17, end
@@ -504,7 +504,7 @@ calcloopexit_4:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	call calcloop
+	call delay1
 
 calcrow_5:
 	mov r17, row5
@@ -574,7 +574,7 @@ calc2_5:
 	subi r17, 0b00000010
 calc1_5:
 	cpi r17, 0b00000001
-	brlo calcloopexit_5
+	brlo outputrow_5
 	;lägg till 32
 	ldi r26, 0b00100000
 	neg r26
@@ -582,7 +582,7 @@ calc1_5:
 	;ta bort 1
 	subi r17, 0b00000001
 
-calcloopexit_5:
+outputrow_5:
 	mov r17, end
 	ANDI r17, 0b11000000
 	ORI r17, 0b00001000
@@ -592,7 +592,7 @@ calcloopexit_5:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	call calcloop
+	call delay1
 
 calcrow_6:
 	mov r17, row6
@@ -662,7 +662,7 @@ calc2_6:
 	subi r17, 0b00000010
 calc1_6:
 	cpi r17, 0b00000001
-	brlo calcloopexit_6
+	brlo outputrow_6
 	;lägg till 32
 	ldi r26, 0b00100000
 	neg r26
@@ -670,7 +670,7 @@ calc1_6:
 	;ta bort 1
 	subi r17, 0b00000001
 
-calcloopexit_6:
+outputrow_6:
 	mov r17, end
 	ANDI r17, 0b11000000
 	ORI r17, 0b00010000
@@ -680,7 +680,7 @@ calcloopexit_6:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	call calcloop
+	call delay1
 
 calcrow_7:
 	mov r17, row7
@@ -750,7 +750,7 @@ calc2_7:
 	subi r17, 0b00000010
 calc1_7:
 	cpi r17, 0b00000001
-	brlo calcloopexit_7
+	brlo outputrow_7
 	;lägg till 32
 	ldi r26, 0b00100000
 	neg r26
@@ -758,7 +758,7 @@ calc1_7:
 	;ta bort 1
 	subi r17, 0b00000001
 
-calcloopexit_7:
+outputrow_7:
 
 	mov r17, end
 	ANDI r17, 0b11000000
@@ -769,7 +769,7 @@ calcloopexit_7:
 	ANDI r17, 0b00111111
 	out PORTB, r17
 
-	call calcloop
+	call delay1
 	nop 
 
 
@@ -808,10 +808,10 @@ wait2://Wait until "read" is finished
 light:
 	ldi r17, 0b11111111
 	out PORTD, r17
-	call calcloop
+	call delay1
 	jmp main
 
-calcloop:// Delay called after each output
+delay1:// Delay called after each output
     ldi  r27, 150
     ldi  r28, 252
 L1: dec  r28
