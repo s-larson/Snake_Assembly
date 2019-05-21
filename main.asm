@@ -2,19 +2,11 @@
 ; Snake.asm
 ;
 ; Created: 2019-04-25 13:47:41
-; Author : potat
+; Author : potat & co
 ;
 
 
 .DEF end = r16
-.DEF row0 = r18 ;C0
-.DEF row1 = r19 ;C1
-.DEF row2 = r20 ;C2
-.DEF row3 = r21 ;C3
-.DEF row4 = r22 ;D2
-.DEF row5 = r23 ;D3
-.DEF row6 = r24 ;D4
-.DEF row7 = r25 ;D5
 
 .DSEG
 matrix:   .BYTE 8
@@ -33,28 +25,45 @@ init:
     ldi r16, 0b11111111
     out DDRB, r16
 
+	// Pointers to matrix (snake)
+	ldi YH, HIGH(matrix)
+	ldi YL, LOW(matrix)
+	
+	// Spawn snake
+	ldi r18, 0b00000000	;D6 och D7 är switchade
+	st Y, r18
+	ldi r18, 0b00000000
+	std Y+1, r18
+	ldi r18, 0b00000000
+	std Y+2, r18	
+	ldi r18, 0b00000000
+	std Y+3, r18
+	ldi r18, 0b00010000
+	std Y+4, r18
+	ldi r18, 0b00000000
+	std Y+5, r18
+	ldi r18, 0b00000000
+	std Y+6, r18
+	ldi r18, 0b00000000
+	std Y+7, r18	
+
 	// Enable Joystick
 	ldi r16, 0b01100000
+	lds r17, ADMUX
+	or r16, r17
 	sts ADMUX, r16
 	ldi r16, 0b10000111
+	lds r17, ADCSRA
+	or r16, r17
 	sts ADCSRA, r16
 
 main:
-ldi row0, 0b00000000	;D6 och D7 är switchade
-ldi row1, 0b00000000
-ldi row2, 0b00000000
-ldi row3, 0b00000000
-ldi row4, 0b00010000
-ldi row5, 0b00000000
-ldi row6, 0b00000000
-ldi row7, 0b00000000
-
-
 
 calcrow_0:
-	mov r17, row0
-	ldi end, 0b00000000
 
+	ld r17, Y
+	
+	ldi end, 0b00000000
 	cpi r17, 0b10000000
 	brlo calc64_0
 	;lägg till 64 till end
@@ -144,9 +153,9 @@ outputrow_0:
 	call delay1
 	
 calcrow_1:
-	mov r17, row1
-	ldi end, 0b00000000
+	ldd r17, Y+1
 
+	ldi end, 0b00000000
 	cpi r17, 0b10000000
 	brlo calc64_1
 	;lägg till 64 till end
@@ -221,6 +230,7 @@ calc1_1:
 
 outputrow_1:
  
+	
 	ldi r17, 0b00000010
 	out PORTC, r17
 
@@ -235,7 +245,8 @@ outputrow_1:
 	call delay1
 
 calcrow_2:
-	mov r17, row2
+	ldd r17, Y+2
+
 	ldi end, 0b00000000
 
 	cpi r17, 0b10000000
@@ -326,9 +337,9 @@ outputrow_2:
 	call delay1
 
 calcrow_3:
-	mov r17, row3
-	ldi end, 0b00000000
+	ldd r17, Y+3
 
+	ldi end, 0b00000000
 	cpi r17, 0b10000000
 	brlo calc64_3
 	;lägg till 64 till end
@@ -417,9 +428,9 @@ outputrow_3:
 	call delay1
 
 calcrow_4:
-	mov r17, row4
-	ldi end, 0b00000000
+	ldd r17, Y+4
 
+	ldi end, 0b00000000
 	cpi r17, 0b10000000
 	brlo calc64_4
 	;lägg till 64 till end
@@ -507,9 +518,9 @@ outputrow_4:
 	call delay1
 
 calcrow_5:
-	mov r17, row5
-	ldi end, 0b00000000
+	ldd r17, Y+5
 
+	ldi end, 0b00000000
 	cpi r17, 0b10000000
 	brlo calc64_5
 	;lägg till 64 till end
@@ -595,9 +606,9 @@ outputrow_5:
 	call delay1
 
 calcrow_6:
-	mov r17, row6
+	ldd r17, Y+6
+	
 	ldi end, 0b00000000
-
 	cpi r17, 0b10000000
 	brlo calc64_6
 	;lägg till 64 till end
@@ -683,9 +694,9 @@ outputrow_6:
 	call delay1
 
 calcrow_7:
-	mov r17, row7
-	ldi end, 0b00000000
+	ldd r17, Y+7
 
+	ldi end, 0b00000000
 	cpi r17, 0b10000000
 	brlo calc64_7
 	;lägg till 64 till end
@@ -770,8 +781,6 @@ outputrow_7:
 	out PORTB, r17
 
 	call delay1
-	nop 
-
 
 /*joyinputX://Listen to joystick
 	lds r18, ADMUX
@@ -790,32 +799,45 @@ wait1://Wait until "read" is finished
 joyinputY://Listen to joystick
 	ldi r18, 0b01100100
 	sts ADMUX, r18
-
 	lds r18, ADCSRA
 	ori	r18, 0b01000000
 	sts ADCSRA, r18
 wait2://Wait until "read" is finished
 	lds r18, ADCSRA
-	sbrc r18, 6 //Check 6th bit if 0
+	sbrc r18, ADSC //Check 6th bit if 0
 	jmp wait2
-	lds r29, ADCH
-	cpi r29, 128
-	brge light
-	ldi r17, 0b00000000
-	out PORTD, r17
+	lds r24, ADCL
+	lds r25, ADCH
+
+	ldi r20, 0b11111111
+	std Y+4, r20
+
+	std Y+2, r25 //temp
+	std Y+1, r24 //temp
+
+	
+	cpi r25, 0b01111111
+	brge north	
+	cpi r25, 0b00000010
+	brlt south
+	
 	jmp main
-	nop
-light:
-	ldi r17, 0b11111111
-	out PORTD, r17
-	call delay1
+
+south:
+	ldi r21, 0b00111100
+	std Y+7, r21
+	jmp main
+
+north:
+	ldi r21, 0b00011000
+	st Y, r21
 	jmp main
 
 delay1:// Delay called after each output
-    ldi  r27, 150
-    ldi  r28, 252
-L1: dec  r28
+    ldi  r19, 255
+    ldi  r20, 252
+L1: dec  r20
     brne L1
-    dec  r27
+    dec  r19
     brne L1
 	ret
