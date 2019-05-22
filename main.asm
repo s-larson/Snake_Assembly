@@ -7,9 +7,11 @@
 
 
 .DEF end = r16
+.DEF direction = r25
 
 .DSEG
-matrix:   .BYTE 8
+drawmatrix:		.BYTE 8
+gamematrix:		.BYTE 8
 
 .CSEG
 .ORG 0x0000
@@ -26,8 +28,10 @@ init:
     out DDRB, r16
 
 	// Pointers to matrix (snake)
-	ldi YH, HIGH(matrix)
-	ldi YL, LOW(matrix)
+	ldi YH, HIGH(drawmatrix)
+	ldi YL, LOW(drawmatrix)
+	ldi ZH, HIGH(gamematrix)
+	ldi ZL, LOW(gamematrix)
 	
 	// Spawn snake
 	ldi r18, 0b00000000	;D6 och D7 är switchade
@@ -782,22 +786,31 @@ outputrow_7:
 
 	call delay1
 
-/*joyinputX://Listen to joystick
+joyinputX://Listen to joystick
 	lds r18, ADMUX
-	ori r18, 0b00000101
+	ldi r19, 0b00000101
+	or r18, r19
 	sts ADMUX, r18
 	lds r18, ADCSRA
-	ori	r18, 0b00100000
+	ori	r18, 0b01000000
 	sts ADCSRA, r18
 
 wait1://Wait until "read" is finished
 	lds r18, ADCSRA
-	sbrc r18, 6 //Check 6th bit if 0
+	sbrc r18, ADSC //Check 6th bit if 0
 	jmp wait1
-	lds r29, ADCH
-	*/
+	lds r24, ADCL
+	lds r25, ADCH
+		
+	cpi r25, 0b00000100
+	brge east	
+	cpi r25, 0b00000010
+	brlt west
+
 joyinputY://Listen to joystick
-	ldi r18, 0b01100100
+	lds r18, ADMUX
+	ldi r19, 0b00000100
+	or r18, r19
 	sts ADMUX, r18
 	lds r18, ADCSRA
 	ori	r18, 0b01000000
@@ -808,31 +821,27 @@ wait2://Wait until "read" is finished
 	jmp wait2
 	lds r24, ADCL
 	lds r25, ADCH
-	out PORTC, r25
-
-	//std Y+2, r25 //temp
-	
-
-	ldi r20, 0b11111111 // temp
-	std Y+4, r20		// temp
-	/*
-	std Y+1, r24 //temp
-	
+		
 	cpi r25, 0b00000100
 	brge north	
 	cpi r25, 0b00000010
 	brlt south
-	*/
-	jmp main
 
-south:
-	ldi r21, 0b00111100
-	std Y+7, r21
 	jmp main
 
 north:
-	ldi r21, 0b00011000
-	st Y, r21
+	ldi direction, 0b00001000
+	jmp main
+
+south:
+	ldi direction, 0b00000100
+	jmp main
+
+east:
+	ldi direction, 0b00000010
+	jmp main
+west:
+	ldi direction, 0b00000001
 	jmp main
 
 resetMatrix:
@@ -853,4 +862,4 @@ L1: dec  r20
     brne L1
     dec  r19
     brne L1
-	ret
+	ret		
