@@ -34,7 +34,7 @@
   <calc2_0><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>121</LINE></calc2_0>
   <calc1_0><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>130</LINE></calc1_0>
   <outputrow_0><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>140</LINE></outputrow_0>
-  <delay1><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>836</LINE></delay1>
+  <delay1><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>849</LINE></delay1>
   <calcrow_1><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>155</LINE></calcrow_1>
   <calc64_1><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>167</LINE></calc64_1>
   <calc32_1><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>176</LINE></calc32_1>
@@ -100,8 +100,9 @@
   <outputrow_7><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>772</LINE></outputrow_7>
   <joyinputY><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>799</LINE></joyinputY>
   <wait2><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>805</LINE></wait2>
-  <north><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>831</LINE></north>
-  <south><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>826</LINE></south>
-  <L1><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>839</LINE></L1>
+  <south><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>828</LINE></south>
+  <north><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>833</LINE></north>
+  <resetMatrix><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>838</LINE></resetMatrix>
+  <L1><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>852</LINE></L1>
  </LABELS>
 </ASSEMBLER_INFO>

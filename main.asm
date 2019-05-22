@@ -808,17 +808,21 @@ wait2://Wait until "read" is finished
 	jmp wait2
 	lds r24, ADCL
 	lds r25, ADCH
+	out PORTC, r25
+
+	//std Y+2, r25 //temp
+	
 
 	ldi r20, 0b11111111 // temp
 	std Y+4, r20		// temp
-	std Y+2, r25 //temp
+	/*
 	std Y+1, r24 //temp
 	
-	cpi r25, 0b01111111
+	cpi r25, 0b00000100
 	brge north	
 	cpi r25, 0b00000010
 	brlt south
-	
+	*/
 	jmp main
 
 south:
@@ -830,6 +834,17 @@ north:
 	ldi r21, 0b00011000
 	st Y, r21
 	jmp main
+
+resetMatrix:
+	st Y, r1            ;Reset led-matrix
+    std Y+1, r1
+    std Y+2, r1
+    std Y+3, r1
+    std Y+4, r1
+    std Y+5, r1
+    std Y+6, r1
+    std Y+7, r1
+	ret
 
 delay1:// Delay called after each output
     ldi  r19, 255
