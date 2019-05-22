@@ -809,12 +809,10 @@ wait2://Wait until "read" is finished
 	lds r24, ADCL
 	lds r25, ADCH
 
-	ldi r20, 0b11111111
-	std Y+4, r20
-
+	ldi r20, 0b11111111 // temp
+	std Y+4, r20		// temp
 	std Y+2, r25 //temp
 	std Y+1, r24 //temp
-
 	
 	cpi r25, 0b01111111
 	brge north	
