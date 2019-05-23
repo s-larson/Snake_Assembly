@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Thu May 23 10:28:34 2019
+AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Thu May 23 14:15:17 2019
 
 
 EQU  SIGNATURE_000 0000001e
@@ -697,7 +697,7 @@ EQU  SPMRaddr     00000032
 EQU  INT_VECTORS_SIZE 00000034
 DEF  end          r16
 DEF  direction    r25
-DSEG drawmatrix   00000100
+DSEG snakehead    00000100
 DSEG gamematrix   00000108
 CSEG init         00000003
 CSEG main         00000029
@@ -710,7 +710,7 @@ CSEG calc4_0      00000049
 CSEG calc2_0      0000004f
 CSEG calc1_0      00000055
 CSEG outputrow_0  0000005b
-CSEG delay1       0000024c
+CSEG delay1       00000244
 CSEG calcrow_1    00000065
 CSEG calc64_1     0000006d
 CSEG calc32_1     00000073
@@ -776,11 +776,17 @@ CSEG calc1_7      000001f7
 CSEG outputrow_7  000001fd
 CSEG joyinputX    00000206
 CSEG wait1        00000211
-CSEG east         0000023d
-CSEG west         00000240
-CSEG joyinputY    0000021e
-CSEG wait2        00000229
-CSEG north        00000235
-CSEG south        00000239
-CSEG resetMatrix  00000243
-CSEG L1           0000024e
+CSEG east         0000023e
+CSEG west         00000241
+CSEG joyinputY    0000021d
+CSEG wait2        0000022a
+CSEG north        00000238
+CSEG south        0000023b
+CSEG calcHeadPosition 0000024b
+CSEG L1           00000246
+CSEG calcDirection 00000251
+CSEG moveWest     00000260
+CSEG moveEast     00000262
+CSEG moveSouth    00000265
+CSEG moveNorth    00000264
+CSEG resetMatrix  00000266

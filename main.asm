@@ -10,7 +10,7 @@
 .DEF direction = r25
 
 .DSEG
-drawmatrix:		.BYTE 8
+snakehead:		.BYTE 8
 gamematrix:		.BYTE 8
 
 .CSEG
@@ -28,13 +28,13 @@ init:
     out DDRB, r16
 
 	// Pointers to matrix (snake)
-	ldi YH, HIGH(drawmatrix)
-	ldi YL, LOW(drawmatrix)
+	ldi YH, HIGH(snakehead)
+	ldi YL, LOW(snakehead)
 	ldi ZH, HIGH(gamematrix)
 	ldi ZL, LOW(gamematrix)
 	
-	// Spawn snake
-	ldi r18, 0b00000000	;D6 och D7 är switchade
+	// Spawn snake head
+	ldi r18, 0b00000000
 	st Y, r18
 	ldi r18, 0b00000000
 	std Y+1, r18
@@ -50,7 +50,7 @@ init:
 	std Y+6, r18
 	ldi r18, 0b00000000
 	std Y+7, r18	
-
+	
 	// Enable Joystick
 	ldi r16, 0b01100000
 	lds r17, ADMUX
@@ -64,9 +64,7 @@ init:
 main:
 
 calcrow_0:
-
 	ld r17, Y
-	
 	ldi end, 0b00000000
 	cpi r17, 0b10000000
 	brlo calc64_0
@@ -234,7 +232,6 @@ calc1_1:
 
 outputrow_1:
  
-	
 	ldi r17, 0b00000010
 	out PORTC, r17
 
@@ -774,18 +771,15 @@ calc1_7:
 	subi r17, 0b00000001
 
 outputrow_7:
-
 	mov r17, end
 	ANDI r17, 0b11000000
 	ORI r17, 0b00100000
 	out PORTD, r17
-
 	mov r17, end
 	ANDI r17, 0b00111111
 	out PORTB, r17
-
 	call delay1
-
+	
 joyinputX://Listen to joystick
 	lds r18, ADMUX
 	ldi r19, 0b00000101
@@ -799,16 +793,17 @@ wait1://Wait until "read" is finished
 	lds r18, ADCSRA
 	sbrc r18, ADSC //Check 6th bit if 0
 	jmp wait1
-	lds r24, ADCL
-	lds r25, ADCH
-		
-	cpi r25, 0b00000100
-	brge east	
-	cpi r25, 0b00000010
-	brlt west
+	lds r24, ADCH
+	cpi r24, 4
+	brsh east
+	mov r23, r24 // just do something between compares	
+	cpi r24, 2
+	brlo west
 
 joyinputY://Listen to joystick
 	lds r18, ADMUX
+	ldi r19, 0b11111110
+	and r18, r19
 	ldi r19, 0b00000100
 	or r18, r19
 	sts ADMUX, r18
@@ -819,39 +814,82 @@ wait2://Wait until "read" is finished
 	lds r18, ADCSRA
 	sbrc r18, ADSC //Check 6th bit if 0
 	jmp wait2
-	lds r24, ADCL
-	lds r25, ADCH
-	
-	std Y+2, r25 //tmp
-	
-	/*cpi r25, 0b10000010	// Branches north if input > 130
-	brge north
+	lds r24, ADCH
+	cpi r24, 130	// Branches north if input > 130
+	brsh north
+	mov r23, r24 // just do something between compares
+	cpi r24, 100	// if input < 100
+	brlo south
 
-	cpi r25, 0b10000111
-	//cpi r25, 0b01100100	// if input < 100
-	brlt south
-	
-	*/
 	jmp main
 
 north:
 	ldi direction, 0b00001000
-	std Y+2, r25
-	jmp main
-
+	jmp calcHeadPosition
 south:
 	ldi direction, 0b00000100
-	std Y+3, r25
-	jmp main
-
+	jmp calcHeadPosition
 east:
 	ldi direction, 0b00000010
-	jmp main
+	jmp calcHeadPosition
 west:
 	ldi direction, 0b00000001
-	jmp main
+	jmp calcHeadPosition
 
-resetMatrix:
+delay1:// Delay called after each output
+    ldi  r19, 13
+    ldi  r20, 252
+L1: dec  r20
+    brne L1
+    dec  r19
+    brne L1
+	ret
+
+calcHeadPosition:
+	ld r18, Y
+	cpi r18, 1		// If row value is greater than 0, move depending on direction
+	brge calcDirection
+    subi YL, -1 	// Increment, run again if no hit
+	jmp calcHeadPosition
+
+calcDirection:
+	st Y, direction //tmp
+	//ldi r19, 0b11111111
+	sbrc direction, 0
+	call moveWest
+
+	sbrc direction, 1
+	call moveEast
+
+	sbrc direction, 2
+	call moveSouth
+
+	sbrc direction, 3
+	call moveNorth
+
+	jmp main
+moveWest:
+	lsl r18
+	//std Y+2, r19
+	ret
+moveEast:
+	lsr r18
+	//std Y+1, r19
+	ret
+moveNorth:
+	//std Y+7, r19
+	ret
+moveSouth:
+	//std Y+6, r19
+	ret
+	/* 
+		1. load row
+		2. compare if > 0
+		3. move value depending on direction
+	*/
+			
+
+resetMatrix: ;Troubleshooting
 	st Y, r1            ;Reset led-matrix
     std Y+1, r1
     std Y+2, r1
@@ -861,12 +899,3 @@ resetMatrix:
     std Y+6, r1
     std Y+7, r1
 	ret
-
-delay1:// Delay called after each output
-    ldi  r19, 255
-    ldi  r20, 252
-L1: dec  r20
-    brne L1
-    dec  r19
-    brne L1
-	ret		
