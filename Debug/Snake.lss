@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Wed May 22 11:23:11 2019
+AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Thu May 23 10:28:34 2019
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc'
@@ -1140,7 +1140,7 @@ AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Wed May 22 11:23:1
 000061 731f                      	ANDI r17, 0b00111111
 000062 b915                      	out PORTB, r17
                                  	
-000063 940e 024d                 	call delay1
+000063 940e 024c                 	call delay1
                                  	
                                  calcrow_1:
 000065 8119                      	ldd r17, Y+1
@@ -1232,7 +1232,7 @@ AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Wed May 22 11:23:1
 00009d 731f                      	ANDI r17, 0b00111111
 00009e b915                      	out PORTB, r17
                                  
-00009f 940e 024d                 	call delay1
+00009f 940e 024c                 	call delay1
                                  
                                  calcrow_2:
 0000a1 811a                      	ldd r17, Y+2
@@ -1324,7 +1324,7 @@ AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Wed May 22 11:23:1
 0000d9 731f                      	ANDI r17, 0b00111111
 0000da b915                      	out PORTB, r17
                                  
-0000db 940e 024d                 	call delay1
+0000db 940e 024c                 	call delay1
                                  
                                  calcrow_3:
 0000dd 811b                      	ldd r17, Y+3
@@ -1415,7 +1415,7 @@ AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Wed May 22 11:23:1
 000115 731f                      	ANDI r17, 0b00111111
 000116 b915                      	out PORTB, r17
                                  
-000117 940e 024d                 	call delay1
+000117 940e 024c                 	call delay1
                                  
                                  calcrow_4:
 000119 811c                      	ldd r17, Y+4
@@ -1505,7 +1505,7 @@ AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Wed May 22 11:23:1
 000151 731f                      	ANDI r17, 0b00111111
 000152 b915                      	out PORTB, r17
                                  
-000153 940e 024d                 	call delay1
+000153 940e 024c                 	call delay1
                                  
                                  calcrow_5:
 000155 811d                      	ldd r17, Y+5
@@ -1593,7 +1593,7 @@ AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Wed May 22 11:23:1
 00018c 731f                      	ANDI r17, 0b00111111
 00018d b915                      	out PORTB, r17
                                  
-00018e 940e 024d                 	call delay1
+00018e 940e 024c                 	call delay1
                                  
                                  calcrow_6:
 000190 811e                      	ldd r17, Y+6
@@ -1681,7 +1681,7 @@ AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Wed May 22 11:23:1
 0001c7 731f                      	ANDI r17, 0b00111111
 0001c8 b915                      	out PORTB, r17
                                  
-0001c9 940e 024d                 	call delay1
+0001c9 940e 024c                 	call delay1
                                  
                                  calcrow_7:
 0001cb 811f                      	ldd r17, Y+7
@@ -1770,7 +1770,7 @@ AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Wed May 22 11:23:1
 000202 731f                      	ANDI r17, 0b00111111
 000203 b915                      	out PORTB, r17
                                  
-000204 940e 024d                 	call delay1
+000204 940e 024c                 	call delay1
                                  
                                  joyinputX://Listen to joystick
 000206 9120 007c                 	lds r18, ADMUX
@@ -1789,9 +1789,9 @@ AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Wed May 22 11:23:1
 000218 9190 0079                 	lds r25, ADCH
                                  		
 00021a 3094                      	cpi r25, 0b00000100
-00021b f514                      	brge east	
+00021b f50c                      	brge east	
 00021c 3092                      	cpi r25, 0b00000010
-00021d f11c                      	brlt west
+00021d f114                      	brlt west
                                  
                                  joyinputY://Listen to joystick
 00021e 9120 007c                 	lds r18, ADMUX
@@ -1807,47 +1807,54 @@ AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Wed May 22 11:23:1
 00022c 940c 0229                 	jmp wait2
 00022e 9180 0078                 	lds r24, ADCL
 000230 9190 0079                 	lds r25, ADCH
-                                 		
-000232 3094                      	cpi r25, 0b00000100
-000233 f424                      	brge north	
-000234 3092                      	cpi r25, 0b00000010
-000235 f02c                      	brlt south
+                                 	
+000232 839a                      	std Y+2, r25 //tmp
+                                 	
+                                 	/*cpi r25, 0b10000010	// Branches north if input > 130
+                                 	brge north
                                  
-000236 940c 0029                 	jmp main
+                                 	cpi r25, 0b10000111
+                                 	//cpi r25, 0b01100100	// if input < 100
+                                 	brlt south
+                                 	
+                                 	*/
+000233 940c 0029                 	jmp main
                                  
                                  north:
-000238 e098                      	ldi direction, 0b00001000
-000239 940c 0029                 	jmp main
+000235 e098                      	ldi direction, 0b00001000
+000236 839a                      	std Y+2, r25
+000237 940c 0029                 	jmp main
                                  
                                  south:
-00023b e094                      	ldi direction, 0b00000100
-00023c 940c 0029                 	jmp main
+000239 e094                      	ldi direction, 0b00000100
+00023a 839b                      	std Y+3, r25
+00023b 940c 0029                 	jmp main
                                  
                                  east:
-00023e e092                      	ldi direction, 0b00000010
-00023f 940c 0029                 	jmp main
+00023d e092                      	ldi direction, 0b00000010
+00023e 940c 0029                 	jmp main
                                  west:
-000241 e091                      	ldi direction, 0b00000001
-000242 940c 0029                 	jmp main
+000240 e091                      	ldi direction, 0b00000001
+000241 940c 0029                 	jmp main
                                  
                                  resetMatrix:
-000244 8218                      	st Y, r1            ;Reset led-matrix
-000245 8219                          std Y+1, r1
-000246 821a                          std Y+2, r1
-000247 821b                          std Y+3, r1
-000248 821c                          std Y+4, r1
-000249 821d                          std Y+5, r1
-00024a 821e                          std Y+6, r1
-00024b 821f                          std Y+7, r1
-00024c 9508                      	ret
+000243 8218                      	st Y, r1            ;Reset led-matrix
+000244 8219                          std Y+1, r1
+000245 821a                          std Y+2, r1
+000246 821b                          std Y+3, r1
+000247 821c                          std Y+4, r1
+000248 821d                          std Y+5, r1
+000249 821e                          std Y+6, r1
+00024a 821f                          std Y+7, r1
+00024b 9508                      	ret
                                  
                                  delay1:// Delay called after each output
-00024d ef3f                          ldi  r19, 255
-00024e ef4c                          ldi  r20, 252
-00024f 954a                      L1: dec  r20
-000250 f7f1                          brne L1
-000251 953a                          dec  r19
-000252 f7e1                          brne L1
+00024c ef3f                          ldi  r19, 255
+00024d ef4c                          ldi  r20, 252
+00024e 954a                      L1: dec  r20
+00024f f7f1                          brne L1
+000250 953a                          dec  r19
+000251 f7e1                          brne L1
 
 
 RESOURCE USE INFORMATION
@@ -1865,23 +1872,23 @@ counted separately from r26..r31 here.
 .dseg memory usage only counts static data declared with .byte
 
 "ATmega328P" register use summary:
-x  :   0 y  :  24 z  :   0 r0 :   0 r1 :   9 r2 :   0 r3 :   0 r4 :   0 
+x  :   0 y  :  27 z  :   0 r0 :   0 r1 :   9 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
 r13:   0 r14:   0 r15:   0 r16: 100 r17: 200 r18:  32 r19:   6 r20:   2 
-r21:   0 r22:   0 r23:   0 r24:   2 r25:  10 r26: 192 r27:   0 r28:   1 
+r21:   0 r22:   0 r23:   0 r24:   2 r25:  11 r26: 192 r27:   0 r28:   1 
 r29:   1 r30:   1 r31:   1 
 Registers used: 14 out of 35 (40.0%)
 
 "ATmega328P" instruction use summary:
 .lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
 andi  :  16 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
-brcc  :   0 brcs  :   0 break :   0 breq  :   0 brge  :   2 brhc  :   0 
-brhs  :   0 brid  :   0 brie  :   0 brlo  :  64 brlt  :   2 brmi  :   0 
+brcc  :   0 brcs  :   0 break :   0 breq  :   0 brge  :   1 brhc  :   0 
+brhs  :   0 brid  :   0 brie  :   0 brlo  :  64 brlt  :   1 brmi  :   0 
 brne  :   2 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :   0 call  :   8 cbi   :   0 cbr   :   0 
 clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   0 cpc   :   0 
-cpi   :  68 cpse  :   0 dec   :   2 eor   :   0 fmul  :   0 fmuls :   0 
+cpi   :  66 cpse  :   0 dec   :   2 eor   :   0 fmul  :   0 fmuls :   0 
 fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   0 jmp   :   8 
 ld    :   1 ldd   :   7 ldi   : 101 lds   :  12 lpm   :   0 lsl   :   0 
 lsr   :   0 mov   :  16 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
@@ -1890,14 +1897,14 @@ push  :   0 rcall :   0 ret   :   2 reti  :   0 rjmp  :   0 rol   :   0
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
 sbiw  :   0 sbr   :   0 sbrc  :   2 sbrs  :   0 sec   :   0 seh   :   0 
 sei   :   0 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
-sez   :   0 sleep :   0 spm   :   0 st    :   2 std   :  14 sts   :   6 
+sez   :   0 sleep :   0 spm   :   0 st    :   2 std   :  17 sts   :   6 
 sub   :  64 subi  :  64 swap  :   0 tst   :   0 wdr   :   0 
 Instructions used: 26 out of 113 (23.0%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x0004a8   1192      0   1192   32768   3.6%
+[.cseg] 0x000000 0x0004a6   1190      0   1190   32768   3.6%
 [.dseg] 0x000100 0x000110      0     16     16    2048   0.8%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 

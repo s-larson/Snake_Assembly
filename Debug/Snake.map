@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Wed May 22 11:23:11 2019
+AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Thu May 23 10:28:34 2019
 
 
 EQU  SIGNATURE_000 0000001e
@@ -710,7 +710,7 @@ CSEG calc4_0      00000049
 CSEG calc2_0      0000004f
 CSEG calc1_0      00000055
 CSEG outputrow_0  0000005b
-CSEG delay1       0000024d
+CSEG delay1       0000024c
 CSEG calcrow_1    00000065
 CSEG calc64_1     0000006d
 CSEG calc32_1     00000073
@@ -776,11 +776,11 @@ CSEG calc1_7      000001f7
 CSEG outputrow_7  000001fd
 CSEG joyinputX    00000206
 CSEG wait1        00000211
-CSEG east         0000023e
-CSEG west         00000241
+CSEG east         0000023d
+CSEG west         00000240
 CSEG joyinputY    0000021e
 CSEG wait2        00000229
-CSEG north        00000238
-CSEG south        0000023b
-CSEG resetMatrix  00000244
-CSEG L1           0000024f
+CSEG north        00000235
+CSEG south        00000239
+CSEG resetMatrix  00000243
+CSEG L1           0000024e

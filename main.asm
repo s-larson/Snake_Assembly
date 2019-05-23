@@ -821,20 +821,27 @@ wait2://Wait until "read" is finished
 	jmp wait2
 	lds r24, ADCL
 	lds r25, ADCH
-		
-	cpi r25, 0b00000100
-	brge north	
-	cpi r25, 0b00000010
-	brlt south
+	
+	std Y+2, r25 //tmp
+	
+	/*cpi r25, 0b10000010	// Branches north if input > 130
+	brge north
 
+	cpi r25, 0b10000111
+	//cpi r25, 0b01100100	// if input < 100
+	brlt south
+	
+	*/
 	jmp main
 
 north:
 	ldi direction, 0b00001000
+	std Y+2, r25
 	jmp main
 
 south:
 	ldi direction, 0b00000100
+	std Y+3, r25
 	jmp main
 
 east:

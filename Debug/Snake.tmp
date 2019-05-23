@@ -35,7 +35,7 @@
   <calc2_0><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>125</LINE></calc2_0>
   <calc1_0><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>134</LINE></calc1_0>
   <outputrow_0><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>144</LINE></outputrow_0>
-  <delay1><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>858</LINE></delay1>
+  <delay1><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>865</LINE></delay1>
   <calcrow_1><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>159</LINE></calcrow_1>
   <calc64_1><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>171</LINE></calc64_1>
   <calc32_1><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>180</LINE></calc32_1>
@@ -101,13 +101,13 @@
   <outputrow_7><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>776</LINE></outputrow_7>
   <joyinputX><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>789</LINE></joyinputX>
   <wait1><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>798</LINE></wait1>
-  <east><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>840</LINE></east>
-  <west><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>843</LINE></west>
+  <east><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>847</LINE></east>
+  <west><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>850</LINE></west>
   <joyinputY><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>810</LINE></joyinputY>
   <wait2><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>818</LINE></wait2>
-  <north><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>832</LINE></north>
-  <south><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>836</LINE></south>
-  <resetMatrix><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>847</LINE></resetMatrix>
-  <L1><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>861</LINE></L1>
+  <north><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>837</LINE></north>
+  <south><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>842</LINE></south>
+  <resetMatrix><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>854</LINE></resetMatrix>
+  <L1><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>868</LINE></L1>
  </LABELS>
 </ASSEMBLER_INFO>
