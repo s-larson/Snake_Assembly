@@ -12,7 +12,7 @@
 .DEF temp3 = r19
 .DEF temp4 = r20
 .DEF temp5 = r21
-.DEF pointerValue = r22
+.DEF loopcounter = r22
 .DEF food = r23
 .DEF length = r24
 .DEF direction = r25
@@ -47,7 +47,10 @@ init:
 	std Y+2, temp1	
 	ldi temp1, 0b01000100
 	std Y+3, temp1
+
+	// Tools
 	ldi length, 4
+	ldi loopcounter, 1
 	
 	// Enable Joystick
 	ldi r16, 0b01100000
@@ -60,14 +63,21 @@ init:
 	sts ADCSRA, r16
 
 main:
-	ldi pointerValue, 0 // hitta en användning??
+	ldi temp5, 0b11111111
+
 	call translateLoop
+	
+
+	//out PORTC, temp5
+	//out PORTD, temp5
 	jmp calcrow_0
 
 translateLoop:
+	cp length, loopcounter
+	breq exit2
 	ld temp1, Y
 	mov temp2, temp1
-	ori temp2, 0b11110000 // Mask out X-value (first 4 bits)
+	andi temp2, 0b11110000 // Mask out X-value (first 4 bits)
 	lsr temp2 // Shift 4 steps right
 	lsr temp2
 	lsr temp2
@@ -88,13 +98,13 @@ translateLoop:
 	breq X_6
 	cpi temp2, 7
 	breq X_7
+
 exit1:
-	subi YL, -1
+	subi loopcounter, -1	// increment i 
+	ldi YL, LOW(snakebody)	// reset pointer
 	jmp translateLoop
 exit2:
-	ldi YL, LOW(snakebody)
-	jmp exit1
-
+	ret
 X_0:
 	ldi temp3, 0b00000001
 	jmp calcYPos
@@ -119,19 +129,21 @@ X_6:
 X_7:
 	ldi temp3, 0b10000000
 	jmp calcYPos
-calcYPos:
+calcYPos:	
 	ldi YL, LOW(snakebody)
 	mov temp4, temp1
-	ori temp4, 0b00001111
+	andi temp4, 0b00001111
 incPointer:
+	cpi temp4, 1
+	brlo calcXPos
 	subi YL, -1
-	dec temp4
-	cp temp4, r1
-	brlt calcXPos
+	subi temp4, 1
 	jmp incPointer
 calcXPos:
+	ld temp4, Y
+	std Y+1, temp4
 	st Y, temp3
-	jmp exit2
+	jmp exit1
 calcrow_0:
 	ld temp1, Y
 	ldi end, 0b00000000
@@ -955,7 +967,7 @@ moveSouth:
 	ldi temp3, 0b00011000
 	std Y+3, temp3
 	ret		
-
+	*/
 resetMatrix: ;Troubleshooting
 	st Y, r1            ;Reset led-matrix
     std Y+1, r1
@@ -966,4 +978,4 @@ resetMatrix: ;Troubleshooting
     std Y+6, r1
     std Y+7, r1
 	ret
-	*/
+	
