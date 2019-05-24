@@ -39,13 +39,13 @@ init:
 	ldi YL, LOW(snakebody)
 	
 	// Snake head
-	ldi temp1, 0b10101010
+	ldi temp1, 0b01110100				
 	st Y, temp1
-	ldi temp1, 0b00101010
+	ldi temp1, 0b01100100
 	std Y+1, temp1
-	ldi temp1, 0b11001010
+	ldi temp1, 0b01010100
 	std Y+2, temp1	
-	ldi temp1, 0b01001010
+	ldi temp1, 0b01000100
 	std Y+3, temp1
 	ldi length, 4
 	
@@ -60,23 +60,74 @@ init:
 	sts ADCSRA, r16
 
 main:
-	ldi pointerValue, 0
+	ldi pointerValue, 0 // hitta en användning??
 	call translateLoop
 	jmp calcrow_0
 
 translateLoop:
 	ld temp1, Y
 	mov temp2, temp1
-	ori temp2, 0b00001111
-	
+	ori temp2, 0b11110000
 	cpi temp2, 0
+	jmp X_0
 	cpi temp2, 1
+	jmp X_1
+	cpi temp2, 2
+	jmp X_2
+	cpi temp2, 3
+	jmp X_3
 	cpi temp2, 4
-	cpi temp2, 8
+	jmp X_4
+	cpi temp2, 5
+	jmp X_5
+	cpi temp2, 6
+	jmp X_6
+	cpi temp2, 7
+	jmp X_7
 
 	subi YL, -1
 	jmp translateLoop
+exit1:
+	ldi YL, LOW(snakebody)
 	ret
+
+X_0:
+	ldi temp3, 0b00000001
+	jmp calcYPos
+X_1:
+	ldi temp3, 0b00000010
+	jmp calcYPos	
+X_2:
+	ldi temp3, 0b00000100
+	jmp calcYPos
+X_3:
+	ldi temp3, 0b00001000
+	jmp calcYPos
+X_4:
+	ldi temp3, 0b00010000
+	jmp calcYPos
+X_5:
+	ldi temp3, 0b00100000
+	jmp calcYPos
+X_6:
+	ldi temp3, 0b01000000
+	jmp calcYPos
+X_7:
+	ldi temp3, 0b10000000
+	jmp calcYPos
+calcYPos:
+	ldi YL, LOW(snakebody)
+	mov temp4, temp1
+	ori temp4, 0b00001111
+incPointer:
+	subi YL, -1
+	dec temp4
+	cp temp4, r1
+	brlt calcXPos
+	jmp incPointer
+calcXPos:
+	st Y, temp3
+	jmp exit1
 calcrow_0:
 	ld temp1, Y
 	ldi end, 0b00000000
@@ -793,10 +844,12 @@ outputrow_7:
 	ANDI temp1, 0b00111111
 	out PORTB, temp1
 	call delay1
-	jmp joyinputX
+	
+	jmp main
+	//jmp joyinputX
 
 
-
+	/*
 joyinputX://Listen to joystick
 	lds temp2, ADMUX
 	ldi temp3, 0b00000101
@@ -852,7 +905,7 @@ east:
 west:
 	ldi direction, 0b00000001
 	jmp calcHeadPosition
-
+	*/
 delay1:// Delay called after each output
     ldi  temp3, 13
     ldi  temp4, 252
@@ -861,7 +914,7 @@ L1: dec  temp4
     dec  temp3
     brne L1
 	ret
-
+	/*
 calcHeadPosition:
 	ld temp2, Y
 	cp temp2, r1		// If row value is greater than 0, move depending on direction
@@ -899,8 +952,6 @@ moveSouth:
 	std Y+3, temp3
 	ret		
 
-
-
 resetMatrix: ;Troubleshooting
 	st Y, r1            ;Reset led-matrix
     std Y+1, r1
@@ -911,3 +962,4 @@ resetMatrix: ;Troubleshooting
     std Y+6, r1
     std Y+7, r1
 	ret
+	*/
