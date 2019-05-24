@@ -67,29 +67,33 @@ main:
 translateLoop:
 	ld temp1, Y
 	mov temp2, temp1
-	ori temp2, 0b11110000
+	ori temp2, 0b11110000 // Mask out X-value (first 4 bits)
+	lsr temp2 // Shift 4 steps right
+	lsr temp2
+	lsr temp2
+	lsr temp2
 	cpi temp2, 0
-	jmp X_0
+	breq X_0
 	cpi temp2, 1
-	jmp X_1
+	breq X_1
 	cpi temp2, 2
-	jmp X_2
+	breq X_2
 	cpi temp2, 3
-	jmp X_3
+	breq X_3
 	cpi temp2, 4
-	jmp X_4
+	breq X_4
 	cpi temp2, 5
-	jmp X_5
+	breq X_5
 	cpi temp2, 6
-	jmp X_6
+	breq X_6
 	cpi temp2, 7
-	jmp X_7
-
+	breq X_7
+exit1:
 	subi YL, -1
 	jmp translateLoop
-exit1:
+exit2:
 	ldi YL, LOW(snakebody)
-	ret
+	jmp exit1
 
 X_0:
 	ldi temp3, 0b00000001
@@ -127,7 +131,7 @@ incPointer:
 	jmp incPointer
 calcXPos:
 	st Y, temp3
-	jmp exit1
+	jmp exit2
 calcrow_0:
 	ld temp1, Y
 	ldi end, 0b00000000
