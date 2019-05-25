@@ -42,7 +42,7 @@ init:
 	ldi YL, LOW(matrix)
 	
 	// Snake head
-	ldi temp1, 0b01110100				
+	ldi temp1, 0b00110110				
 	st Z, temp1
 	ldi temp1, 0b01100100
 	std Z+1, temp1
@@ -77,126 +77,160 @@ init:
 
 main:
 	call translatePositions		// Translates coordinates (Z) to matrix (Y)
-	jmp drawMatrix				// Draws matrix
-
+	nop
+	jmp drawMatrix				// Draws matrix. *Do this last*
+	nop
 translatePositions:				// Iterates through Z (positions) to translate into matrix
 	cp length, loopcounter
 	breq exit2
-	ld temp1, Z				// Z = 0 first iteration
+	nop
+	ld temp1, Z					// Z = 0 first iteration
 	mov temp2, temp1
-	andi temp2, 0b11110000	// Mask out X-value (first 4 bits)
-	lsr temp2				// Shift 4 steps right to make compares easier
+	andi temp2, 0b11110000		// Mask out X-value (first 4 bits)
+	lsr temp2					// Shift 4 steps right to make compares easier
 	lsr temp2
 	lsr temp2
 	lsr temp2
 	cpi temp2, 0
 	breq X_0
+	nop
 	cpi temp2, 1
 	breq X_1
+	nop
 	cpi temp2, 2
 	breq X_2
+	nop
 	cpi temp2, 3
 	breq X_3
+	nop
 	cpi temp2, 4
 	breq X_4
+	nop
 	cpi temp2, 5
 	breq X_5
+	nop
 	cpi temp2, 6
 	breq X_6
+	nop
 	cpi temp2, 7
 	breq X_7
-
+	nop
 exit1:
 	subi loopcounter, -1	// increment i
 	subi ZL, -1				// increase pointer (next position is to be read) 
 	jmp translatePositions
+	nop
 exit2:
 	ldi ZL, LOW(snakebody)	// reset pointer before returning to main
 	ret
+	nop
 X_0:
 	ldi temp3, 0b00000001
 	jmp calcYPos
+	nop
 X_1:
 	ldi temp3, 0b00000010
-	jmp calcYPos	
+	jmp calcYPos
+	nop	
 X_2:
 	ldi temp3, 0b00000100
 	jmp calcYPos
+	nop
 X_3:
 	ldi temp3, 0b00001000
 	jmp calcYPos
+	nop
 X_4:
 	ldi temp3, 0b00010000
 	jmp calcYPos
+	nop
 X_5:
 	ldi temp3, 0b00100000
 	jmp calcYPos
+	nop
 X_6:
 	ldi temp3, 0b01000000
 	jmp calcYPos
+	nop
 X_7:
 	ldi temp3, 0b10000000
 	jmp calcYPos
+	nop
 calcYPos:					// Calculate which Y position in matrix to draw to
 	mov temp4, temp1
 	andi temp4, 0b00001111
 	cpi temp4, 0
 	breq Y_0
+	nop
 	cpi temp4, 1
 	breq Y_1
+	nop
 	cpi temp4, 2
 	breq Y_2
+	nop
 	cpi temp4, 3
 	breq Y_3
+	nop
 	cpi temp4, 4
 	breq Y_4
+	nop
 	cpi temp4, 5
 	breq Y_5
+	nop
 	cpi temp4, 6
 	breq Y_6
+	nop
 	cpi temp4, 7
-	breq Y_7 
+	breq Y_7
+	nop 
 Y_0:						// Save previous value of matrix row and insert new
 	ld temp4, Y
 	or temp3, temp4
 	st Y, temp3
 	jmp exit1
+	nop
 Y_1:
 	ldd temp4, Y+1
 	or temp3, temp4
 	std Y+1, temp3
 	jmp exit1
+	nop
 Y_2:
 	ldd temp4, Y+2
 	or temp3, temp4
 	std Y+2, temp3
 	jmp exit1
+	nop
 Y_3:
 	ldd temp4, Y+3
 	or temp3, temp4
 	std Y+3, temp3
 	jmp exit1
+	nop
 Y_4:
 	ldd temp4, Y+4
 	or temp3, temp4
 	std Y+4, temp3
 	jmp exit1
+	nop
 Y_5:
 	ldd temp4, Y+5
 	or temp3, temp4
 	std Y+5, temp3
 	jmp exit1
+	nop
 Y_6:
 	ldd temp4, Y+6
 	or temp3, temp4
 	std Y+6, temp3
 	jmp exit1
+	nop
 Y_7:
 	ldd temp4, Y+7
 	or temp3, temp4
 	std Y+7, temp3
 	jmp exit1
-
+	nop
 drawMatrix:		// Begin drawing one row at a time. Load in value from matrix and make compares.
 				// Depending on value of row, the bits will translate correctly and be saved in register "end"
 				// Finally, each row outputs "end" to corresponding port
@@ -205,6 +239,7 @@ calcrow_0:
 	ldi end, 0b00000000
 	cpi temp1, 0b10000000
 	brlo calc64_0
+	nop
 	ldi r26, 0b01000000
 	neg r26
 	sub end, r26
@@ -212,6 +247,7 @@ calcrow_0:
 calc64_0:
 	cpi temp1, 0b01000000
 	brlo calc32_0
+	nop
 	ldi r26, 0b10000000
 	neg r26
 	sub end, r26
@@ -219,6 +255,7 @@ calc64_0:
 calc32_0:
 	cpi temp1, 0b00100000
 	brlo calc16_0
+	nop
 	ldi r26, 0b00000001
 	neg r26
 	sub end, r26
@@ -226,6 +263,7 @@ calc32_0:
 calc16_0:
 	cpi temp1, 0b00010000
 	brlo calc8_0
+	nop
 	ldi r26, 0b00000010
 	neg r26
 	sub end, r26
@@ -233,6 +271,7 @@ calc16_0:
 calc8_0:
 	cpi temp1, 0b00001000
 	brlo calc4_0
+	nop
 	ldi r26, 0b00000100
 	neg r26
 	sub end, r26
@@ -240,6 +279,7 @@ calc8_0:
 calc4_0:
 	cpi temp1, 0b00000100
 	brlo calc2_0
+	nop
 	ldi r26, 0b00001000
 	neg r26
 	sub end, r26
@@ -247,6 +287,7 @@ calc4_0:
 calc2_0:
 	cpi temp1, 0b00000010
 	brlo calc1_0
+	nop
 	ldi r26, 0b00010000
 	neg r26
 	sub end, r26
@@ -254,6 +295,7 @@ calc2_0:
 calc1_0:
 	cpi temp1, 0b00000001
 	brlo outputrow_0
+	nop
 	ldi r26, 0b00100000
 	neg r26
 	sub end, r26
@@ -268,11 +310,13 @@ outputrow_0:
 	ANDI temp1, 0b00111111
 	out PORTB, temp1
 	call delay1
+	nop
 calcrow_1:
 	ldd temp1, Y+1
 	ldi end, 0b00000000
 	cpi temp1, 0b10000000
 	brlo calc64_1
+	nop
 	ldi r26, 0b01000000
 	neg r26
 	sub end, r26
@@ -280,6 +324,7 @@ calcrow_1:
 calc64_1:
 	cpi temp1, 0b01000000
 	brlo calc32_1
+	nop
 	ldi r26, 0b10000000
 	neg r26
 	sub end, r26
@@ -287,6 +332,7 @@ calc64_1:
 calc32_1:
 	cpi temp1, 0b00100000
 	brlo calc16_1
+	nop
 	ldi r26, 0b00000001
 	neg r26
 	sub end, r26
@@ -294,6 +340,7 @@ calc32_1:
 calc16_1:
 	cpi temp1, 0b00010000
 	brlo calc8_1
+	nop
 	ldi r26, 0b00000010
 	neg r26
 	sub end, r26
@@ -301,6 +348,7 @@ calc16_1:
 calc8_1:
 	cpi temp1, 0b00001000
 	brlo calc4_1
+	nop
 	ldi r26, 0b00000100
 	neg r26
 	sub end, r26
@@ -308,6 +356,7 @@ calc8_1:
 calc4_1:
 	cpi temp1, 0b00000100
 	brlo calc2_1
+	nop
 	ldi r26, 0b00001000
 	neg r26
 	sub end, r26
@@ -315,6 +364,7 @@ calc4_1:
 calc2_1:
 	cpi temp1, 0b00000010
 	brlo calc1_1
+	nop
 	ldi r26, 0b00010000
 	neg r26
 	sub end, r26
@@ -322,6 +372,7 @@ calc2_1:
 calc1_1:
 	cpi temp1, 0b00000001
 	brlo outputrow_1
+	nop
 	ldi r26, 0b00100000
 	neg r26
 	sub end, r26
@@ -336,11 +387,13 @@ outputrow_1:
 	ANDI temp1, 0b00111111
 	out PORTB, temp1
 	call delay1
+	nop
 calcrow_2:
 	ldd temp1, Y+2
 	ldi end, 0b00000000
 	cpi temp1, 0b10000000
 	brlo calc64_2
+	nop
 	ldi r26, 0b01000000
 	neg r26
 	sub end, r26
@@ -348,6 +401,7 @@ calcrow_2:
 calc64_2:
 	cpi temp1, 0b01000000
 	brlo calc32_2
+	nop
 	ldi r26, 0b10000000
 	neg r26
 	sub end, r26
@@ -355,6 +409,7 @@ calc64_2:
 calc32_2:
 	cpi temp1, 0b00100000
 	brlo calc16_2
+	nop
 	ldi r26, 0b00000001
 	neg r26
 	sub end, r26
@@ -362,6 +417,7 @@ calc32_2:
 calc16_2:
 	cpi temp1, 0b00010000
 	brlo calc8_2
+	nop
 	ldi r26, 0b00000010
 	neg r26
 	sub end, r26
@@ -369,6 +425,7 @@ calc16_2:
 calc8_2:
 	cpi temp1, 0b00001000
 	brlo calc4_2
+	nop
 	ldi r26, 0b00000100
 	neg r26
 	sub end, r26
@@ -376,6 +433,7 @@ calc8_2:
 calc4_2:
 	cpi temp1, 0b00000100
 	brlo calc2_2
+	nop
 	ldi r26, 0b00001000
 	neg r26
 	sub end, r26
@@ -383,6 +441,7 @@ calc4_2:
 calc2_2:
 	cpi temp1, 0b00000010
 	brlo calc1_2
+	nop
 	ldi r26, 0b00010000
 	neg r26
 	sub end, r26
@@ -390,6 +449,7 @@ calc2_2:
 calc1_2:
 	cpi temp1, 0b00000001
 	brlo outputrow_2
+	nop
 	ldi r26, 0b00100000
 	neg r26
 	sub end, r26
@@ -404,11 +464,13 @@ outputrow_2:
 	ANDI temp1, 0b00111111
 	out PORTB, temp1
 	call delay1
+	nop
 calcrow_3:
 	ldd temp1, Y+3
 	ldi end, 0b00000000
 	cpi temp1, 0b10000000
 	brlo calc64_3
+	nop
 	ldi r26, 0b01000000
 	neg r26
 	sub end, r26
@@ -416,6 +478,7 @@ calcrow_3:
 calc64_3:
 	cpi temp1, 0b01000000
 	brlo calc32_3
+	nop
 	ldi r26, 0b10000000
 	neg r26
 	sub end, r26
@@ -423,6 +486,7 @@ calc64_3:
 calc32_3:
 	cpi temp1, 0b00100000
 	brlo calc16_3
+	nop
 	ldi r26, 0b00000001
 	neg r26
 	sub end, r26
@@ -430,6 +494,7 @@ calc32_3:
 calc16_3:
 	cpi temp1, 0b00010000
 	brlo calc8_3
+	nop
 	ldi r26, 0b00000010
 	neg r26
 	sub end, r26
@@ -437,6 +502,7 @@ calc16_3:
 calc8_3:
 	cpi temp1, 0b00001000
 	brlo calc4_3
+	nop
 	ldi r26, 0b00000100
 	neg r26
 	sub end, r26
@@ -444,6 +510,7 @@ calc8_3:
 calc4_3:
 	cpi temp1, 0b00000100
 	brlo calc2_3
+	nop
 	ldi r26, 0b00001000
 	neg r26
 	sub end, r26
@@ -451,6 +518,7 @@ calc4_3:
 calc2_3:
 	cpi temp1, 0b00000010
 	brlo calc1_3
+	nop
 	ldi r26, 0b00010000
 	neg r26
 	sub end, r26
@@ -458,6 +526,7 @@ calc2_3:
 calc1_3:
 	cpi temp1, 0b00000001
 	brlo outputrow_3
+	nop
 	ldi r26, 0b00100000
 	neg r26
 	sub end, r26
@@ -472,11 +541,13 @@ outputrow_3:
 	ANDI temp1, 0b00111111
 	out PORTB, temp1
 	call delay1
+	nop
 calcrow_4:
 	ldd temp1, Y+4
 	ldi end, 0b00000000
 	cpi temp1, 0b10000000
 	brlo calc64_4
+	nop
 	ldi r26, 0b01000000
 	neg r26
 	sub end, r26
@@ -484,6 +555,7 @@ calcrow_4:
 calc64_4:
 	cpi temp1, 0b01000000
 	brlo calc32_4
+	nop
 	ldi r26, 0b10000000
 	neg r26
 	sub end, r26
@@ -491,6 +563,7 @@ calc64_4:
 calc32_4:
 	cpi temp1, 0b00100000
 	brlo calc16_4
+	nop
 	ldi r26, 0b00000001
 	neg r26
 	sub end, r26
@@ -498,6 +571,7 @@ calc32_4:
 calc16_4:
 	cpi temp1, 0b00010000
 	brlo calc8_4
+	nop
 	ldi r26, 0b00000010
 	neg r26
 	sub end, r26
@@ -505,6 +579,7 @@ calc16_4:
 calc8_4:
 	cpi temp1, 0b00001000
 	brlo calc4_4
+	nop
 	ldi r26, 0b00000100
 	neg r26
 	sub end, r26
@@ -512,6 +587,7 @@ calc8_4:
 calc4_4:
 	cpi temp1, 0b00000100
 	brlo calc2_4
+	nop
 	ldi r26, 0b00001000
 	neg r26
 	sub end, r26
@@ -519,6 +595,7 @@ calc4_4:
 calc2_4:
 	cpi temp1, 0b00000010
 	brlo calc1_4
+	nop
 	ldi r26, 0b00010000
 	neg r26
 	sub end, r26
@@ -526,6 +603,7 @@ calc2_4:
 calc1_4:
 	cpi temp1, 0b00000001
 	brlo outputrow_4
+	nop
 	ldi r26, 0b00100000
 	neg r26
 	sub end, r26
@@ -540,11 +618,13 @@ outputrow_4:
 	ANDI temp1, 0b00111111
 	out PORTB, temp1
 	call delay1
+	nop
 calcrow_5:
 	ldd temp1, Y+5
 	ldi end, 0b00000000
 	cpi temp1, 0b10000000
 	brlo calc64_5
+	nop
 	ldi r26, 0b01000000
 	neg r26
 	sub end, r26
@@ -552,6 +632,7 @@ calcrow_5:
 calc64_5:
 	cpi temp1, 0b01000000
 	brlo calc32_5
+	nop
 	ldi r26, 0b10000000
 	neg r26
 	sub end, r26
@@ -559,6 +640,7 @@ calc64_5:
 calc32_5:
 	cpi temp1, 0b00100000
 	brlo calc16_5
+	nop
 	ldi r26, 0b00000001
 	neg r26
 	sub end, r26
@@ -566,6 +648,7 @@ calc32_5:
 calc16_5:
 	cpi temp1, 0b00010000
 	brlo calc8_5
+	nop
 	ldi r26, 0b00000010
 	neg r26
 	sub end, r26
@@ -573,6 +656,7 @@ calc16_5:
 calc8_5:
 	cpi temp1, 0b00001000
 	brlo calc4_5
+	nop
 	ldi r26, 0b00000100
 	neg r26
 	sub end, r26
@@ -580,6 +664,7 @@ calc8_5:
 calc4_5:
 	cpi temp1, 0b00000100
 	brlo calc2_5
+	nop
 	ldi r26, 0b00001000
 	neg r26
 	sub end, r26
@@ -587,6 +672,7 @@ calc4_5:
 calc2_5:
 	cpi temp1, 0b00000010
 	brlo calc1_5
+	nop
 	ldi r26, 0b00010000
 	neg r26
 	sub end, r26
@@ -594,6 +680,7 @@ calc2_5:
 calc1_5:
 	cpi temp1, 0b00000001
 	brlo outputrow_5
+	nop
 	ldi r26, 0b00100000
 	neg r26
 	sub end, r26
@@ -607,11 +694,13 @@ outputrow_5:
 	ANDI temp1, 0b00111111
 	out PORTB, temp1
 	call delay1
+	nop
 calcrow_6:
 	ldd temp1, Y+6
 	ldi end, 0b00000000
 	cpi temp1, 0b10000000
 	brlo calc64_6
+	nop
 	ldi r26, 0b01000000
 	neg r26
 	sub end, r26
@@ -619,6 +708,7 @@ calcrow_6:
 calc64_6:
 	cpi temp1, 0b01000000
 	brlo calc32_6
+	nop
 	ldi r26, 0b10000000
 	neg r26
 	sub end, r26
@@ -626,6 +716,7 @@ calc64_6:
 calc32_6:
 	cpi temp1, 0b00100000
 	brlo calc16_6
+	nop
 	ldi r26, 0b00000001
 	neg r26
 	sub end, r26
@@ -633,6 +724,7 @@ calc32_6:
 calc16_6:
 	cpi temp1, 0b00010000
 	brlo calc8_6
+	nop
 	ldi r26, 0b00000010
 	neg r26
 	sub end, r26
@@ -640,6 +732,7 @@ calc16_6:
 calc8_6:
 	cpi temp1, 0b00001000
 	brlo calc4_6
+	nop
 	ldi r26, 0b00000100
 	neg r26
 	sub end, r26
@@ -647,6 +740,7 @@ calc8_6:
 calc4_6:
 	cpi temp1, 0b00000100
 	brlo calc2_6
+	nop
 	ldi r26, 0b00001000
 	neg r26
 	sub end, r26
@@ -654,6 +748,7 @@ calc4_6:
 calc2_6:
 	cpi temp1, 0b00000010
 	brlo calc1_6
+	nop
 	ldi r26, 0b00010000
 	neg r26
 	sub end, r26
@@ -661,6 +756,7 @@ calc2_6:
 calc1_6:
 	cpi temp1, 0b00000001
 	brlo outputrow_6
+	nop
 	ldi r26, 0b00100000
 	neg r26
 	sub end, r26
@@ -674,11 +770,13 @@ outputrow_6:
 	ANDI temp1, 0b00111111
 	out PORTB, temp1
 	call delay1
+	nop
 calcrow_7:
 	ldd temp1, Y+7
 	ldi end, 0b00000000
 	cpi temp1, 0b10000000
 	brlo calc64_7
+	nop
 	ldi r26, 0b01000000
 	neg r26
 	sub end, r26
@@ -686,6 +784,7 @@ calcrow_7:
 calc64_7:
 	cpi temp1, 0b01000000
 	brlo calc32_7
+	nop
 	ldi r26, 0b10000000
 	neg r26
 	sub end, r26
@@ -693,6 +792,7 @@ calc64_7:
 calc32_7:
 	cpi temp1, 0b00100000
 	brlo calc16_7
+	nop
 	ldi r26, 0b00000001
 	neg r26
 	sub end, r26
@@ -700,6 +800,7 @@ calc32_7:
 calc16_7:
 	cpi temp1, 0b00010000
 	brlo calc8_7
+	nop
 	ldi r26, 0b00000010
 	neg r26
 	sub end, r26
@@ -707,6 +808,7 @@ calc16_7:
 calc8_7:
 	cpi temp1, 0b00001000
 	brlo calc4_7
+	nop
 	ldi r26, 0b00000100
 	neg r26
 	sub end, r26
@@ -714,6 +816,7 @@ calc8_7:
 calc4_7:
 	cpi temp1, 0b00000100
 	brlo calc2_7
+	nop
 	ldi r26, 0b00001000
 	neg r26
 	sub end, r26
@@ -721,6 +824,7 @@ calc4_7:
 calc2_7:
 	cpi temp1, 0b00000010
 	brlo calc1_7
+	nop
 	ldi r26, 0b00010000
 	neg r26
 	sub end, r26
@@ -728,6 +832,7 @@ calc2_7:
 calc1_7:
 	cpi temp1, 0b00000001
 	brlo outputrow_7
+	nop
 	ldi r26, 0b00100000
 	neg r26
 	sub end, r26
@@ -741,9 +846,12 @@ outputrow_7:
 	ANDI temp1, 0b00111111
 	out PORTB, temp1
 	call delay1
-	jmp main
-	/*
-joyinputX://Listen to joystick (X-axis)
+	nop
+	jmp joyinputX
+	nop
+	;Draw matrix ends
+
+joyinputX:				//Listen to joystick (X-axis)
 	lds temp2, ADMUX
 	ldi temp3, 0b00000101
 	or temp2, temp3
@@ -751,19 +859,30 @@ joyinputX://Listen to joystick (X-axis)
 	lds temp2, ADCSRA
 	ori	temp2, 0b01000000
 	sts ADCSRA, temp2
-
-wait1://Wait until "read" is finished
+wait1:					//Wait until "read" is finished
 	lds temp2, ADCSRA
-	sbrc temp2, ADSC //Check 6th bit if 0
+	sbrc temp2, ADSC	//Check 6th bit if 0 (read finished)
 	jmp wait1
 	lds temp3, ADCH
-		std Y+7, temp3 // temp
-	cpi temp3, 50
-	brsh east
-	cpi temp3, 0
-	brlo west
+	
+	std Y+3, temp3 //tmp
 
-joyinputY://Listen to joystick
+	cpi temp3, 50		//Compare input and branch accordingly
+	brge west
+	nop
+	// ändrade till signed 
+	
+	cpi temp3, 1
+	brlt east
+	nop
+	; Felsökning
+
+
+	//cpi temp3, 50
+	//brsh
+	//brlo east
+
+joyinputY:				//Listen to joystick (Y-axis)
 	lds temp2, ADMUX
 	ldi temp3, 0b11111110
 	and temp2, temp3
@@ -773,43 +892,61 @@ joyinputY://Listen to joystick
 	lds temp2, ADCSRA
 	ori	temp2, 0b01000000
 	sts ADCSRA, temp2
-wait2://Wait until "read" is finished
+wait2:					//Same as wait1 but with up/down motion
 	lds temp2, ADCSRA
-	sbrc temp2, ADSC //Check 6th bit if 0
+	sbrc temp2, ADSC
 	jmp wait2
+	nop
 	lds temp3, ADCH
-		std Y+7, temp3 // temp
-	cpi temp3, 50	// Branches north if input > 130
-	brsh north
-	cpi temp3, 0	// if input < 100
-	brlo south
+
+	std Y+2, temp3 //tmp
+
+
+	cpi temp3, 50
+	brge north
+	nop
+	cpi temp3, 1
+	brlt south 
+	nop
+	; ändrade till signed (brlt och brge istället för brsh brlo
 
 	jmp main
+	nop
 
-north:
+north:					//Changes value of "direction" register, then 
 	ldi direction, 0b00001000
-	jmp calcHeadPosition
+	jmp calcDirection // nytt
+	nop
+	//jmp calcHeadPosition
 south:
 	ldi direction, 0b00000100
-	jmp calcHeadPosition
-east:
-	ldi direction, 0b00000010
-	jmp calcHeadPosition
+	jmp calcDirection // nytt
+	nop
+	//jmp calcHeadPosition
 west:
+	ldi direction, 0b00000010
+	jmp calcDirection // nytt
+	nop
+//	jmp calcHeadPosition
+east:
 	ldi direction, 0b00000001
-	jmp calcHeadPosition
-	*/
+	jmp calcDirection // nytt
+	nop
+//	jmp calcHeadPosition
 
-	/*
+/* Eftersom vi inte längre behöver kolla vilken rad som innehåller värden behövs inte detta
 calcHeadPosition:
 	ld temp2, Y
 	cp temp2, r1		// If row value is greater than 0, move depending on direction
 	brne calcDirection
     subi YL, -1 	// Increment, run again if no hit
 	jmp calcHeadPosition
+	*/
+calcDirection:		// Checks value of "direction" and moves snake's head accordingly
+					; Note to self: spara ner gamla positionen innan den skrivs över så nästa "kroppsdel" kan ärva?
+					; Behöver förmodligen en räknare/pekare så vi inte kommer utanför kanterna
+	st Y, direction
 
-calcDirection:
-	ldi YL, LOW(snakebody) // ta bort
 	sbrc direction, 0
 	call moveWest
 	sbrc direction, 1
@@ -818,26 +955,37 @@ calcDirection:
 	call moveSouth
 	sbrc direction, 3
 	call moveNorth
-	ldi YL, LOW(snakebody) //reset pointer
 	jmp main
+	nop
 moveWest:
-	ldi temp3, 0b00011000
-	st Y, temp3
+	// Vänster: maska ut X-bitarna, skifta antingen 4 steg vänster och ta bort ett, eller ta bort 16
+	// Reset pointer?
+	ld temp1, Z
+	andi temp1, 0b11110000
+	lsr temp1
+	lsr temp1
+	lsr temp1
+	lsr temp1
+	subi temp1, 1
+	st Z, temp1
 	ret
+	nop
 moveEast:
-	//lsr temp2
-	ldi temp3, 0b00011000
-	std Y+1, temp3	//std Y+1, temp3
+	ld temp1, Z
+	andi temp1, 0b11110000
+	lsr temp1
+	lsr temp1
+	lsr temp1
+	lsr temp1
+	subi temp1, -1
 	ret
+	nop
 moveNorth:
-	ldi temp3, 0b00011000
-	std Y+2, temp3//std Y+7, temp3
 	ret
+	nop
 moveSouth:
-	ldi temp3, 0b00011000
-	std Y+3, temp3
-	ret		
-	*/
+	ret	
+	nop
 resetMatrix:	;Troubleshooting, Reset matrix
 	st Y, r1
     std Y+1, r1
@@ -848,7 +996,7 @@ resetMatrix:	;Troubleshooting, Reset matrix
     std Y+6, r1
     std Y+7, r1
 	ret
-
+	nop
 delay1:			;Delay called after each output
     ldi  temp3, 13
     ldi  temp4, 252
@@ -857,3 +1005,4 @@ L1: dec  temp4
     dec  temp3
     brne L1
 	ret
+	nop

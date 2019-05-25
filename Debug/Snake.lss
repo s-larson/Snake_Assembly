@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Fri May 24 13:27:43 2019
+AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Sat May 25 11:21:57 2019
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc'
@@ -1028,7 +1028,7 @@ AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Fri May 24 13:27:4
 00000c e1c0                      	ldi YL, LOW(matrix)
                                  	
                                  	// Snake head
-00000d e714                      	ldi temp1, 0b01110100				
+00000d e316                      	ldi temp1, 0b00110110				
 00000e 8310                      	st Z, temp1
 00000f e614                      	ldi temp1, 0b01100100
 000010 8311                      	std Z+1, temp1
@@ -1062,786 +1062,935 @@ AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Fri May 24 13:27:4
 000029 9300 007a                 	sts ADCSRA, r16
                                  
                                  main:
-00002b 940e 002f                 	call translatePositions		// Translates coordinates (Z) to matrix (Y)
-00002d 940c 00a0                 	jmp drawMatrix				// Draws matrix
-                                 
+00002b 940e 0031                 	call translatePositions		// Translates coordinates (Z) to matrix (Y)
+00002d 0000                      	nop
+00002e 940c 00c5                 	jmp drawMatrix				// Draws matrix. *Do this last*
+000030 0000                      	nop
                                  translatePositions:				// Iterates through Z (positions) to translate into matrix
-00002f 1786                      	cp length, loopcounter
-000030 f0d9                      	breq exit2
-000031 8110                      	ld temp1, Z				// Z = 0 first iteration
-000032 2f21                      	mov temp2, temp1
-000033 7f20                      	andi temp2, 0b11110000	// Mask out X-value (first 4 bits)
-000034 9526                      	lsr temp2				// Shift 4 steps right to make compares easier
-000035 9526                      	lsr temp2
-000036 9526                      	lsr temp2
-000037 9526                      	lsr temp2
-000038 3020                      	cpi temp2, 0
-000039 f0a1                      	breq X_0
-00003a 3021                      	cpi temp2, 1
-00003b f0a9                      	breq X_1
-00003c 3022                      	cpi temp2, 2
-00003d f0b1                      	breq X_2
-00003e 3023                      	cpi temp2, 3
-00003f f0b9                      	breq X_3
-000040 3024                      	cpi temp2, 4
-000041 f0c1                      	breq X_4
-000042 3025                      	cpi temp2, 5
-000043 f0c9                      	breq X_5
-000044 3026                      	cpi temp2, 6
-000045 f0d1                      	breq X_6
-000046 3027                      	cpi temp2, 7
-000047 f0d9                      	breq X_7
-                                 
+000031 1786                      	cp length, loopcounter
+000032 f129                      	breq exit2
+000033 0000                      	nop
+000034 8110                      	ld temp1, Z					// Z = 0 first iteration
+000035 2f21                      	mov temp2, temp1
+000036 7f20                      	andi temp2, 0b11110000		// Mask out X-value (first 4 bits)
+000037 9526                      	lsr temp2					// Shift 4 steps right to make compares easier
+000038 9526                      	lsr temp2
+000039 9526                      	lsr temp2
+00003a 9526                      	lsr temp2
+00003b 3020                      	cpi temp2, 0
+00003c f0f1                      	breq X_0
+00003d 0000                      	nop
+00003e 3021                      	cpi temp2, 1
+00003f f0f9                      	breq X_1
+000040 0000                      	nop
+000041 3022                      	cpi temp2, 2
+000042 f101                      	breq X_2
+000043 0000                      	nop
+000044 3023                      	cpi temp2, 3
+000045 f109                      	breq X_3
+000046 0000                      	nop
+000047 3024                      	cpi temp2, 4
+000048 f111                      	breq X_4
+000049 0000                      	nop
+00004a 3025                      	cpi temp2, 5
+00004b f119                      	breq X_5
+00004c 0000                      	nop
+00004d 3026                      	cpi temp2, 6
+00004e f121                      	breq X_6
+00004f 0000                      	nop
+000050 3027                      	cpi temp2, 7
+000051 f129                      	breq X_7
+000052 0000                      	nop
                                  exit1:
-000048 5f6f                      	subi loopcounter, -1	// increment i
-000049 5fef                      	subi ZL, -1				// increase pointer (next position is to be read) 
-00004a 940c 002f                 	jmp translatePositions
+000053 5f6f                      	subi loopcounter, -1	// increment i
+000054 5fef                      	subi ZL, -1				// increase pointer (next position is to be read) 
+000055 940c 0031                 	jmp translatePositions
+000057 0000                      	nop
                                  exit2:
-00004c e0e0                      	ldi ZL, LOW(snakebody)	// reset pointer before returning to main
-00004d 9508                      	ret
+000058 e0e0                      	ldi ZL, LOW(snakebody)	// reset pointer before returning to main
+000059 9508                      	ret
+00005a 0000                      	nop
                                  X_0:
-00004e e031                      	ldi temp3, 0b00000001
-00004f 940c 0066                 	jmp calcYPos
+00005b e031                      	ldi temp3, 0b00000001
+00005c 940c 007b                 	jmp calcYPos
+00005e 0000                      	nop
                                  X_1:
-000051 e032                      	ldi temp3, 0b00000010
-000052 940c 0066                 	jmp calcYPos	
+00005f e032                      	ldi temp3, 0b00000010
+000060 940c 007b                 	jmp calcYPos
+000062 0000                      	nop	
                                  X_2:
-000054 e034                      	ldi temp3, 0b00000100
-000055 940c 0066                 	jmp calcYPos
+000063 e034                      	ldi temp3, 0b00000100
+000064 940c 007b                 	jmp calcYPos
+000066 0000                      	nop
                                  X_3:
-000057 e038                      	ldi temp3, 0b00001000
-000058 940c 0066                 	jmp calcYPos
+000067 e038                      	ldi temp3, 0b00001000
+000068 940c 007b                 	jmp calcYPos
+00006a 0000                      	nop
                                  X_4:
-00005a e130                      	ldi temp3, 0b00010000
-00005b 940c 0066                 	jmp calcYPos
+00006b e130                      	ldi temp3, 0b00010000
+00006c 940c 007b                 	jmp calcYPos
+00006e 0000                      	nop
                                  X_5:
-00005d e230                      	ldi temp3, 0b00100000
-00005e 940c 0066                 	jmp calcYPos
+00006f e230                      	ldi temp3, 0b00100000
+000070 940c 007b                 	jmp calcYPos
+000072 0000                      	nop
                                  X_6:
-000060 e430                      	ldi temp3, 0b01000000
-000061 940c 0066                 	jmp calcYPos
+000073 e430                      	ldi temp3, 0b01000000
+000074 940c 007b                 	jmp calcYPos
+000076 0000                      	nop
                                  X_7:
-000063 e830                      	ldi temp3, 0b10000000
-000064 940c 0066                 	jmp calcYPos
+000077 e830                      	ldi temp3, 0b10000000
+000078 940c 007b                 	jmp calcYPos
+00007a 0000                      	nop
                                  calcYPos:					// Calculate which Y position in matrix to draw to
-000066 2f41                      	mov temp4, temp1
-000067 704f                      	andi temp4, 0b00001111
-000068 3040                      	cpi temp4, 0
-000069 f071                      	breq Y_0
-00006a 3041                      	cpi temp4, 1
-00006b f089                      	breq Y_1
-00006c 3042                      	cpi temp4, 2
-00006d f0a1                      	breq Y_2
-00006e 3043                      	cpi temp4, 3
-00006f f0b9                      	breq Y_3
-000070 3044                      	cpi temp4, 4
-000071 f0d1                      	breq Y_4
-000072 3045                      	cpi temp4, 5
-000073 f0e9                      	breq Y_5
-000074 3046                      	cpi temp4, 6
-000075 f101                      	breq Y_6
-000076 3047                      	cpi temp4, 7
-000077 f119                      	breq Y_7 
+00007b 2f41                      	mov temp4, temp1
+00007c 704f                      	andi temp4, 0b00001111
+00007d 3040                      	cpi temp4, 0
+00007e f0b1                      	breq Y_0
+00007f 0000                      	nop
+000080 3041                      	cpi temp4, 1
+000081 f0c9                      	breq Y_1
+000082 0000                      	nop
+000083 3042                      	cpi temp4, 2
+000084 f0e1                      	breq Y_2
+000085 0000                      	nop
+000086 3043                      	cpi temp4, 3
+000087 f0f9                      	breq Y_3
+000088 0000                      	nop
+000089 3044                      	cpi temp4, 4
+00008a f111                      	breq Y_4
+00008b 0000                      	nop
+00008c 3045                      	cpi temp4, 5
+00008d f129                      	breq Y_5
+00008e 0000                      	nop
+00008f 3046                      	cpi temp4, 6
+000090 f141                      	breq Y_6
+000091 0000                      	nop
+000092 3047                      	cpi temp4, 7
+000093 f159                      	breq Y_7
+000094 0000                      	nop 
                                  Y_0:						// Save previous value of matrix row and insert new
-000078 8148                      	ld temp4, Y
-000079 2b34                      	or temp3, temp4
-00007a 8338                      	st Y, temp3
-00007b 940c 0048                 	jmp exit1
+000095 8148                      	ld temp4, Y
+000096 2b34                      	or temp3, temp4
+000097 8338                      	st Y, temp3
+000098 940c 0053                 	jmp exit1
+00009a 0000                      	nop
                                  Y_1:
-00007d 8149                      	ldd temp4, Y+1
-00007e 2b34                      	or temp3, temp4
-00007f 8339                      	std Y+1, temp3
-000080 940c 0048                 	jmp exit1
-                                 Y_2:
-000082 814a                      	ldd temp4, Y+2
-000083 2b34                      	or temp3, temp4
-000084 833a                      	std Y+2, temp3
-000085 940c 0048                 	jmp exit1
-                                 Y_3:
-000087 814b                      	ldd temp4, Y+3
-000088 2b34                      	or temp3, temp4
-000089 833b                      	std Y+3, temp3
-00008a 940c 0048                 	jmp exit1
-                                 Y_4:
-00008c 814c                      	ldd temp4, Y+4
-00008d 2b34                      	or temp3, temp4
-00008e 833c                      	std Y+4, temp3
-00008f 940c 0048                 	jmp exit1
-                                 Y_5:
-000091 814d                      	ldd temp4, Y+5
-000092 2b34                      	or temp3, temp4
-000093 833d                      	std Y+5, temp3
-000094 940c 0048                 	jmp exit1
-                                 Y_6:
-000096 814e                      	ldd temp4, Y+6
-000097 2b34                      	or temp3, temp4
-000098 833e                      	std Y+6, temp3
-000099 940c 0048                 	jmp exit1
-                                 Y_7:
-00009b 814f                      	ldd temp4, Y+7
+00009b 8149                      	ldd temp4, Y+1
 00009c 2b34                      	or temp3, temp4
-00009d 833f                      	std Y+7, temp3
-00009e 940c 0048                 	jmp exit1
-                                 
+00009d 8339                      	std Y+1, temp3
+00009e 940c 0053                 	jmp exit1
+0000a0 0000                      	nop
+                                 Y_2:
+0000a1 814a                      	ldd temp4, Y+2
+0000a2 2b34                      	or temp3, temp4
+0000a3 833a                      	std Y+2, temp3
+0000a4 940c 0053                 	jmp exit1
+0000a6 0000                      	nop
+                                 Y_3:
+0000a7 814b                      	ldd temp4, Y+3
+0000a8 2b34                      	or temp3, temp4
+0000a9 833b                      	std Y+3, temp3
+0000aa 940c 0053                 	jmp exit1
+0000ac 0000                      	nop
+                                 Y_4:
+0000ad 814c                      	ldd temp4, Y+4
+0000ae 2b34                      	or temp3, temp4
+0000af 833c                      	std Y+4, temp3
+0000b0 940c 0053                 	jmp exit1
+0000b2 0000                      	nop
+                                 Y_5:
+0000b3 814d                      	ldd temp4, Y+5
+0000b4 2b34                      	or temp3, temp4
+0000b5 833d                      	std Y+5, temp3
+0000b6 940c 0053                 	jmp exit1
+0000b8 0000                      	nop
+                                 Y_6:
+0000b9 814e                      	ldd temp4, Y+6
+0000ba 2b34                      	or temp3, temp4
+0000bb 833e                      	std Y+6, temp3
+0000bc 940c 0053                 	jmp exit1
+0000be 0000                      	nop
+                                 Y_7:
+0000bf 814f                      	ldd temp4, Y+7
+0000c0 2b34                      	or temp3, temp4
+0000c1 833f                      	std Y+7, temp3
+0000c2 940c 0053                 	jmp exit1
+0000c4 0000                      	nop
                                  drawMatrix:		// Begin drawing one row at a time. Load in value from matrix and make compares.
                                  				// Depending on value of row, the bits will translate correctly and be saved in register "end"
                                  				// Finally, each row outputs "end" to corresponding port
                                  calcrow_0:			
-0000a0 8118                      	ld temp1, Y
-0000a1 e000                      	ldi end, 0b00000000
-0000a2 3810                      	cpi temp1, 0b10000000
-0000a3 f020                      	brlo calc64_0
-0000a4 e4a0                      	ldi r26, 0b01000000
-0000a5 95a1                      	neg r26
-0000a6 1b0a                      	sub end, r26
-0000a7 5810                      	subi temp1, 0b10000000
+0000c5 8118                      	ld temp1, Y
+0000c6 e000                      	ldi end, 0b00000000
+0000c7 3810                      	cpi temp1, 0b10000000
+0000c8 f028                      	brlo calc64_0
+0000c9 0000                      	nop
+0000ca e4a0                      	ldi r26, 0b01000000
+0000cb 95a1                      	neg r26
+0000cc 1b0a                      	sub end, r26
+0000cd 5810                      	subi temp1, 0b10000000
                                  calc64_0:
-0000a8 3410                      	cpi temp1, 0b01000000
-0000a9 f020                      	brlo calc32_0
-0000aa e8a0                      	ldi r26, 0b10000000
-0000ab 95a1                      	neg r26
-0000ac 1b0a                      	sub end, r26
-0000ad 5410                      	subi temp1, 0b01000000
+0000ce 3410                      	cpi temp1, 0b01000000
+0000cf f028                      	brlo calc32_0
+0000d0 0000                      	nop
+0000d1 e8a0                      	ldi r26, 0b10000000
+0000d2 95a1                      	neg r26
+0000d3 1b0a                      	sub end, r26
+0000d4 5410                      	subi temp1, 0b01000000
                                  calc32_0:
-0000ae 3210                      	cpi temp1, 0b00100000
-0000af f020                      	brlo calc16_0
-0000b0 e0a1                      	ldi r26, 0b00000001
-0000b1 95a1                      	neg r26
-0000b2 1b0a                      	sub end, r26
-0000b3 5210                      	subi temp1, 0b00100000
+0000d5 3210                      	cpi temp1, 0b00100000
+0000d6 f028                      	brlo calc16_0
+0000d7 0000                      	nop
+0000d8 e0a1                      	ldi r26, 0b00000001
+0000d9 95a1                      	neg r26
+0000da 1b0a                      	sub end, r26
+0000db 5210                      	subi temp1, 0b00100000
                                  calc16_0:
-0000b4 3110                      	cpi temp1, 0b00010000
-0000b5 f020                      	brlo calc8_0
-0000b6 e0a2                      	ldi r26, 0b00000010
-0000b7 95a1                      	neg r26
-0000b8 1b0a                      	sub end, r26
-0000b9 5110                      	subi temp1, 0b00010000
+0000dc 3110                      	cpi temp1, 0b00010000
+0000dd f028                      	brlo calc8_0
+0000de 0000                      	nop
+0000df e0a2                      	ldi r26, 0b00000010
+0000e0 95a1                      	neg r26
+0000e1 1b0a                      	sub end, r26
+0000e2 5110                      	subi temp1, 0b00010000
                                  calc8_0:
-0000ba 3018                      	cpi temp1, 0b00001000
-0000bb f020                      	brlo calc4_0
-0000bc e0a4                      	ldi r26, 0b00000100
-0000bd 95a1                      	neg r26
-0000be 1b0a                      	sub end, r26
-0000bf 5018                      	subi temp1, 0b00001000
-                                 calc4_0:
-0000c0 3014                      	cpi temp1, 0b00000100
-0000c1 f020                      	brlo calc2_0
-0000c2 e0a8                      	ldi r26, 0b00001000
-0000c3 95a1                      	neg r26
-0000c4 1b0a                      	sub end, r26
-0000c5 5014                      	subi temp1, 0b00000100
-                                 calc2_0:
-0000c6 3012                      	cpi temp1, 0b00000010
-0000c7 f020                      	brlo calc1_0
-0000c8 e1a0                      	ldi r26, 0b00010000
-0000c9 95a1                      	neg r26
-0000ca 1b0a                      	sub end, r26
-0000cb 5012                      	subi temp1, 0b00000010
-                                 calc1_0:
-0000cc 3011                      	cpi temp1, 0b00000001
-0000cd f020                      	brlo outputrow_0
-0000ce e2a0                      	ldi r26, 0b00100000
-0000cf 95a1                      	neg r26
-0000d0 1b0a                      	sub end, r26
-0000d1 5011                      	subi temp1, 0b00000001
-                                 outputrow_0:
-0000d2 e011                      	ldi temp1, 0b00000001
-0000d3 b918                      	out PORTC, temp1
-0000d4 2f10                      	mov temp1, end
-0000d5 7c10                      	ANDI temp1, 0b11000000
-0000d6 b91b                      	out PORTD, temp1
-0000d7 2f10                      	mov temp1, end
-0000d8 731f                      	ANDI temp1, 0b00111111
-0000d9 b915                      	out PORTB, temp1
-0000da 940e 0288                 	call delay1
-                                 calcrow_1:
-0000dc 8119                      	ldd temp1, Y+1
-0000dd e000                      	ldi end, 0b00000000
-0000de 3810                      	cpi temp1, 0b10000000
-0000df f020                      	brlo calc64_1
-0000e0 e4a0                      	ldi r26, 0b01000000
-0000e1 95a1                      	neg r26
-0000e2 1b0a                      	sub end, r26
-0000e3 5810                      	subi temp1, 0b10000000
-                                 calc64_1:
-0000e4 3410                      	cpi temp1, 0b01000000
-0000e5 f020                      	brlo calc32_1
-0000e6 e8a0                      	ldi r26, 0b10000000
+0000e3 3018                      	cpi temp1, 0b00001000
+0000e4 f028                      	brlo calc4_0
+0000e5 0000                      	nop
+0000e6 e0a4                      	ldi r26, 0b00000100
 0000e7 95a1                      	neg r26
 0000e8 1b0a                      	sub end, r26
-0000e9 5410                      	subi temp1, 0b01000000
+0000e9 5018                      	subi temp1, 0b00001000
+                                 calc4_0:
+0000ea 3014                      	cpi temp1, 0b00000100
+0000eb f028                      	brlo calc2_0
+0000ec 0000                      	nop
+0000ed e0a8                      	ldi r26, 0b00001000
+0000ee 95a1                      	neg r26
+0000ef 1b0a                      	sub end, r26
+0000f0 5014                      	subi temp1, 0b00000100
+                                 calc2_0:
+0000f1 3012                      	cpi temp1, 0b00000010
+0000f2 f028                      	brlo calc1_0
+0000f3 0000                      	nop
+0000f4 e1a0                      	ldi r26, 0b00010000
+0000f5 95a1                      	neg r26
+0000f6 1b0a                      	sub end, r26
+0000f7 5012                      	subi temp1, 0b00000010
+                                 calc1_0:
+0000f8 3011                      	cpi temp1, 0b00000001
+0000f9 f028                      	brlo outputrow_0
+0000fa 0000                      	nop
+0000fb e2a0                      	ldi r26, 0b00100000
+0000fc 95a1                      	neg r26
+0000fd 1b0a                      	sub end, r26
+0000fe 5011                      	subi temp1, 0b00000001
+                                 outputrow_0:
+0000ff e011                      	ldi temp1, 0b00000001
+000100 b918                      	out PORTC, temp1
+000101 2f10                      	mov temp1, end
+000102 7c10                      	ANDI temp1, 0b11000000
+000103 b91b                      	out PORTD, temp1
+000104 2f10                      	mov temp1, end
+000105 731f                      	ANDI temp1, 0b00111111
+000106 b915                      	out PORTB, temp1
+000107 940e 0366                 	call delay1
+000109 0000                      	nop
+                                 calcrow_1:
+00010a 8119                      	ldd temp1, Y+1
+00010b e000                      	ldi end, 0b00000000
+00010c 3810                      	cpi temp1, 0b10000000
+00010d f028                      	brlo calc64_1
+00010e 0000                      	nop
+00010f e4a0                      	ldi r26, 0b01000000
+000110 95a1                      	neg r26
+000111 1b0a                      	sub end, r26
+000112 5810                      	subi temp1, 0b10000000
+                                 calc64_1:
+000113 3410                      	cpi temp1, 0b01000000
+000114 f028                      	brlo calc32_1
+000115 0000                      	nop
+000116 e8a0                      	ldi r26, 0b10000000
+000117 95a1                      	neg r26
+000118 1b0a                      	sub end, r26
+000119 5410                      	subi temp1, 0b01000000
                                  calc32_1:
-0000ea 3210                      	cpi temp1, 0b00100000
-0000eb f020                      	brlo calc16_1
-0000ec e0a1                      	ldi r26, 0b00000001
-0000ed 95a1                      	neg r26
-0000ee 1b0a                      	sub end, r26
-0000ef 5210                      	subi temp1, 0b00100000
+00011a 3210                      	cpi temp1, 0b00100000
+00011b f028                      	brlo calc16_1
+00011c 0000                      	nop
+00011d e0a1                      	ldi r26, 0b00000001
+00011e 95a1                      	neg r26
+00011f 1b0a                      	sub end, r26
+000120 5210                      	subi temp1, 0b00100000
                                  calc16_1:
-0000f0 3110                      	cpi temp1, 0b00010000
-0000f1 f020                      	brlo calc8_1
-0000f2 e0a2                      	ldi r26, 0b00000010
-0000f3 95a1                      	neg r26
-0000f4 1b0a                      	sub end, r26
-0000f5 5110                      	subi temp1, 0b00010000
+000121 3110                      	cpi temp1, 0b00010000
+000122 f028                      	brlo calc8_1
+000123 0000                      	nop
+000124 e0a2                      	ldi r26, 0b00000010
+000125 95a1                      	neg r26
+000126 1b0a                      	sub end, r26
+000127 5110                      	subi temp1, 0b00010000
                                  calc8_1:
-0000f6 3018                      	cpi temp1, 0b00001000
-0000f7 f020                      	brlo calc4_1
-0000f8 e0a4                      	ldi r26, 0b00000100
-0000f9 95a1                      	neg r26
-0000fa 1b0a                      	sub end, r26
-0000fb 5018                      	subi temp1, 0b00001000
+000128 3018                      	cpi temp1, 0b00001000
+000129 f028                      	brlo calc4_1
+00012a 0000                      	nop
+00012b e0a4                      	ldi r26, 0b00000100
+00012c 95a1                      	neg r26
+00012d 1b0a                      	sub end, r26
+00012e 5018                      	subi temp1, 0b00001000
                                  calc4_1:
-0000fc 3014                      	cpi temp1, 0b00000100
-0000fd f020                      	brlo calc2_1
-0000fe e0a8                      	ldi r26, 0b00001000
-0000ff 95a1                      	neg r26
-000100 1b0a                      	sub end, r26
-000101 5014                      	subi temp1, 0b00000100
+00012f 3014                      	cpi temp1, 0b00000100
+000130 f028                      	brlo calc2_1
+000131 0000                      	nop
+000132 e0a8                      	ldi r26, 0b00001000
+000133 95a1                      	neg r26
+000134 1b0a                      	sub end, r26
+000135 5014                      	subi temp1, 0b00000100
                                  calc2_1:
-000102 3012                      	cpi temp1, 0b00000010
-000103 f020                      	brlo calc1_1
-000104 e1a0                      	ldi r26, 0b00010000
-000105 95a1                      	neg r26
-000106 1b0a                      	sub end, r26
-000107 5012                      	subi temp1, 0b00000010
+000136 3012                      	cpi temp1, 0b00000010
+000137 f028                      	brlo calc1_1
+000138 0000                      	nop
+000139 e1a0                      	ldi r26, 0b00010000
+00013a 95a1                      	neg r26
+00013b 1b0a                      	sub end, r26
+00013c 5012                      	subi temp1, 0b00000010
                                  calc1_1:
-000108 3011                      	cpi temp1, 0b00000001
-000109 f020                      	brlo outputrow_1
-00010a e2a0                      	ldi r26, 0b00100000
-00010b 95a1                      	neg r26
-00010c 1b0a                      	sub end, r26
-00010d 5011                      	subi temp1, 0b00000001
-                                 outputrow_1:
-00010e e012                      	ldi temp1, 0b00000010
-00010f b918                      	out PORTC, temp1
-000110 2f10                      	mov temp1, end
-000111 7c10                      	ANDI temp1, 0b11000000
-000112 b91b                      	out PORTD, temp1
-000113 2f10                      	mov temp1, end
-000114 731f                      	ANDI temp1, 0b00111111
-000115 b915                      	out PORTB, temp1
-000116 940e 0288                 	call delay1
-                                 calcrow_2:
-000118 811a                      	ldd temp1, Y+2
-000119 e000                      	ldi end, 0b00000000
-00011a 3810                      	cpi temp1, 0b10000000
-00011b f020                      	brlo calc64_2
-00011c e4a0                      	ldi r26, 0b01000000
-00011d 95a1                      	neg r26
-00011e 1b0a                      	sub end, r26
-00011f 5810                      	subi temp1, 0b10000000
-                                 calc64_2:
-000120 3410                      	cpi temp1, 0b01000000
-000121 f020                      	brlo calc32_2
-000122 e8a0                      	ldi r26, 0b10000000
-000123 95a1                      	neg r26
-000124 1b0a                      	sub end, r26
-000125 5410                      	subi temp1, 0b01000000
-                                 calc32_2:
-000126 3210                      	cpi temp1, 0b00100000
-000127 f020                      	brlo calc16_2
-000128 e0a1                      	ldi r26, 0b00000001
-000129 95a1                      	neg r26
-00012a 1b0a                      	sub end, r26
-00012b 5210                      	subi temp1, 0b00100000
-                                 calc16_2:
-00012c 3110                      	cpi temp1, 0b00010000
-00012d f020                      	brlo calc8_2
-00012e e0a2                      	ldi r26, 0b00000010
-00012f 95a1                      	neg r26
-000130 1b0a                      	sub end, r26
-000131 5110                      	subi temp1, 0b00010000
-                                 calc8_2:
-000132 3018                      	cpi temp1, 0b00001000
-000133 f020                      	brlo calc4_2
-000134 e0a4                      	ldi r26, 0b00000100
-000135 95a1                      	neg r26
-000136 1b0a                      	sub end, r26
-000137 5018                      	subi temp1, 0b00001000
-                                 calc4_2:
-000138 3014                      	cpi temp1, 0b00000100
-000139 f020                      	brlo calc2_2
-00013a e0a8                      	ldi r26, 0b00001000
-00013b 95a1                      	neg r26
-00013c 1b0a                      	sub end, r26
-00013d 5014                      	subi temp1, 0b00000100
-                                 calc2_2:
-00013e 3012                      	cpi temp1, 0b00000010
-00013f f020                      	brlo calc1_2
-000140 e1a0                      	ldi r26, 0b00010000
+00013d 3011                      	cpi temp1, 0b00000001
+00013e f028                      	brlo outputrow_1
+00013f 0000                      	nop
+000140 e2a0                      	ldi r26, 0b00100000
 000141 95a1                      	neg r26
 000142 1b0a                      	sub end, r26
-000143 5012                      	subi temp1, 0b00000010
-                                 calc1_2:
-000144 3011                      	cpi temp1, 0b00000001
-000145 f020                      	brlo outputrow_2
-000146 e2a0                      	ldi r26, 0b00100000
-000147 95a1                      	neg r26
-000148 1b0a                      	sub end, r26
-000149 5011                      	subi temp1, 0b00000001
-                                 outputrow_2:
-00014a e014                      	ldi temp1, 0b00000100
-00014b b918                      	out PORTC, temp1
-00014c 2f10                      	mov temp1, end
-00014d 7c10                      	ANDI temp1, 0b11000000
-00014e b91b                      	out PORTD, temp1
-00014f 2f10                      	mov temp1, end
-000150 731f                      	ANDI temp1, 0b00111111
-000151 b915                      	out PORTB, temp1
-000152 940e 0288                 	call delay1
-                                 calcrow_3:
-000154 811b                      	ldd temp1, Y+3
-000155 e000                      	ldi end, 0b00000000
-000156 3810                      	cpi temp1, 0b10000000
-000157 f020                      	brlo calc64_3
-000158 e4a0                      	ldi r26, 0b01000000
-000159 95a1                      	neg r26
-00015a 1b0a                      	sub end, r26
-00015b 5810                      	subi temp1, 0b10000000
-                                 calc64_3:
-00015c 3410                      	cpi temp1, 0b01000000
-00015d f020                      	brlo calc32_3
-00015e e8a0                      	ldi r26, 0b10000000
-00015f 95a1                      	neg r26
-000160 1b0a                      	sub end, r26
-000161 5410                      	subi temp1, 0b01000000
-                                 calc32_3:
-000162 3210                      	cpi temp1, 0b00100000
-000163 f020                      	brlo calc16_3
-000164 e0a1                      	ldi r26, 0b00000001
-000165 95a1                      	neg r26
-000166 1b0a                      	sub end, r26
-000167 5210                      	subi temp1, 0b00100000
-                                 calc16_3:
-000168 3110                      	cpi temp1, 0b00010000
-000169 f020                      	brlo calc8_3
-00016a e0a2                      	ldi r26, 0b00000010
-00016b 95a1                      	neg r26
-00016c 1b0a                      	sub end, r26
-00016d 5110                      	subi temp1, 0b00010000
-                                 calc8_3:
-00016e 3018                      	cpi temp1, 0b00001000
-00016f f020                      	brlo calc4_3
+000143 5011                      	subi temp1, 0b00000001
+                                 outputrow_1:
+000144 e012                      	ldi temp1, 0b00000010
+000145 b918                      	out PORTC, temp1
+000146 2f10                      	mov temp1, end
+000147 7c10                      	ANDI temp1, 0b11000000
+000148 b91b                      	out PORTD, temp1
+000149 2f10                      	mov temp1, end
+00014a 731f                      	ANDI temp1, 0b00111111
+00014b b915                      	out PORTB, temp1
+00014c 940e 0366                 	call delay1
+00014e 0000                      	nop
+                                 calcrow_2:
+00014f 811a                      	ldd temp1, Y+2
+000150 e000                      	ldi end, 0b00000000
+000151 3810                      	cpi temp1, 0b10000000
+000152 f028                      	brlo calc64_2
+000153 0000                      	nop
+000154 e4a0                      	ldi r26, 0b01000000
+000155 95a1                      	neg r26
+000156 1b0a                      	sub end, r26
+000157 5810                      	subi temp1, 0b10000000
+                                 calc64_2:
+000158 3410                      	cpi temp1, 0b01000000
+000159 f028                      	brlo calc32_2
+00015a 0000                      	nop
+00015b e8a0                      	ldi r26, 0b10000000
+00015c 95a1                      	neg r26
+00015d 1b0a                      	sub end, r26
+00015e 5410                      	subi temp1, 0b01000000
+                                 calc32_2:
+00015f 3210                      	cpi temp1, 0b00100000
+000160 f028                      	brlo calc16_2
+000161 0000                      	nop
+000162 e0a1                      	ldi r26, 0b00000001
+000163 95a1                      	neg r26
+000164 1b0a                      	sub end, r26
+000165 5210                      	subi temp1, 0b00100000
+                                 calc16_2:
+000166 3110                      	cpi temp1, 0b00010000
+000167 f028                      	brlo calc8_2
+000168 0000                      	nop
+000169 e0a2                      	ldi r26, 0b00000010
+00016a 95a1                      	neg r26
+00016b 1b0a                      	sub end, r26
+00016c 5110                      	subi temp1, 0b00010000
+                                 calc8_2:
+00016d 3018                      	cpi temp1, 0b00001000
+00016e f028                      	brlo calc4_2
+00016f 0000                      	nop
 000170 e0a4                      	ldi r26, 0b00000100
 000171 95a1                      	neg r26
 000172 1b0a                      	sub end, r26
 000173 5018                      	subi temp1, 0b00001000
-                                 calc4_3:
+                                 calc4_2:
 000174 3014                      	cpi temp1, 0b00000100
-000175 f020                      	brlo calc2_3
-000176 e0a8                      	ldi r26, 0b00001000
-000177 95a1                      	neg r26
-000178 1b0a                      	sub end, r26
-000179 5014                      	subi temp1, 0b00000100
-                                 calc2_3:
-00017a 3012                      	cpi temp1, 0b00000010
-00017b f020                      	brlo calc1_3
-00017c e1a0                      	ldi r26, 0b00010000
-00017d 95a1                      	neg r26
-00017e 1b0a                      	sub end, r26
-00017f 5012                      	subi temp1, 0b00000010
-                                 calc1_3:
-000180 3011                      	cpi temp1, 0b00000001
-000181 f020                      	brlo outputrow_3
-000182 e2a0                      	ldi r26, 0b00100000
-000183 95a1                      	neg r26
-000184 1b0a                      	sub end, r26
-000185 5011                      	subi temp1, 0b00000001
-                                 outputrow_3:
-000186 e018                      	ldi temp1, 0b00001000
-000187 b918                      	out PORTC, temp1
-000188 2f10                      	mov temp1, end
-000189 7c10                      	ANDI temp1, 0b11000000
-00018a b91b                      	out PORTD, temp1
+000175 f028                      	brlo calc2_2
+000176 0000                      	nop
+000177 e0a8                      	ldi r26, 0b00001000
+000178 95a1                      	neg r26
+000179 1b0a                      	sub end, r26
+00017a 5014                      	subi temp1, 0b00000100
+                                 calc2_2:
+00017b 3012                      	cpi temp1, 0b00000010
+00017c f028                      	brlo calc1_2
+00017d 0000                      	nop
+00017e e1a0                      	ldi r26, 0b00010000
+00017f 95a1                      	neg r26
+000180 1b0a                      	sub end, r26
+000181 5012                      	subi temp1, 0b00000010
+                                 calc1_2:
+000182 3011                      	cpi temp1, 0b00000001
+000183 f028                      	brlo outputrow_2
+000184 0000                      	nop
+000185 e2a0                      	ldi r26, 0b00100000
+000186 95a1                      	neg r26
+000187 1b0a                      	sub end, r26
+000188 5011                      	subi temp1, 0b00000001
+                                 outputrow_2:
+000189 e014                      	ldi temp1, 0b00000100
+00018a b918                      	out PORTC, temp1
 00018b 2f10                      	mov temp1, end
-00018c 731f                      	ANDI temp1, 0b00111111
-00018d b915                      	out PORTB, temp1
-00018e 940e 0288                 	call delay1
-                                 calcrow_4:
-000190 811c                      	ldd temp1, Y+4
-000191 e000                      	ldi end, 0b00000000
-000192 3810                      	cpi temp1, 0b10000000
-000193 f020                      	brlo calc64_4
-000194 e4a0                      	ldi r26, 0b01000000
-000195 95a1                      	neg r26
-000196 1b0a                      	sub end, r26
-000197 5810                      	subi temp1, 0b10000000
-                                 calc64_4:
-000198 3410                      	cpi temp1, 0b01000000
-000199 f020                      	brlo calc32_4
-00019a e8a0                      	ldi r26, 0b10000000
-00019b 95a1                      	neg r26
-00019c 1b0a                      	sub end, r26
-00019d 5410                      	subi temp1, 0b01000000
-                                 calc32_4:
-00019e 3210                      	cpi temp1, 0b00100000
-00019f f020                      	brlo calc16_4
-0001a0 e0a1                      	ldi r26, 0b00000001
+00018c 7c10                      	ANDI temp1, 0b11000000
+00018d b91b                      	out PORTD, temp1
+00018e 2f10                      	mov temp1, end
+00018f 731f                      	ANDI temp1, 0b00111111
+000190 b915                      	out PORTB, temp1
+000191 940e 0366                 	call delay1
+000193 0000                      	nop
+                                 calcrow_3:
+000194 811b                      	ldd temp1, Y+3
+000195 e000                      	ldi end, 0b00000000
+000196 3810                      	cpi temp1, 0b10000000
+000197 f028                      	brlo calc64_3
+000198 0000                      	nop
+000199 e4a0                      	ldi r26, 0b01000000
+00019a 95a1                      	neg r26
+00019b 1b0a                      	sub end, r26
+00019c 5810                      	subi temp1, 0b10000000
+                                 calc64_3:
+00019d 3410                      	cpi temp1, 0b01000000
+00019e f028                      	brlo calc32_3
+00019f 0000                      	nop
+0001a0 e8a0                      	ldi r26, 0b10000000
 0001a1 95a1                      	neg r26
 0001a2 1b0a                      	sub end, r26
-0001a3 5210                      	subi temp1, 0b00100000
+0001a3 5410                      	subi temp1, 0b01000000
+                                 calc32_3:
+0001a4 3210                      	cpi temp1, 0b00100000
+0001a5 f028                      	brlo calc16_3
+0001a6 0000                      	nop
+0001a7 e0a1                      	ldi r26, 0b00000001
+0001a8 95a1                      	neg r26
+0001a9 1b0a                      	sub end, r26
+0001aa 5210                      	subi temp1, 0b00100000
+                                 calc16_3:
+0001ab 3110                      	cpi temp1, 0b00010000
+0001ac f028                      	brlo calc8_3
+0001ad 0000                      	nop
+0001ae e0a2                      	ldi r26, 0b00000010
+0001af 95a1                      	neg r26
+0001b0 1b0a                      	sub end, r26
+0001b1 5110                      	subi temp1, 0b00010000
+                                 calc8_3:
+0001b2 3018                      	cpi temp1, 0b00001000
+0001b3 f028                      	brlo calc4_3
+0001b4 0000                      	nop
+0001b5 e0a4                      	ldi r26, 0b00000100
+0001b6 95a1                      	neg r26
+0001b7 1b0a                      	sub end, r26
+0001b8 5018                      	subi temp1, 0b00001000
+                                 calc4_3:
+0001b9 3014                      	cpi temp1, 0b00000100
+0001ba f028                      	brlo calc2_3
+0001bb 0000                      	nop
+0001bc e0a8                      	ldi r26, 0b00001000
+0001bd 95a1                      	neg r26
+0001be 1b0a                      	sub end, r26
+0001bf 5014                      	subi temp1, 0b00000100
+                                 calc2_3:
+0001c0 3012                      	cpi temp1, 0b00000010
+0001c1 f028                      	brlo calc1_3
+0001c2 0000                      	nop
+0001c3 e1a0                      	ldi r26, 0b00010000
+0001c4 95a1                      	neg r26
+0001c5 1b0a                      	sub end, r26
+0001c6 5012                      	subi temp1, 0b00000010
+                                 calc1_3:
+0001c7 3011                      	cpi temp1, 0b00000001
+0001c8 f028                      	brlo outputrow_3
+0001c9 0000                      	nop
+0001ca e2a0                      	ldi r26, 0b00100000
+0001cb 95a1                      	neg r26
+0001cc 1b0a                      	sub end, r26
+0001cd 5011                      	subi temp1, 0b00000001
+                                 outputrow_3:
+0001ce e018                      	ldi temp1, 0b00001000
+0001cf b918                      	out PORTC, temp1
+0001d0 2f10                      	mov temp1, end
+0001d1 7c10                      	ANDI temp1, 0b11000000
+0001d2 b91b                      	out PORTD, temp1
+0001d3 2f10                      	mov temp1, end
+0001d4 731f                      	ANDI temp1, 0b00111111
+0001d5 b915                      	out PORTB, temp1
+0001d6 940e 0366                 	call delay1
+0001d8 0000                      	nop
+                                 calcrow_4:
+0001d9 811c                      	ldd temp1, Y+4
+0001da e000                      	ldi end, 0b00000000
+0001db 3810                      	cpi temp1, 0b10000000
+0001dc f028                      	brlo calc64_4
+0001dd 0000                      	nop
+0001de e4a0                      	ldi r26, 0b01000000
+0001df 95a1                      	neg r26
+0001e0 1b0a                      	sub end, r26
+0001e1 5810                      	subi temp1, 0b10000000
+                                 calc64_4:
+0001e2 3410                      	cpi temp1, 0b01000000
+0001e3 f028                      	brlo calc32_4
+0001e4 0000                      	nop
+0001e5 e8a0                      	ldi r26, 0b10000000
+0001e6 95a1                      	neg r26
+0001e7 1b0a                      	sub end, r26
+0001e8 5410                      	subi temp1, 0b01000000
+                                 calc32_4:
+0001e9 3210                      	cpi temp1, 0b00100000
+0001ea f028                      	brlo calc16_4
+0001eb 0000                      	nop
+0001ec e0a1                      	ldi r26, 0b00000001
+0001ed 95a1                      	neg r26
+0001ee 1b0a                      	sub end, r26
+0001ef 5210                      	subi temp1, 0b00100000
                                  calc16_4:
-0001a4 3110                      	cpi temp1, 0b00010000
-0001a5 f020                      	brlo calc8_4
-0001a6 e0a2                      	ldi r26, 0b00000010
-0001a7 95a1                      	neg r26
-0001a8 1b0a                      	sub end, r26
-0001a9 5110                      	subi temp1, 0b00010000
+0001f0 3110                      	cpi temp1, 0b00010000
+0001f1 f028                      	brlo calc8_4
+0001f2 0000                      	nop
+0001f3 e0a2                      	ldi r26, 0b00000010
+0001f4 95a1                      	neg r26
+0001f5 1b0a                      	sub end, r26
+0001f6 5110                      	subi temp1, 0b00010000
                                  calc8_4:
-0001aa 3018                      	cpi temp1, 0b00001000
-0001ab f020                      	brlo calc4_4
-0001ac e0a4                      	ldi r26, 0b00000100
-0001ad 95a1                      	neg r26
-0001ae 1b0a                      	sub end, r26
-0001af 5018                      	subi temp1, 0b00001000
-                                 calc4_4:
-0001b0 3014                      	cpi temp1, 0b00000100
-0001b1 f020                      	brlo calc2_4
-0001b2 e0a8                      	ldi r26, 0b00001000
-0001b3 95a1                      	neg r26
-0001b4 1b0a                      	sub end, r26
-0001b5 5014                      	subi temp1, 0b00000100
-                                 calc2_4:
-0001b6 3012                      	cpi temp1, 0b00000010
-0001b7 f020                      	brlo calc1_4
-0001b8 e1a0                      	ldi r26, 0b00010000
-0001b9 95a1                      	neg r26
-0001ba 1b0a                      	sub end, r26
-0001bb 5012                      	subi temp1, 0b00000010
-                                 calc1_4:
-0001bc 3011                      	cpi temp1, 0b00000001
-0001bd f020                      	brlo outputrow_4
-0001be e2a0                      	ldi r26, 0b00100000
-0001bf 95a1                      	neg r26
-0001c0 1b0a                      	sub end, r26
-0001c1 5011                      	subi temp1, 0b00000001
-                                 outputrow_4:
-0001c2 b818                      	out PORTC, r1
-0001c3 2f10                      	mov temp1, end
-0001c4 7c10                      	ANDI temp1, 0b11000000
-0001c5 6014                      	ORI temp1, 0b00000100
-0001c6 b91b                      	out PORTD, temp1
-0001c7 2f10                      	mov temp1, end
-0001c8 731f                      	ANDI temp1, 0b00111111
-0001c9 b915                      	out PORTB, temp1
-0001ca 940e 0288                 	call delay1
-                                 calcrow_5:
-0001cc 811d                      	ldd temp1, Y+5
-0001cd e000                      	ldi end, 0b00000000
-0001ce 3810                      	cpi temp1, 0b10000000
-0001cf f020                      	brlo calc64_5
-0001d0 e4a0                      	ldi r26, 0b01000000
-0001d1 95a1                      	neg r26
-0001d2 1b0a                      	sub end, r26
-0001d3 5810                      	subi temp1, 0b10000000
-                                 calc64_5:
-0001d4 3410                      	cpi temp1, 0b01000000
-0001d5 f020                      	brlo calc32_5
-0001d6 e8a0                      	ldi r26, 0b10000000
-0001d7 95a1                      	neg r26
-0001d8 1b0a                      	sub end, r26
-0001d9 5410                      	subi temp1, 0b01000000
-                                 calc32_5:
-0001da 3210                      	cpi temp1, 0b00100000
-0001db f020                      	brlo calc16_5
-0001dc e0a1                      	ldi r26, 0b00000001
-0001dd 95a1                      	neg r26
-0001de 1b0a                      	sub end, r26
-0001df 5210                      	subi temp1, 0b00100000
-                                 calc16_5:
-0001e0 3110                      	cpi temp1, 0b00010000
-0001e1 f020                      	brlo calc8_5
-0001e2 e0a2                      	ldi r26, 0b00000010
-0001e3 95a1                      	neg r26
-0001e4 1b0a                      	sub end, r26
-0001e5 5110                      	subi temp1, 0b00010000
-                                 calc8_5:
-0001e6 3018                      	cpi temp1, 0b00001000
-0001e7 f020                      	brlo calc4_5
-0001e8 e0a4                      	ldi r26, 0b00000100
-0001e9 95a1                      	neg r26
-0001ea 1b0a                      	sub end, r26
-0001eb 5018                      	subi temp1, 0b00001000
-                                 calc4_5:
-0001ec 3014                      	cpi temp1, 0b00000100
-0001ed f020                      	brlo calc2_5
-0001ee e0a8                      	ldi r26, 0b00001000
-0001ef 95a1                      	neg r26
-0001f0 1b0a                      	sub end, r26
-0001f1 5014                      	subi temp1, 0b00000100
-                                 calc2_5:
-0001f2 3012                      	cpi temp1, 0b00000010
-0001f3 f020                      	brlo calc1_5
-0001f4 e1a0                      	ldi r26, 0b00010000
-0001f5 95a1                      	neg r26
-0001f6 1b0a                      	sub end, r26
-0001f7 5012                      	subi temp1, 0b00000010
-                                 calc1_5:
-0001f8 3011                      	cpi temp1, 0b00000001
-0001f9 f020                      	brlo outputrow_5
-0001fa e2a0                      	ldi r26, 0b00100000
+0001f7 3018                      	cpi temp1, 0b00001000
+0001f8 f028                      	brlo calc4_4
+0001f9 0000                      	nop
+0001fa e0a4                      	ldi r26, 0b00000100
 0001fb 95a1                      	neg r26
 0001fc 1b0a                      	sub end, r26
-0001fd 5011                      	subi temp1, 0b00000001
-                                 outputrow_5:
-0001fe 2f10                      	mov temp1, end
-0001ff 7c10                      	ANDI temp1, 0b11000000
-000200 6018                      	ORI temp1, 0b00001000
-000201 b91b                      	out PORTD, temp1
-000202 2f10                      	mov temp1, end
-000203 731f                      	ANDI temp1, 0b00111111
-000204 b915                      	out PORTB, temp1
-000205 940e 0288                 	call delay1
-                                 calcrow_6:
-000207 811e                      	ldd temp1, Y+6
-000208 e000                      	ldi end, 0b00000000
-000209 3810                      	cpi temp1, 0b10000000
-00020a f020                      	brlo calc64_6
-00020b e4a0                      	ldi r26, 0b01000000
-00020c 95a1                      	neg r26
-00020d 1b0a                      	sub end, r26
-00020e 5810                      	subi temp1, 0b10000000
-                                 calc64_6:
-00020f 3410                      	cpi temp1, 0b01000000
-000210 f020                      	brlo calc32_6
-000211 e8a0                      	ldi r26, 0b10000000
-000212 95a1                      	neg r26
-000213 1b0a                      	sub end, r26
-000214 5410                      	subi temp1, 0b01000000
-                                 calc32_6:
-000215 3210                      	cpi temp1, 0b00100000
-000216 f020                      	brlo calc16_6
-000217 e0a1                      	ldi r26, 0b00000001
-000218 95a1                      	neg r26
-000219 1b0a                      	sub end, r26
-00021a 5210                      	subi temp1, 0b00100000
-                                 calc16_6:
-00021b 3110                      	cpi temp1, 0b00010000
-00021c f020                      	brlo calc8_6
-00021d e0a2                      	ldi r26, 0b00000010
-00021e 95a1                      	neg r26
-00021f 1b0a                      	sub end, r26
-000220 5110                      	subi temp1, 0b00010000
-                                 calc8_6:
-000221 3018                      	cpi temp1, 0b00001000
-000222 f020                      	brlo calc4_6
-000223 e0a4                      	ldi r26, 0b00000100
+0001fd 5018                      	subi temp1, 0b00001000
+                                 calc4_4:
+0001fe 3014                      	cpi temp1, 0b00000100
+0001ff f028                      	brlo calc2_4
+000200 0000                      	nop
+000201 e0a8                      	ldi r26, 0b00001000
+000202 95a1                      	neg r26
+000203 1b0a                      	sub end, r26
+000204 5014                      	subi temp1, 0b00000100
+                                 calc2_4:
+000205 3012                      	cpi temp1, 0b00000010
+000206 f028                      	brlo calc1_4
+000207 0000                      	nop
+000208 e1a0                      	ldi r26, 0b00010000
+000209 95a1                      	neg r26
+00020a 1b0a                      	sub end, r26
+00020b 5012                      	subi temp1, 0b00000010
+                                 calc1_4:
+00020c 3011                      	cpi temp1, 0b00000001
+00020d f028                      	brlo outputrow_4
+00020e 0000                      	nop
+00020f e2a0                      	ldi r26, 0b00100000
+000210 95a1                      	neg r26
+000211 1b0a                      	sub end, r26
+000212 5011                      	subi temp1, 0b00000001
+                                 outputrow_4:
+000213 b818                      	out PORTC, r1
+000214 2f10                      	mov temp1, end
+000215 7c10                      	ANDI temp1, 0b11000000
+000216 6014                      	ORI temp1, 0b00000100
+000217 b91b                      	out PORTD, temp1
+000218 2f10                      	mov temp1, end
+000219 731f                      	ANDI temp1, 0b00111111
+00021a b915                      	out PORTB, temp1
+00021b 940e 0366                 	call delay1
+00021d 0000                      	nop
+                                 calcrow_5:
+00021e 811d                      	ldd temp1, Y+5
+00021f e000                      	ldi end, 0b00000000
+000220 3810                      	cpi temp1, 0b10000000
+000221 f028                      	brlo calc64_5
+000222 0000                      	nop
+000223 e4a0                      	ldi r26, 0b01000000
 000224 95a1                      	neg r26
 000225 1b0a                      	sub end, r26
-000226 5018                      	subi temp1, 0b00001000
-                                 calc4_6:
-000227 3014                      	cpi temp1, 0b00000100
-000228 f020                      	brlo calc2_6
-000229 e0a8                      	ldi r26, 0b00001000
-00022a 95a1                      	neg r26
-00022b 1b0a                      	sub end, r26
-00022c 5014                      	subi temp1, 0b00000100
-                                 calc2_6:
-00022d 3012                      	cpi temp1, 0b00000010
-00022e f020                      	brlo calc1_6
-00022f e1a0                      	ldi r26, 0b00010000
-000230 95a1                      	neg r26
-000231 1b0a                      	sub end, r26
-000232 5012                      	subi temp1, 0b00000010
-                                 calc1_6:
-000233 3011                      	cpi temp1, 0b00000001
-000234 f020                      	brlo outputrow_6
-000235 e2a0                      	ldi r26, 0b00100000
-000236 95a1                      	neg r26
-000237 1b0a                      	sub end, r26
-000238 5011                      	subi temp1, 0b00000001
-                                 outputrow_6:
-000239 2f10                      	mov temp1, end
-00023a 7c10                      	ANDI temp1, 0b11000000
-00023b 6110                      	ORI temp1, 0b00010000
-00023c b91b                      	out PORTD, temp1
-00023d 2f10                      	mov temp1, end
-00023e 731f                      	ANDI temp1, 0b00111111
-00023f b915                      	out PORTB, temp1
-000240 940e 0288                 	call delay1
-                                 calcrow_7:
-000242 811f                      	ldd temp1, Y+7
-000243 e000                      	ldi end, 0b00000000
-000244 3810                      	cpi temp1, 0b10000000
-000245 f020                      	brlo calc64_7
-000246 e4a0                      	ldi r26, 0b01000000
+000226 5810                      	subi temp1, 0b10000000
+                                 calc64_5:
+000227 3410                      	cpi temp1, 0b01000000
+000228 f028                      	brlo calc32_5
+000229 0000                      	nop
+00022a e8a0                      	ldi r26, 0b10000000
+00022b 95a1                      	neg r26
+00022c 1b0a                      	sub end, r26
+00022d 5410                      	subi temp1, 0b01000000
+                                 calc32_5:
+00022e 3210                      	cpi temp1, 0b00100000
+00022f f028                      	brlo calc16_5
+000230 0000                      	nop
+000231 e0a1                      	ldi r26, 0b00000001
+000232 95a1                      	neg r26
+000233 1b0a                      	sub end, r26
+000234 5210                      	subi temp1, 0b00100000
+                                 calc16_5:
+000235 3110                      	cpi temp1, 0b00010000
+000236 f028                      	brlo calc8_5
+000237 0000                      	nop
+000238 e0a2                      	ldi r26, 0b00000010
+000239 95a1                      	neg r26
+00023a 1b0a                      	sub end, r26
+00023b 5110                      	subi temp1, 0b00010000
+                                 calc8_5:
+00023c 3018                      	cpi temp1, 0b00001000
+00023d f028                      	brlo calc4_5
+00023e 0000                      	nop
+00023f e0a4                      	ldi r26, 0b00000100
+000240 95a1                      	neg r26
+000241 1b0a                      	sub end, r26
+000242 5018                      	subi temp1, 0b00001000
+                                 calc4_5:
+000243 3014                      	cpi temp1, 0b00000100
+000244 f028                      	brlo calc2_5
+000245 0000                      	nop
+000246 e0a8                      	ldi r26, 0b00001000
 000247 95a1                      	neg r26
 000248 1b0a                      	sub end, r26
-000249 5810                      	subi temp1, 0b10000000
+000249 5014                      	subi temp1, 0b00000100
+                                 calc2_5:
+00024a 3012                      	cpi temp1, 0b00000010
+00024b f028                      	brlo calc1_5
+00024c 0000                      	nop
+00024d e1a0                      	ldi r26, 0b00010000
+00024e 95a1                      	neg r26
+00024f 1b0a                      	sub end, r26
+000250 5012                      	subi temp1, 0b00000010
+                                 calc1_5:
+000251 3011                      	cpi temp1, 0b00000001
+000252 f028                      	brlo outputrow_5
+000253 0000                      	nop
+000254 e2a0                      	ldi r26, 0b00100000
+000255 95a1                      	neg r26
+000256 1b0a                      	sub end, r26
+000257 5011                      	subi temp1, 0b00000001
+                                 outputrow_5:
+000258 2f10                      	mov temp1, end
+000259 7c10                      	ANDI temp1, 0b11000000
+00025a 6018                      	ORI temp1, 0b00001000
+00025b b91b                      	out PORTD, temp1
+00025c 2f10                      	mov temp1, end
+00025d 731f                      	ANDI temp1, 0b00111111
+00025e b915                      	out PORTB, temp1
+00025f 940e 0366                 	call delay1
+000261 0000                      	nop
+                                 calcrow_6:
+000262 811e                      	ldd temp1, Y+6
+000263 e000                      	ldi end, 0b00000000
+000264 3810                      	cpi temp1, 0b10000000
+000265 f028                      	brlo calc64_6
+000266 0000                      	nop
+000267 e4a0                      	ldi r26, 0b01000000
+000268 95a1                      	neg r26
+000269 1b0a                      	sub end, r26
+00026a 5810                      	subi temp1, 0b10000000
+                                 calc64_6:
+00026b 3410                      	cpi temp1, 0b01000000
+00026c f028                      	brlo calc32_6
+00026d 0000                      	nop
+00026e e8a0                      	ldi r26, 0b10000000
+00026f 95a1                      	neg r26
+000270 1b0a                      	sub end, r26
+000271 5410                      	subi temp1, 0b01000000
+                                 calc32_6:
+000272 3210                      	cpi temp1, 0b00100000
+000273 f028                      	brlo calc16_6
+000274 0000                      	nop
+000275 e0a1                      	ldi r26, 0b00000001
+000276 95a1                      	neg r26
+000277 1b0a                      	sub end, r26
+000278 5210                      	subi temp1, 0b00100000
+                                 calc16_6:
+000279 3110                      	cpi temp1, 0b00010000
+00027a f028                      	brlo calc8_6
+00027b 0000                      	nop
+00027c e0a2                      	ldi r26, 0b00000010
+00027d 95a1                      	neg r26
+00027e 1b0a                      	sub end, r26
+00027f 5110                      	subi temp1, 0b00010000
+                                 calc8_6:
+000280 3018                      	cpi temp1, 0b00001000
+000281 f028                      	brlo calc4_6
+000282 0000                      	nop
+000283 e0a4                      	ldi r26, 0b00000100
+000284 95a1                      	neg r26
+000285 1b0a                      	sub end, r26
+000286 5018                      	subi temp1, 0b00001000
+                                 calc4_6:
+000287 3014                      	cpi temp1, 0b00000100
+000288 f028                      	brlo calc2_6
+000289 0000                      	nop
+00028a e0a8                      	ldi r26, 0b00001000
+00028b 95a1                      	neg r26
+00028c 1b0a                      	sub end, r26
+00028d 5014                      	subi temp1, 0b00000100
+                                 calc2_6:
+00028e 3012                      	cpi temp1, 0b00000010
+00028f f028                      	brlo calc1_6
+000290 0000                      	nop
+000291 e1a0                      	ldi r26, 0b00010000
+000292 95a1                      	neg r26
+000293 1b0a                      	sub end, r26
+000294 5012                      	subi temp1, 0b00000010
+                                 calc1_6:
+000295 3011                      	cpi temp1, 0b00000001
+000296 f028                      	brlo outputrow_6
+000297 0000                      	nop
+000298 e2a0                      	ldi r26, 0b00100000
+000299 95a1                      	neg r26
+00029a 1b0a                      	sub end, r26
+00029b 5011                      	subi temp1, 0b00000001
+                                 outputrow_6:
+00029c 2f10                      	mov temp1, end
+00029d 7c10                      	ANDI temp1, 0b11000000
+00029e 6110                      	ORI temp1, 0b00010000
+00029f b91b                      	out PORTD, temp1
+0002a0 2f10                      	mov temp1, end
+0002a1 731f                      	ANDI temp1, 0b00111111
+0002a2 b915                      	out PORTB, temp1
+0002a3 940e 0366                 	call delay1
+0002a5 0000                      	nop
+                                 calcrow_7:
+0002a6 811f                      	ldd temp1, Y+7
+0002a7 e000                      	ldi end, 0b00000000
+0002a8 3810                      	cpi temp1, 0b10000000
+0002a9 f028                      	brlo calc64_7
+0002aa 0000                      	nop
+0002ab e4a0                      	ldi r26, 0b01000000
+0002ac 95a1                      	neg r26
+0002ad 1b0a                      	sub end, r26
+0002ae 5810                      	subi temp1, 0b10000000
                                  calc64_7:
-00024a 3410                      	cpi temp1, 0b01000000
-00024b f020                      	brlo calc32_7
-00024c e8a0                      	ldi r26, 0b10000000
-00024d 95a1                      	neg r26
-00024e 1b0a                      	sub end, r26
-00024f 5410                      	subi temp1, 0b01000000
+0002af 3410                      	cpi temp1, 0b01000000
+0002b0 f028                      	brlo calc32_7
+0002b1 0000                      	nop
+0002b2 e8a0                      	ldi r26, 0b10000000
+0002b3 95a1                      	neg r26
+0002b4 1b0a                      	sub end, r26
+0002b5 5410                      	subi temp1, 0b01000000
                                  calc32_7:
-000250 3210                      	cpi temp1, 0b00100000
-000251 f020                      	brlo calc16_7
-000252 e0a1                      	ldi r26, 0b00000001
-000253 95a1                      	neg r26
-000254 1b0a                      	sub end, r26
-000255 5210                      	subi temp1, 0b00100000
+0002b6 3210                      	cpi temp1, 0b00100000
+0002b7 f028                      	brlo calc16_7
+0002b8 0000                      	nop
+0002b9 e0a1                      	ldi r26, 0b00000001
+0002ba 95a1                      	neg r26
+0002bb 1b0a                      	sub end, r26
+0002bc 5210                      	subi temp1, 0b00100000
                                  calc16_7:
-000256 3110                      	cpi temp1, 0b00010000
-000257 f020                      	brlo calc8_7
-000258 e0a2                      	ldi r26, 0b00000010
-000259 95a1                      	neg r26
-00025a 1b0a                      	sub end, r26
-00025b 5110                      	subi temp1, 0b00010000
+0002bd 3110                      	cpi temp1, 0b00010000
+0002be f028                      	brlo calc8_7
+0002bf 0000                      	nop
+0002c0 e0a2                      	ldi r26, 0b00000010
+0002c1 95a1                      	neg r26
+0002c2 1b0a                      	sub end, r26
+0002c3 5110                      	subi temp1, 0b00010000
                                  calc8_7:
-00025c 3018                      	cpi temp1, 0b00001000
-00025d f020                      	brlo calc4_7
-00025e e0a4                      	ldi r26, 0b00000100
-00025f 95a1                      	neg r26
-000260 1b0a                      	sub end, r26
-000261 5018                      	subi temp1, 0b00001000
+0002c4 3018                      	cpi temp1, 0b00001000
+0002c5 f028                      	brlo calc4_7
+0002c6 0000                      	nop
+0002c7 e0a4                      	ldi r26, 0b00000100
+0002c8 95a1                      	neg r26
+0002c9 1b0a                      	sub end, r26
+0002ca 5018                      	subi temp1, 0b00001000
                                  calc4_7:
-000262 3014                      	cpi temp1, 0b00000100
-000263 f020                      	brlo calc2_7
-000264 e0a8                      	ldi r26, 0b00001000
-000265 95a1                      	neg r26
-000266 1b0a                      	sub end, r26
-000267 5014                      	subi temp1, 0b00000100
+0002cb 3014                      	cpi temp1, 0b00000100
+0002cc f028                      	brlo calc2_7
+0002cd 0000                      	nop
+0002ce e0a8                      	ldi r26, 0b00001000
+0002cf 95a1                      	neg r26
+0002d0 1b0a                      	sub end, r26
+0002d1 5014                      	subi temp1, 0b00000100
                                  calc2_7:
-000268 3012                      	cpi temp1, 0b00000010
-000269 f020                      	brlo calc1_7
-00026a e1a0                      	ldi r26, 0b00010000
-00026b 95a1                      	neg r26
-00026c 1b0a                      	sub end, r26
-00026d 5012                      	subi temp1, 0b00000010
+0002d2 3012                      	cpi temp1, 0b00000010
+0002d3 f028                      	brlo calc1_7
+0002d4 0000                      	nop
+0002d5 e1a0                      	ldi r26, 0b00010000
+0002d6 95a1                      	neg r26
+0002d7 1b0a                      	sub end, r26
+0002d8 5012                      	subi temp1, 0b00000010
                                  calc1_7:
-00026e 3011                      	cpi temp1, 0b00000001
-00026f f020                      	brlo outputrow_7
-000270 e2a0                      	ldi r26, 0b00100000
-000271 95a1                      	neg r26
-000272 1b0a                      	sub end, r26
-000273 5011                      	subi temp1, 0b00000001
+0002d9 3011                      	cpi temp1, 0b00000001
+0002da f028                      	brlo outputrow_7
+0002db 0000                      	nop
+0002dc e2a0                      	ldi r26, 0b00100000
+0002dd 95a1                      	neg r26
+0002de 1b0a                      	sub end, r26
+0002df 5011                      	subi temp1, 0b00000001
                                  outputrow_7:
-000274 2f10                      	mov temp1, end
-000275 7c10                      	ANDI temp1, 0b11000000
-000276 6210                      	ORI temp1, 0b00100000
-000277 b91b                      	out PORTD, temp1
-000278 2f10                      	mov temp1, end
-000279 731f                      	ANDI temp1, 0b00111111
-00027a b915                      	out PORTB, temp1
-00027b 940e 0288                 	call delay1
-00027d 940c 002b                 	jmp main
-                                 	/*
-                                 joyinputX://Listen to joystick (X-axis)
-                                 	lds temp2, ADMUX
-                                 	ldi temp3, 0b00000101
-                                 	or temp2, temp3
-                                 	sts ADMUX, temp2
-                                 	lds temp2, ADCSRA
-                                 	ori	temp2, 0b01000000
-                                 	sts ADCSRA, temp2
+0002e0 2f10                      	mov temp1, end
+0002e1 7c10                      	ANDI temp1, 0b11000000
+0002e2 6210                      	ORI temp1, 0b00100000
+0002e3 b91b                      	out PORTD, temp1
+0002e4 2f10                      	mov temp1, end
+0002e5 731f                      	ANDI temp1, 0b00111111
+0002e6 b915                      	out PORTB, temp1
+0002e7 940e 0366                 	call delay1
+0002e9 0000                      	nop
+0002ea 940c 02ed                 	jmp joyinputX
+0002ec 0000                      	nop
+                                 	;Draw matrix ends
                                  
-                                 wait1://Wait until "read" is finished
-                                 	lds temp2, ADCSRA
-                                 	sbrc temp2, ADSC //Check 6th bit if 0
-                                 	jmp wait1
-                                 	lds temp3, ADCH
-                                 		std Y+7, temp3 // temp
-                                 	cpi temp3, 50
-                                 	brsh east
-                                 	cpi temp3, 0
-                                 	brlo west
+                                 joyinputX:				//Listen to joystick (X-axis)
+0002ed 9120 007c                 	lds temp2, ADMUX
+0002ef e035                      	ldi temp3, 0b00000101
+0002f0 2b23                      	or temp2, temp3
+0002f1 9320 007c                 	sts ADMUX, temp2
+0002f3 9120 007a                 	lds temp2, ADCSRA
+0002f5 6420                      	ori	temp2, 0b01000000
+0002f6 9320 007a                 	sts ADCSRA, temp2
+                                 wait1:					//Wait until "read" is finished
+0002f8 9120 007a                 	lds temp2, ADCSRA
+0002fa fd26                      	sbrc temp2, ADSC	//Check 6th bit if 0 (read finished)
+0002fb 940c 02f8                 	jmp wait1
+0002fd 9130 0079                 	lds temp3, ADCH
+                                 	
+0002ff 833b                      	std Y+3, temp3 //tmp
                                  
-                                 joyinputY://Listen to joystick
-                                 	lds temp2, ADMUX
-                                 	ldi temp3, 0b11111110
-                                 	and temp2, temp3
-                                 	ldi temp3, 0b00000100
-                                 	or temp2, temp3
-                                 	sts ADMUX, temp2
-                                 	lds temp2, ADCSRA
-                                 	ori	temp2, 0b01000000
-                                 	sts ADCSRA, temp2
-                                 wait2://Wait until "read" is finished
-                                 	lds temp2, ADCSRA
-                                 	sbrc temp2, ADSC //Check 6th bit if 0
-                                 	jmp wait2
-                                 	lds temp3, ADCH
-                                 		std Y+7, temp3 // temp
-                                 	cpi temp3, 50	// Branches north if input > 130
-                                 	brsh north
-                                 	cpi temp3, 0	// if input < 100
-                                 	brlo south
+000300 3332                      	cpi temp3, 50		//Compare input and branch accordingly
+000301 f55c                      	brge west
+000302 0000                      	nop
+                                 	// ändrade till signed 
+                                 	
+000303 3031                      	cpi temp3, 1
+000304 f164                      	brlt east
+000305 0000                      	nop
+                                 	; Felsökning
                                  
-                                 	jmp main
                                  
-                                 north:
-                                 	ldi direction, 0b00001000
-                                 	jmp calcHeadPosition
+                                 	//cpi temp3, 50
+                                 	//brsh
+                                 	//brlo east
+                                 
+                                 joyinputY:				//Listen to joystick (Y-axis)
+000306 9120 007c                 	lds temp2, ADMUX
+000308 ef3e                      	ldi temp3, 0b11111110
+000309 2323                      	and temp2, temp3
+00030a e034                      	ldi temp3, 0b00000100
+00030b 2b23                      	or temp2, temp3
+00030c 9320 007c                 	sts ADMUX, temp2
+00030e 9120 007a                 	lds temp2, ADCSRA
+000310 6420                      	ori	temp2, 0b01000000
+000311 9320 007a                 	sts ADCSRA, temp2
+                                 wait2:					//Same as wait1 but with up/down motion
+000313 9120 007a                 	lds temp2, ADCSRA
+000315 fd26                      	sbrc temp2, ADSC
+000316 940c 0313                 	jmp wait2
+000318 0000                      	nop
+000319 9130 0079                 	lds temp3, ADCH
+                                 
+00031b 833a                      	std Y+2, temp3 //tmp
+                                 
+                                 
+00031c 3332                      	cpi temp3, 50
+00031d f43c                      	brge north
+00031e 0000                      	nop
+00031f 3031                      	cpi temp3, 1
+000320 f044                      	brlt south 
+000321 0000                      	nop
+                                 	; ändrade till signed (brlt och brge istället för brsh brlo
+                                 
+000322 940c 002b                 	jmp main
+000324 0000                      	nop
+                                 
+                                 north:					//Changes value of "direction" register, then 
+000325 e098                      	ldi direction, 0b00001000
+000326 940c 0335                 	jmp calcDirection // nytt
+000328 0000                      	nop
+                                 	//jmp calcHeadPosition
                                  south:
-                                 	ldi direction, 0b00000100
-                                 	jmp calcHeadPosition
-                                 east:
-                                 	ldi direction, 0b00000010
-                                 	jmp calcHeadPosition
+000329 e094                      	ldi direction, 0b00000100
+00032a 940c 0335                 	jmp calcDirection // nytt
+00032c 0000                      	nop
+                                 	//jmp calcHeadPosition
                                  west:
-                                 	ldi direction, 0b00000001
-                                 	jmp calcHeadPosition
-                                 	*/
+00032d e092                      	ldi direction, 0b00000010
+00032e 940c 0335                 	jmp calcDirection // nytt
+000330 0000                      	nop
+                                 //	jmp calcHeadPosition
+                                 east:
+000331 e091                      	ldi direction, 0b00000001
+000332 940c 0335                 	jmp calcDirection // nytt
+000334 0000                      	nop
+                                 //	jmp calcHeadPosition
                                  
-                                 	/*
+                                 /* Eftersom vi inte längre behöver kolla vilken rad som innehåller värden behövs inte detta
                                  calcHeadPosition:
                                  	ld temp2, Y
                                  	cp temp2, r1		// If row value is greater than 0, move depending on direction
                                  	brne calcDirection
                                      subi YL, -1 	// Increment, run again if no hit
                                  	jmp calcHeadPosition
-                                 
-                                 calcDirection:
-                                 	ldi YL, LOW(snakebody) // ta bort
-                                 	sbrc direction, 0
-                                 	call moveWest
-                                 	sbrc direction, 1
-                                 	call moveEast
-                                 	sbrc direction, 2
-                                 	call moveSouth
-                                 	sbrc direction, 3
-                                 	call moveNorth
-                                 	ldi YL, LOW(snakebody) //reset pointer
-                                 	jmp main
-                                 moveWest:
-                                 	ldi temp3, 0b00011000
-                                 	st Y, temp3
-                                 	ret
-                                 moveEast:
-                                 	//lsr temp2
-                                 	ldi temp3, 0b00011000
-                                 	std Y+1, temp3	//std Y+1, temp3
-                                 	ret
-                                 moveNorth:
-                                 	ldi temp3, 0b00011000
-                                 	std Y+2, temp3//std Y+7, temp3
-                                 	ret
-                                 moveSouth:
-                                 	ldi temp3, 0b00011000
-                                 	std Y+3, temp3
-                                 	ret		
                                  	*/
-                                 resetMatrix:	;Troubleshooting, Reset matrix
-00027f 8218                      	st Y, r1
-000280 8219                          std Y+1, r1
-000281 821a                          std Y+2, r1
-000282 821b                          std Y+3, r1
-000283 821c                          std Y+4, r1
-000284 821d                          std Y+5, r1
-000285 821e                          std Y+6, r1
-000286 821f                          std Y+7, r1
-000287 9508                      	ret
+                                 calcDirection:		// Checks value of "direction" and moves snake's head accordingly
+                                 					; Note to self: spara ner gamla positionen innan den skrivs över så nästa "kroppsdel" kan ärva?
+                                 					; Behöver förmodligen en räknare/pekare så vi inte kommer utanför kanterna
+000335 8398                      	st Y, direction
                                  
+000336 fd90                      	sbrc direction, 0
+000337 940e 0345                 	call moveWest
+000339 fd91                      	sbrc direction, 1
+00033a 940e 034f                 	call moveEast
+00033c fd92                      	sbrc direction, 2
+00033d 940e 035a                 	call moveSouth
+00033f fd93                      	sbrc direction, 3
+000340 940e 0358                 	call moveNorth
+000342 940c 002b                 	jmp main
+000344 0000                      	nop
+                                 moveWest:
+                                 	// Vänster: maska ut X-bitarna, skifta antingen 4 steg vänster och ta bort ett, eller ta bort 16
+                                 	// Reset pointer?
+000345 8110                      	ld temp1, Z
+000346 7f10                      	andi temp1, 0b11110000
+000347 9516                      	lsr temp1
+000348 9516                      	lsr temp1
+000349 9516                      	lsr temp1
+00034a 9516                      	lsr temp1
+00034b 5011                      	subi temp1, 1
+00034c 8310                      	st Z, temp1
+00034d 9508                      	ret
+00034e 0000                      	nop
+                                 moveEast:
+00034f 8110                      	ld temp1, Z
+000350 7f10                      	andi temp1, 0b11110000
+000351 9516                      	lsr temp1
+000352 9516                      	lsr temp1
+000353 9516                      	lsr temp1
+000354 9516                      	lsr temp1
+000355 5f1f                      	subi temp1, -1
+000356 9508                      	ret
+000357 0000                      	nop
+                                 moveNorth:
+000358 9508                      	ret
+000359 0000                      	nop
+                                 moveSouth:
+00035a 9508                      	ret	
+00035b 0000                      	nop
+                                 resetMatrix:	;Troubleshooting, Reset matrix
+00035c 8218                      	st Y, r1
+00035d 8219                          std Y+1, r1
+00035e 821a                          std Y+2, r1
+00035f 821b                          std Y+3, r1
+000360 821c                          std Y+4, r1
+000361 821d                          std Y+5, r1
+000362 821e                          std Y+6, r1
+000363 821f                          std Y+7, r1
+000364 9508                      	ret
+000365 0000                      	nop
                                  delay1:			;Delay called after each output
-000288 e03d                          ldi  temp3, 13
-000289 ef4c                          ldi  temp4, 252
-00028a 954a                      L1: dec  temp4
-00028b f7f1                          brne L1
-00028c 953a                          dec  temp3
-00028d f7e1                          brne L1
+000366 e03d                          ldi  temp3, 13
+000367 ef4c                          ldi  temp4, 252
+000368 954a                      L1: dec  temp4
+000369 f7f1                          brne L1
+00036a 953a                          dec  temp3
+00036b f7e1                          brne L1
+00036c 9508                      	ret
 
 
 RESOURCE USE INFORMATION
@@ -1859,39 +2008,39 @@ counted separately from r26..r31 here.
 .dseg memory usage only counts static data declared with .byte
 
 "ATmega328P" register use summary:
-x  :   0 y  :  40 z  :   5 r0 :   0 r1 :  17 r2 :   0 r3 :   0 r4 :   0 
+x  :   0 y  :  43 z  :   8 r0 :   0 r1 :  17 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16: 100 r17: 211 r18:  14 r19:  26 r20:  28 
-r21:   0 r22:   3 r23:   0 r24:   2 r25:   0 r26: 192 r27:   0 r28:   1 
+r13:   0 r14:   0 r15:   0 r16: 100 r17: 226 r18:  31 r19:  40 r20:  28 
+r21:   0 r22:   3 r23:   0 r24:   2 r25:   9 r26: 192 r27:   0 r28:   1 
 r29:   1 r30:   3 r31:   1 
-Registers used: 15 out of 35 (42.9%)
+Registers used: 16 out of 35 (45.7%)
 
 "ATmega328P" instruction use summary:
-.lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
-andi  :  18 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
-brcc  :   0 brcs  :   0 break :   0 breq  :  17 brge  :   0 brhc  :   0 
-brhs  :   0 brid  :   0 brie  :   0 brlo  :  64 brlt  :   0 brmi  :   0 
+.lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   1 
+andi  :  20 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
+brcc  :   0 brcs  :   0 break :   0 breq  :  17 brge  :   2 brhc  :   0 
+brhs  :   0 brid  :   0 brie  :   0 brlo  :  64 brlt  :   2 brmi  :   0 
 brne  :   2 brpl  :   0 brsh  :   0 brtc  :   0 brts  :   0 brvc  :   0 
-brvs  :   0 bset  :   0 bst   :   0 call  :   9 cbi   :   0 cbr   :   0 
+brvs  :   0 bset  :   0 bst   :   0 call  :  13 cbi   :   0 cbr   :   0 
 clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
 clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   1 cpc   :   0 
-cpi   :  80 cpse  :   0 dec   :   2 eor   :   0 fmul  :   0 fmuls :   0 
-fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   0 jmp   :  20 
-ld    :   3 ldd   :  14 ldi   : 102 lds   :   2 lpm   :   0 lsl   :   0 
-lsr   :   4 mov   :  18 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
-neg   :  64 nop   :   1 or    :  10 ori   :   4 out   :  24 pop   :   0 
-push  :   0 rcall :   0 ret   :   3 reti  :   0 rjmp  :   0 rol   :   0 
+cpi   :  84 cpse  :   0 dec   :   2 eor   :   0 fmul  :   0 fmuls :   0 
+fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   0 jmp   :  28 
+ld    :   5 ldd   :  14 ldi   : 109 lds   :  10 lpm   :   0 lsl   :   0 
+lsr   :  12 mov   :  18 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
+neg   :  64 nop   : 128 or    :  12 ori   :   6 out   :  24 pop   :   0 
+push  :   0 rcall :   0 ret   :   7 reti  :   0 rjmp  :   0 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
-sbiw  :   0 sbr   :   0 sbrc  :   0 sbrs  :   0 sec   :   0 seh   :   0 
+sbiw  :   0 sbr   :   0 sbrc  :   6 sbrs  :   0 sec   :   0 seh   :   0 
 sei   :   0 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
-sez   :   0 sleep :   0 spm   :   0 st    :   4 std   :  24 sts   :   2 
-sub   :  64 subi  :  66 swap  :   0 tst   :   0 wdr   :   0 
-Instructions used: 26 out of 113 (23.0%)
+sez   :   0 sleep :   0 spm   :   0 st    :   6 std   :  26 sts   :   6 
+sub   :  64 subi  :  68 swap  :   0 tst   :   0 wdr   :   0 
+Instructions used: 30 out of 113 (26.5%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x00051e   1310      0   1310   32768   4.0%
+[.cseg] 0x000000 0x0006dc   1756      0   1756   32768   5.4%
 [.dseg] 0x000100 0x000118      0     24     24    2048   1.2%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 
