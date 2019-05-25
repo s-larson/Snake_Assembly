@@ -2,9 +2,22 @@
 ; Snake.asm
 ;
 ; Created: 2019-04-25 13:47:41
-; Author : potat & co
+; Author : Jonna, Mike, Erik & Simon
 ;
+/* Changelog
+	Simon 25/5:
+	-Skapade subrutiner för rörelse (moveSouth etc)
+	-Skapade game loop
+	-Tog bort calcHeadPosition eftersom vi inte längre behöver kolla vilken rad huvudet befinner sig på
+	-Ändrade värden i ADMUX, gamla värden finns utkommenterade längst ner,
+	 (ändrade även init, gamla koden finns utkommenterad)
 
+	To-do:
+	-Flytta ormen: spara ner gamla positionen innan den skrivs över så nästa "kroppsdel" kan ärva
+	-Räknare/pekare för att hålla koll på kanterna?
+	-Huudet tar alltid ett steg till vänster (börjar på X-pos 0000) och står sedan stilla
+	-Timers?
+*/
 
 .DEF end = r16
 .DEF temp1 = r17
@@ -42,7 +55,7 @@ init:
 	ldi YL, LOW(matrix)
 	
 	// Snake head
-	ldi temp1, 0b00110110				
+	ldi temp1, 0b00000100
 	st Z, temp1
 	ldi temp1, 0b01100100
 	std Z+1, temp1
@@ -66,7 +79,11 @@ init:
 	ldi loopcounter, 0
 	
 	// Enable Joystick
-	ldi r16, 0b01100000
+	ldi		temp1, 0b01100000
+   	sts		ADMUX,temp1
+   	ldi		temp1,0b10000111
+   	sts		ADCSRA,temp1
+/*	ldi r16, 0b01100000
 	lds temp1, ADMUX
 	or r16, temp1
 	sts ADMUX, r16
@@ -74,17 +91,24 @@ init:
 	lds temp1, ADCSRA
 	or r16, temp1
 	sts ADCSRA, r16
-
+*/
 main:
+	call updatesnake
+	nop
+	jmp drawMatrix				// Draws matrix, jumps back to main. *Do this last*
+	nop
+updatesnake:
+	call joystickinput				// Listen to input. This modifies Z
+	nop
 	call translatePositions		// Translates coordinates (Z) to matrix (Y)
 	nop
-	jmp drawMatrix				// Draws matrix. *Do this last*
+	ret
 	nop
 translatePositions:				// Iterates through Z (positions) to translate into matrix
 	cp length, loopcounter
 	breq exit2
 	nop
-	ld temp1, Z					// Z = 0 first iteration
+	ld temp1, Z
 	mov temp2, temp1
 	andi temp2, 0b11110000		// Mask out X-value (first 4 bits)
 	lsr temp2					// Shift 4 steps right to make compares easier
@@ -115,48 +139,50 @@ translatePositions:				// Iterates through Z (positions) to translate into matri
 	cpi temp2, 7
 	breq X_7
 	nop
-exit1:
+	
+	exit1:
 	subi loopcounter, -1	// increment i
 	subi ZL, -1				// increase pointer (next position is to be read) 
 	jmp translatePositions
 	nop
-exit2:
+	
+	exit2:
 	ldi ZL, LOW(snakebody)	// reset pointer before returning to main
 	ret
 	nop
-X_0:
+	X_0:
 	ldi temp3, 0b00000001
 	jmp calcYPos
 	nop
-X_1:
+	X_1:
 	ldi temp3, 0b00000010
 	jmp calcYPos
 	nop	
-X_2:
+	X_2:
 	ldi temp3, 0b00000100
 	jmp calcYPos
 	nop
-X_3:
+	X_3:
 	ldi temp3, 0b00001000
 	jmp calcYPos
 	nop
-X_4:
+	X_4:
 	ldi temp3, 0b00010000
 	jmp calcYPos
 	nop
-X_5:
+	X_5:
 	ldi temp3, 0b00100000
 	jmp calcYPos
 	nop
-X_6:
+	X_6:
 	ldi temp3, 0b01000000
 	jmp calcYPos
 	nop
-X_7:
+	X_7:
 	ldi temp3, 0b10000000
 	jmp calcYPos
 	nop
-calcYPos:					// Calculate which Y position in matrix to draw to
+	calcYPos:					// Calculate which Y position in matrix to draw to
 	mov temp4, temp1
 	andi temp4, 0b00001111
 	cpi temp4, 0
@@ -183,57 +209,58 @@ calcYPos:					// Calculate which Y position in matrix to draw to
 	cpi temp4, 7
 	breq Y_7
 	nop 
-Y_0:						// Save previous value of matrix row and insert new
+	Y_0:						// Save previous value of matrix row and insert new
 	ld temp4, Y
 	or temp3, temp4
 	st Y, temp3
 	jmp exit1
 	nop
-Y_1:
+	Y_1:
 	ldd temp4, Y+1
 	or temp3, temp4
 	std Y+1, temp3
 	jmp exit1
 	nop
-Y_2:
+	Y_2:
 	ldd temp4, Y+2
 	or temp3, temp4
 	std Y+2, temp3
 	jmp exit1
 	nop
-Y_3:
+	Y_3:
 	ldd temp4, Y+3
 	or temp3, temp4
 	std Y+3, temp3
 	jmp exit1
 	nop
-Y_4:
+	Y_4:
 	ldd temp4, Y+4
 	or temp3, temp4
 	std Y+4, temp3
 	jmp exit1
 	nop
-Y_5:
+	Y_5:
 	ldd temp4, Y+5
 	or temp3, temp4
 	std Y+5, temp3
 	jmp exit1
 	nop
-Y_6:
+	Y_6:
 	ldd temp4, Y+6
 	or temp3, temp4
 	std Y+6, temp3
 	jmp exit1
 	nop
-Y_7:
+	Y_7:
 	ldd temp4, Y+7
 	or temp3, temp4
 	std Y+7, temp3
 	jmp exit1
 	nop
-drawMatrix:		// Begin drawing one row at a time. Load in value from matrix and make compares.
-				// Depending on value of row, the bits will translate correctly and be saved in register "end"
-				// Finally, each row outputs "end" to corresponding port
+drawMatrix:
+/*Begin drawing one row at a time. Load in value from matrix and make compares.
+Depending on value of row, the bits will translate correctly and be saved in register "end"
+Finally, each row outputs "end" to corresponding port*/
 calcrow_0:			
 	ld temp1, Y
 	ldi end, 0b00000000
@@ -847,146 +874,122 @@ outputrow_7:
 	out PORTB, temp1
 	call delay1
 	nop
-	jmp joyinputX
+	jmp main
 	nop
 	;Draw matrix ends
+joystickinput:		//Listen to joystick (X-axis first)
+	ldi		temp1, 0b00000101		
+	lds		temp2, ADMUX
+	andi	temp2, 0b11111000
+	or		temp2, temp1
+	sts		ADMUX, temp2
 
-joyinputX:				//Listen to joystick (X-axis)
-	lds temp2, ADMUX
-	ldi temp3, 0b00000101
-	or temp2, temp3
-	sts ADMUX, temp2
+	ldi		temp1, (1<<ADSC)
+	lds		temp2, ADCSRA
+	or		temp2, temp1
+	sts		ADCSRA, temp2
+wait1:
+	;Wait until "read" is finished (bit 6 = 0)
 	lds temp2, ADCSRA
-	ori	temp2, 0b01000000
-	sts ADCSRA, temp2
-wait1:					//Wait until "read" is finished
-	lds temp2, ADCSRA
-	sbrc temp2, ADSC	//Check 6th bit if 0 (read finished)
+	sbrc temp2, ADSC
 	jmp wait1
+	nop
 	lds temp3, ADCH
-	
-	std Y+3, temp3 //tmp
-
-	cpi temp3, 50		//Compare input and branch accordingly
-	brge west
+	;Compare input and branch accordingly
+	cpi temp3, 150
+	brsh west
 	nop
-	// ändrade till signed 
-	
-	cpi temp3, 1
-	brlt east
+	cpi temp3, 5
+	brlo east
 	nop
-	; Felsökning
-
-
-	//cpi temp3, 50
-	//brsh
-	//brlo east
-
 joyinputY:				//Listen to joystick (Y-axis)
-	lds temp2, ADMUX
-	ldi temp3, 0b11111110
-	and temp2, temp3
-	ldi temp3, 0b00000100
-	or temp2, temp3
-	sts ADMUX, temp2
-	lds temp2, ADCSRA
-	ori	temp2, 0b01000000
-	sts ADCSRA, temp2
-wait2:					//Same as wait1 but with up/down motion
+	ldi		temp1, 0b00000100			
+	lds		temp2, ADMUX
+	andi	temp2, 0b11111000
+	or		temp2, temp1
+	sts		ADMUX, temp2
+
+	ldi		temp1, (1<<ADSC)
+	lds		temp2, ADCSRA
+	or		temp2, temp1
+	sts		ADCSRA, temp2	
+wait2:
+	;Same as wait1 but with up/down motion
 	lds temp2, ADCSRA
 	sbrc temp2, ADSC
 	jmp wait2
 	nop
 	lds temp3, ADCH
-
-	std Y+2, temp3 //tmp
-
-
-	cpi temp3, 50
-	brge north
+	cpi temp3, 90
+	brsh north
 	nop
 	cpi temp3, 1
-	brlt south 
+	brlo south 
 	nop
-	; ändrade till signed (brlt och brge istället för brsh brlo
-
-	jmp main
+	jmp exitinput			;Exit if no input 
 	nop
-
-north:					//Changes value of "direction" register, then 
+north:
 	ldi direction, 0b00001000
-	jmp calcDirection // nytt
+	jmp calcDirection
 	nop
-	//jmp calcHeadPosition
 south:
 	ldi direction, 0b00000100
-	jmp calcDirection // nytt
+	jmp calcDirection
 	nop
-	//jmp calcHeadPosition
 west:
 	ldi direction, 0b00000010
-	jmp calcDirection // nytt
+	jmp calcDirection 
 	nop
-//	jmp calcHeadPosition
 east:
 	ldi direction, 0b00000001
-	jmp calcDirection // nytt
+	jmp calcDirection
 	nop
-//	jmp calcHeadPosition
-
-/* Eftersom vi inte längre behöver kolla vilken rad som innehåller värden behövs inte detta
-calcHeadPosition:
-	ld temp2, Y
-	cp temp2, r1		// If row value is greater than 0, move depending on direction
-	brne calcDirection
-    subi YL, -1 	// Increment, run again if no hit
-	jmp calcHeadPosition
-	*/
-calcDirection:		// Checks value of "direction" and moves snake's head accordingly
-					; Note to self: spara ner gamla positionen innan den skrivs över så nästa "kroppsdel" kan ärva?
-					; Behöver förmodligen en räknare/pekare så vi inte kommer utanför kanterna
-	st Y, direction
-
+calcDirection:				;Checks value of "direction" and moves snake's head accordingly
+	std Y+7, direction ;tmp
 	sbrc direction, 0
-	call moveWest
+	jmp moveWest
+	nop
 	sbrc direction, 1
-	call moveEast
+	jmp moveEast
+	nop
+	jmp joyinputY				
+	nop
 	sbrc direction, 2
-	call moveSouth
+	jmp moveSouth
+	nop
 	sbrc direction, 3
-	call moveNorth
-	jmp main
+	jmp moveNorth
 	nop
-moveWest:
-	// Vänster: maska ut X-bitarna, skifta antingen 4 steg vänster och ta bort ett, eller ta bort 16
-	// Reset pointer?
-	ld temp1, Z
-	andi temp1, 0b11110000
-	lsr temp1
-	lsr temp1
-	lsr temp1
-	lsr temp1
-	subi temp1, 1
+	jmp exitinput
+	nop
+moveWest:					;Move sideways = read old position of head,
+	ld temp1, Z				;subtract/add LSB of X position (bit value 16), 
+	subi temp1, -16			;then insert new value back to Z
 	st Z, temp1
-	ret
+	jmp exitinput
 	nop
-moveEast:
+moveEast:					
 	ld temp1, Z
-	andi temp1, 0b11110000
-	lsr temp1
-	lsr temp1
-	lsr temp1
-	lsr temp1
-	subi temp1, -1
-	ret
+	subi temp1, 16
+	st Z, temp1
+	jmp exitinput
 	nop
-moveNorth:
-	ret
+moveNorth:					;Move upwards/downwards = read old position,
+	ld temp1, Z				;subtract/add LSB of Y position (bit value 1),
+	subi temp1, 1			;then insert new value back to Z
+	st Z, temp1
+	jmp exitinput
 	nop
 moveSouth:
-	ret	
+	ld temp1, Z
+	subi temp1, -1
+	st Z, temp1
+	jmp exitinput
 	nop
-resetMatrix:	;Troubleshooting, Reset matrix
+exitinput:					;Go back to main after moving
+	ret
+
+resetMatrix:				;Troubleshooting, reset matrix
 	st Y, r1
     std Y+1, r1
     std Y+2, r1
@@ -997,7 +1000,7 @@ resetMatrix:	;Troubleshooting, Reset matrix
     std Y+7, r1
 	ret
 	nop
-delay1:			;Delay called after each output
+delay1:						;Delay called after each output
     ldi  temp3, 13
     ldi  temp4, 252
 L1: dec  temp4
@@ -1006,3 +1009,52 @@ L1: dec  temp4
     brne L1
 	ret
 	nop
+
+/* *********** Gamla ADMUX värden **************
+	//////// VERSION 1.0 ////////////
+
+	X-axeln
+	lds temp2, ADMUX
+	ldi temp3, 0b00000101
+	or temp2, temp3
+	sts ADMUX, temp2
+	
+	Y-axeln
+	lds temp2, ADMUX
+	ldi temp3, 0b11111110
+	and temp2, temp3
+	or temp2, temp3
+	sts ADMUX, temp2
+
+	////////// VERSION 2.0 ///////////////
+	
+	X-axeln
+	;ADMUX
+	lds temp2, ADMUX
+	andi temp2, 0b11111000
+	ldi temp3, 0b00000101
+	or temp2, temp3
+	sts ADMUX, temp2
+	;ADSCRA
+	lds temp2, ADCSRA
+	ori	temp2, 0b01000000
+	sts ADCSRA, temp2
+
+	Y-axeln
+	//ADMUX
+	lds temp2, ADMUX
+	ldi temp3, 0b00000100
+	andi temp2, 0b11111000
+	or temp2, temp3
+	sts ADMUX, temp2
+	//ADSCRA
+	lds temp2, ADCSRA
+	ori	temp2, 0b01000000
+	sts ADCSRA, temp2
+	
+	/////// VERSION 3.0 (nuvarande) /////////
+	För att återställa:
+	Ändra init tillbaka till det utkommenterade högst upp, 
+	ersätt X & Y input till version 2 (wait1 & 2 är oförändrade)
+
+*/
