@@ -17,8 +17,7 @@
 	-Räknare/pekare för att hålla koll på kanterna?
 	-Huvudet tar alltid ett steg till vänster (börjar på X-pos 0000) och står sedan stilla
 	-Timers?
-	asd
-	s
+
 	*/
 
 .DEF end = r16
@@ -26,7 +25,7 @@
 .DEF temp2 = r18
 .DEF temp3 = r19
 .DEF temp4 = r20
-.DEF temp5 = r21
+.DEF updateGame = r21
 .DEF loopcounter = r22
 .DEF food = r23
 .DEF length = r24
@@ -46,11 +45,11 @@ matrix:			.BYTE 8
 
 init:
 	// Enable DDR registers
-    ldi r16, 0b11111111
+    ldi r16, 0b00011111
     out DDRC, r16
-    ldi r16, 0b11111111
+    ldi r16, 0b11111100
     out DDRD, r16
-    ldi r16, 0b11111111
+    ldi r16, 0b00111111
     out DDRB, r16
 
 	// Pointers to matrix (snake)
@@ -58,16 +57,21 @@ init:
 	ldi ZL, LOW(snakebody)
 	ldi YH, HIGH(matrix)
 	ldi YL, LOW(matrix)
+	ldi length, 4
+	ldi food, 0
+	ldi loopcounter, 0
 	
 	// Snake head
 	ldi temp1, 0b00000100
 	st Z, temp1
+	
+	/*
 	ldi temp1, 0b01100100
 	std Z+1, temp1
 	ldi temp1, 0b01010100
 	std Z+2, temp1	
 	ldi temp1, 0b01000100
-	std Z+3, temp1
+	std Z+3, temp1*/
 
 	// Matrix
 	st Y, r1
@@ -78,10 +82,6 @@ init:
 	std Y+5, r1
 	std Y+6, r1
 	std Y+7, r1
-
-	// Tools
-	ldi length, 4
-	ldi loopcounter, 0
 	
 	// Enable Joystick
 	ldi		temp1, 0b01100000
@@ -101,27 +101,65 @@ init:
 	// Timer
 	sei
 	lds		temp1, TCCR0B
-	ori		temp1, 0b00000101
-	sts		TCCR0B, temp1
+	ori		temp1, 0b00000110
+	sts		0x45, temp1
 
-	ldi temp5, 0b11111111
+    ldi		temp1, (1<<TOIE0)
+    lds		temp2, TIMSK0
+    or		temp1, temp2
+    sts		TIMSK0, temp1
+
+resetAndDraw:
+	ldi ZH, HIGH(snakebody)
+	ldi ZL, LOW(snakebody)
+	ldi YH, HIGH(matrix)
+	ldi YL, LOW(matrix)
+
+	ldi temp1, 0
+	ldi temp2, 0
+	ldi temp3, 0
+	ldi temp4, 0
+	ldi end, 0
+	ldi updateGame, 0
+	ldi loopcounter, 0
+	
+	jmp drawMatrix
+	nop
 main:
 	call updatesnake
 	nop
-	jmp drawMatrix				// Draws matrix, jumps back to main. *Do this last*
+	jmp resetAndDraw			// Draws matrix, jumps back to main. *Do this last*
 	nop
 updatesnake:
-	call joystickinput			// Listen to input. This modifies values in Z
+	cpi updateGame, 1			// Check if it's time to update (controlled by interrupts)
+	brne returntomain
+	//call joystickinput		// Listen to input. This modifies values in Z
+	//nop
+	call resetMatrix //tmp
 	nop
 	call translatePositions		// Translates coordinates (Z) to matrix (Y)
 	nop
+	call movedot
+	nop
+	ldi updateGame, 0			// Reset flag to update game
+returntomain:
+	ret
+	nop
+movedot:
+	ldi ZL, LOW(snakebody)
+	ld temp1, Z
+	std Y+1, temp1 //tmp
+	subi temp1, -16
+	st Z, temp1
+	std Y+2, temp1 //tmp
+
 	ret
 	nop
 translatePositions:				// Iterates through Z (positions) to translate into matrix
 	cp length, loopcounter
 	breq exit2
 	nop
-	ld temp1, Z
+	ld temp1, Z+
 	mov temp2, temp1
 	andi temp2, 0b11110000		// Mask out X-value (first 4 bits)
 	lsr temp2					// Shift 4 steps right to make compares easier
@@ -155,10 +193,9 @@ translatePositions:				// Iterates through Z (positions) to translate into matri
 	
 	exit1:
 	subi loopcounter, -1	// increment i
-	subi ZL, -1				// increase pointer (next position is to be read) 
+	//subi ZL, -1				// increase pointer (next position is to be read) 
 	jmp translatePositions
 	nop
-	
 	exit2:
 	ldi ZL, LOW(snakebody)	// reset pointer before returning to main
 	ret
@@ -271,6 +308,7 @@ translatePositions:				// Iterates through Z (positions) to translate into matri
 	jmp exit1
 	nop
 drawMatrix:
+
 /*Begin drawing one row at a time. Load in value from matrix and make compares.
 Depending on value of row, the bits will translate correctly and be saved in register "end"
 Finally, each row outputs "end" to corresponding port*/
@@ -351,6 +389,13 @@ outputrow_0:
 	out PORTB, temp1
 	call delay1
 	nop
+
+	ldi temp3, 0b00110000
+	out PORTC, temp3
+	out PORTD, r1
+	out PORTB, r1
+
+
 calcrow_1:
 	ldd temp1, Y+1
 	ldi end, 0b00000000
@@ -428,6 +473,11 @@ outputrow_1:
 	out PORTB, temp1
 	call delay1
 	nop
+
+	out PORTC, temp3
+	out PORTD, r1
+	out PORTB, r1
+
 calcrow_2:
 	ldd temp1, Y+2
 	ldi end, 0b00000000
@@ -505,6 +555,12 @@ outputrow_2:
 	out PORTB, temp1
 	call delay1
 	nop
+
+	out PORTC, temp3
+	out PORTD, r1
+	out PORTB, r1
+
+
 calcrow_3:
 	ldd temp1, Y+3
 	ldi end, 0b00000000
@@ -659,6 +715,11 @@ outputrow_4:
 	out PORTB, temp1
 	call delay1
 	nop
+
+	out PORTC, temp3
+	out PORTD, r1
+	out PORTB, r1
+
 calcrow_5:
 	ldd temp1, Y+5
 	ldi end, 0b00000000
@@ -735,6 +796,11 @@ outputrow_5:
 	out PORTB, temp1
 	call delay1
 	nop
+
+	out PORTC, temp3
+	out PORTD, r1
+	out PORTB, r1
+
 calcrow_6:
 	ldd temp1, Y+6
 	ldi end, 0b00000000
@@ -811,6 +877,11 @@ outputrow_6:
 	out PORTB, temp1
 	call delay1
 	nop
+
+	out PORTC, temp3
+	out PORTD, r1
+	out PORTB, r1
+
 calcrow_7:
 	ldd temp1, Y+7
 	ldi end, 0b00000000
@@ -887,6 +958,11 @@ outputrow_7:
 	out PORTB, temp1
 	call delay1
 	nop
+
+	out PORTC, temp3
+	out PORTD, r1
+	out PORTB, r1
+	
 	jmp main
 	nop
 	;Draw matrix ends
@@ -908,11 +984,9 @@ wait1:
 	jmp wait1
 	nop
 	lds temp3, ADCH
-	st Y, temp3 //tmp
 
 	jmp joyinputY //test
 	nop
-
 
 	;Compare input and branch accordingly
 
@@ -947,11 +1021,17 @@ wait2:
 	jmp compareinput //tmp
 	nop
 // yntt
-compareinput:		
-	cpi temp3, 90
+compareinput:	
+	cpi temp3, 100
+	brsh west
+	nop
+	cpi temp3, 5
+	brlo east
+	nop	
+	cpi temp4, 90
 	brsh north
 	nop
-	cpi temp3, 1
+	cpi temp4, 1
 	brlo south 
 	nop
 	jmp exitinput			;Exit if no input 
@@ -979,8 +1059,6 @@ calcDirection:				;Checks value of "direction" and moves snake's head accordingl
 	nop
 	sbrc direction, 1
 	jmp moveEast
-	nop
-	jmp joyinputY				
 	nop
 	sbrc direction, 2
 	jmp moveSouth
@@ -1031,15 +1109,17 @@ resetMatrix:				;Troubleshooting, reset matrix
 delay1:						;Delay called after each output
     ldi  temp3, 13
     ldi  temp4, 252
-L1: dec  temp4
-    brne L1
-    dec  temp3
-    brne L1
-	ret
-	nop
+	L1:	dec  temp4
+		brne L1
+		dec  temp3
+		brne L1
+		ret
+		nop
+
 gameUpdateTimer:
-
-
+	ldi updateGame, 0b00000001
+	reti
+	nop
 /* *********** Gamla ADMUX värden **************
 	//////// VERSION 1.0 ////////////
 
