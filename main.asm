@@ -18,7 +18,8 @@
 	-Huvudet tar alltid ett steg till vänster (börjar på X-pos 0000) och står sedan stilla
 	-Timers?
 	asd
-*/
+	s
+	*/
 
 .DEF end = r16
 .DEF temp1 = r17
