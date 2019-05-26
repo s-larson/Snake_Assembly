@@ -17,6 +17,7 @@
 	-Räknare/pekare för att hålla koll på kanterna?
 	-Huvudet tar alltid ett steg till vänster (börjar på X-pos 0000) och står sedan stilla
 	-Timers?
+	asd
 */
 
 .DEF end = r16

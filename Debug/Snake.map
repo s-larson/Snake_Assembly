@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Sun May 26 11:37:41 2019
+AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Sun May 26 11:49:30 2019
 
 
 EQU  SIGNATURE_000 0000001e
@@ -708,7 +708,7 @@ DEF  direction    r25
 DSEG snakebody    00000100
 DSEG matrix       00000110
 CSEG init         00000023
-CSEG gameUpdateTimer 000003a3
+CSEG gameUpdateTimer 000003a2
 CSEG main         0000004c
 CSEG updatesnake  00000052
 CSEG drawMatrix   000000ee
@@ -742,7 +742,7 @@ CSEG calc4_0      00000113
 CSEG calc2_0      0000011a
 CSEG calc1_0      00000121
 CSEG outputrow_0  00000128
-CSEG delay1       0000039b
+CSEG delay1       0000039a
 CSEG calcrow_1    00000133
 CSEG calc64_1     0000013c
 CSEG calc32_1     00000143
@@ -807,17 +807,18 @@ CSEG calc2_7      000002fb
 CSEG calc1_7      00000302
 CSEG outputrow_7  00000309
 CSEG wait1        00000323
-CSEG west         00000359
-CSEG east         0000035d
-CSEG joyinputY    00000332
-CSEG wait2        0000033f
-CSEG north        00000351
-CSEG south        00000355
-CSEG exitinput    00000390
-CSEG calcDirection 00000361
-CSEG moveWest     00000378
-CSEG moveEast     0000037e
-CSEG moveSouth    0000038a
-CSEG moveNorth    00000384
-CSEG resetMatrix  00000391
-CSEG L1           0000039d
+CSEG joyinputY    0000032f
+CSEG wait2        0000033c
+CSEG compareinput 00000347
+CSEG north        00000350
+CSEG south        00000354
+CSEG exitinput    0000038f
+CSEG calcDirection 00000360
+CSEG west         00000358
+CSEG east         0000035c
+CSEG moveWest     00000377
+CSEG moveEast     0000037d
+CSEG moveSouth    00000389
+CSEG moveNorth    00000383
+CSEG resetMatrix  00000390
+CSEG L1           0000039c
