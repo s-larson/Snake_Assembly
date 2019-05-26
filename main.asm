@@ -15,7 +15,7 @@
 	To-do:
 	-Flytta ormen: spara ner gamla positionen innan den skrivs över så nästa "kroppsdel" kan ärva
 	-Räknare/pekare för att hålla koll på kanterna?
-	-Huudet tar alltid ett steg till vänster (börjar på X-pos 0000) och står sedan stilla
+	-Huvudet tar alltid ett steg till vänster (börjar på X-pos 0000) och står sedan stilla
 	-Timers?
 */
 
@@ -36,8 +36,11 @@ matrix:			.BYTE 8
 
 .CSEG
 .ORG 0x0000
-jmp init
-nop
+	jmp init
+	nop
+.ORG 0x0020
+	jmp gameUpdateTimer
+	nop
 
 init:
 	// Enable DDR registers
@@ -80,9 +83,10 @@ init:
 	
 	// Enable Joystick
 	ldi		temp1, 0b01100000
-   	sts		ADMUX,temp1
+	sts		ADMUX,temp1
    	ldi		temp1,0b10000111
    	sts		ADCSRA,temp1
+
 /*	ldi r16, 0b01100000
 	lds temp1, ADMUX
 	or r16, temp1
@@ -92,13 +96,20 @@ init:
 	or r16, temp1
 	sts ADCSRA, r16
 */
+	// Timer
+	sei
+	lds		temp1, TCCR0B
+	ori		temp1, 0b00000101
+	sts		TCCR0B, temp1
+
+	ldi temp5, 0b11111111
 main:
 	call updatesnake
 	nop
 	jmp drawMatrix				// Draws matrix, jumps back to main. *Do this last*
 	nop
 updatesnake:
-	call joystickinput				// Listen to input. This modifies Z
+	call joystickinput			// Listen to input. This modifies values in Z
 	nop
 	call translatePositions		// Translates coordinates (Z) to matrix (Y)
 	nop
@@ -895,13 +906,23 @@ wait1:
 	jmp wait1
 	nop
 	lds temp3, ADCH
+	st Y, temp3 //tmp
+
+	jmp joyinputY //test
+	nop
+
+
 	;Compare input and branch accordingly
-	cpi temp3, 150
+
+/*	
+	cpi temp3, 100
 	brsh west
 	nop
 	cpi temp3, 5
 	brlo east
 	nop
+	note to self: compares innan Y-axeln
+	*/
 joyinputY:				//Listen to joystick (Y-axis)
 	ldi		temp1, 0b00000100			
 	lds		temp2, ADMUX
@@ -919,7 +940,12 @@ wait2:
 	sbrc temp2, ADSC
 	jmp wait2
 	nop
-	lds temp3, ADCH
+	lds temp4, ADCH //ändrade till temp4 från temp3
+
+	jmp compareinput //tmp
+	nop
+// yntt
+compareinput:		
 	cpi temp3, 90
 	brsh north
 	nop
@@ -1009,6 +1035,8 @@ L1: dec  temp4
     brne L1
 	ret
 	nop
+gameUpdateTimer:
+
 
 /* *********** Gamla ADMUX värden **************
 	//////// VERSION 1.0 ////////////
