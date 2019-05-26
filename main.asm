@@ -6,10 +6,11 @@
 ;
 /* 
 	Fixa:
-	-Ormen ska inte kunna vända 180 grader
-	-Kroppen??	
+	-Ormen ska inte kunna vända 180 grader, prio
 	-Mat
 	-Kollision
+
+	Beware: rör inte temp3 mellan rörelse av huvud/kropp
 
 */
 
@@ -50,21 +51,20 @@ init:
 	ldi ZL, LOW(snakebody)
 	ldi YH, HIGH(matrix)
 	ldi YL, LOW(matrix)
-	ldi length, 1
+	ldi length, 4
 	ldi food, 0
 	ldi loopcounter, 0
 	ldi direction, 0b00000001
 	
 	// Snake head
-	ldi temp1, 0b01000010
-	st Z, temp1
-	/*
-	ldi temp1, 0b01100100
-	std Z+1, temp1
-	ldi temp1, 0b01010100
-	std Z+2, temp1	
 	ldi temp1, 0b01000100
-	std Z+3, temp1*/
+	st Z, temp1
+	ldi temp1, 0b01000011
+	std Z+1, temp1
+	ldi temp1, 0b01000010
+	std Z+2, temp1	
+	ldi temp1, 0b01000001
+	std Z+3, temp1
 
 	// Matrix
 	st Y, r1
@@ -121,10 +121,38 @@ updatesnake:
 	nop	
 	call joystickinput			// Listen to input. This modifies values in Z
 	nop
+	call moveBody
+	nop
 	call translatePositions		// Translates coordinates (Z) to matrix (Y)
 	nop
 	ldi updateGame, 0			// Reset flag to update game
 returntomain:
+	ret
+	nop
+makeSureNothingFuckedUp: //troubleshooting
+	st Y, food
+	inc food
+	ret
+	nop
+moveBody:						// Update body relative to previous head position
+	;Skip head and place pointer on body
+	ld temp1, Z+
+	;Decrement length since we're skipping head (restoring on exit to main)
+	push length
+	dec length
+	bodyLoop:	
+	cp length, loopcounter
+	breq exitupdate
+	ld temp1, Z
+	st Z+, temp3
+	mov temp3, temp1
+	inc loopcounter	
+	jmp bodyLoop
+	nop
+	exitupdate:
+	ldi loopcounter, 0
+	pop length
+	ldi ZL, LOW(snakebody)
 	ret
 	nop
 translatePositions:				// Iterates through Z (positions) to translate into matrix
@@ -1023,7 +1051,8 @@ calcDirection:				;Checks value of "direction" and moves snake's head accordingl
 	nop
 moveWest:					;Move sideways = read old position of head,
 	ld temp1, Z				;subtract/add LSB of X position (bit value 16), 
-	cpi temp1, 112			;then insert new value back to Z
+	mov temp3, temp1		;then insert new value back to Z
+	cpi temp1, 112			
 	brsh wrapAroundWest
 	nop
 	subi temp1, -16			
@@ -1037,6 +1066,7 @@ wrapAroundWest:
 	nop
 moveEast:					
 	ld temp1, Z
+	mov temp3, temp1
 	cpi temp1, 16
 	brlo wrapAroundEast
 	nop
@@ -1051,6 +1081,7 @@ wrapAroundEast:
 	nop
 moveNorth:					;Move upwards/downwards = read old position,
 	ld temp1, Z				;subtract/add LSB of Y position (bit value 1),
+	mov temp3, temp1
 	mov temp2, temp1		;then insert new value back to Z
 	andi temp2, 0b00001111
 	cpi temp2, 0
@@ -1069,6 +1100,7 @@ wrapAroundNorth:
 	nop
 moveSouth:
 	ld temp1, Z
+	mov temp3, temp1
 	mov temp2, temp1
 	andi temp2, 0b00001111
 	cpi temp2, 7
