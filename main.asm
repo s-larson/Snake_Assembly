@@ -4,21 +4,14 @@
 ; Created: 2019-04-25 13:47:41
 ; Author : Jonna, Mike, Erik & Simon
 ;
-/* Changelog
-	Simon 25/5:
-	-Skapade subrutiner för rörelse (moveSouth etc)
-	-Skapade game loop
-	-Tog bort calcHeadPosition eftersom vi inte längre behöver kolla vilken rad huvudet befinner sig på
-	-Ändrade värden i ADMUX, gamla värden finns utkommenterade längst ner,
-	 (ändrade även init, gamla koden finns utkommenterad)
+/* 
+	Fixa:
+	-Ormen ska inte kunna vända 180 grader
+	-Kroppen??	
+	-Mat
+	-Kollision
 
-	To-do:
-	-Flytta ormen: spara ner gamla positionen innan den skrivs över så nästa "kroppsdel" kan ärva
-	-Räknare/pekare för att hålla koll på kanterna?
-	-Huvudet tar alltid ett steg till vänster (börjar på X-pos 0000) och står sedan stilla
-	-Timers?
-
-	*/
+*/
 
 .DEF end = r16
 .DEF temp1 = r17
@@ -57,14 +50,14 @@ init:
 	ldi ZL, LOW(snakebody)
 	ldi YH, HIGH(matrix)
 	ldi YL, LOW(matrix)
-	ldi length, 4
+	ldi length, 1
 	ldi food, 0
 	ldi loopcounter, 0
+	ldi direction, 0b00000001
 	
 	// Snake head
-	ldi temp1, 0b00000100
+	ldi temp1, 0b01000010
 	st Z, temp1
-	
 	/*
 	ldi temp1, 0b01100100
 	std Z+1, temp1
@@ -85,19 +78,16 @@ init:
 	
 	// Enable Joystick
 	ldi		temp1, 0b01100000
-	sts		ADMUX,temp1
-   	ldi		temp1,0b10000111
-   	sts		ADCSRA,temp1
+	sts		ADMUX, temp1
+   	ldi		temp1, 0b10000111
+   	sts		ADCSRA, temp1
 
-/*	ldi r16, 0b01100000
-	lds temp1, ADMUX
-	or r16, temp1
-	sts ADMUX, r16
-	ldi r16, 0b10000111
-	lds temp1, ADCSRA
-	or r16, temp1
-	sts ADCSRA, r16
-*/
+	// Set stack pointer
+	ldi		temp1, HIGH(RAMEND)
+    out		SPH, temp1
+    ldi		temp1, LOW(RAMEND)
+    out		SPL, temp1
+
 	// Timer
 	sei
 	lds		temp1, TCCR0B
@@ -110,11 +100,6 @@ init:
     sts		TIMSK0, temp1
 
 resetAndDraw:
-	ldi ZH, HIGH(snakebody)
-	ldi ZL, LOW(snakebody)
-	ldi YH, HIGH(matrix)
-	ldi YL, LOW(matrix)
-
 	ldi temp1, 0
 	ldi temp2, 0
 	ldi temp3, 0
@@ -122,7 +107,6 @@ resetAndDraw:
 	ldi end, 0
 	ldi updateGame, 0
 	ldi loopcounter, 0
-	
 	jmp drawMatrix
 	nop
 main:
@@ -133,33 +117,21 @@ main:
 updatesnake:
 	cpi updateGame, 1			// Check if it's time to update (controlled by interrupts)
 	brne returntomain
-	//call joystickinput		// Listen to input. This modifies values in Z
-	//nop
-	call resetMatrix //tmp
+	call resetMatrix
+	nop	
+	call joystickinput			// Listen to input. This modifies values in Z
 	nop
 	call translatePositions		// Translates coordinates (Z) to matrix (Y)
 	nop
-	call movedot
-	nop
 	ldi updateGame, 0			// Reset flag to update game
 returntomain:
-	ret
-	nop
-movedot:
-	ldi ZL, LOW(snakebody)
-	ld temp1, Z
-	std Y+1, temp1 //tmp
-	subi temp1, -16
-	st Z, temp1
-	std Y+2, temp1 //tmp
-
 	ret
 	nop
 translatePositions:				// Iterates through Z (positions) to translate into matrix
 	cp length, loopcounter
 	breq exit2
 	nop
-	ld temp1, Z+
+	ld temp1, Z+				// Load position from Z and post increment pointer
 	mov temp2, temp1
 	andi temp2, 0b11110000		// Mask out X-value (first 4 bits)
 	lsr temp2					// Shift 4 steps right to make compares easier
@@ -190,10 +162,8 @@ translatePositions:				// Iterates through Z (positions) to translate into matri
 	cpi temp2, 7
 	breq X_7
 	nop
-	
 	exit1:
 	subi loopcounter, -1	// increment i
-	//subi ZL, -1				// increase pointer (next position is to be read) 
 	jmp translatePositions
 	nop
 	exit2:
@@ -308,7 +278,6 @@ translatePositions:				// Iterates through Z (positions) to translate into matri
 	jmp exit1
 	nop
 drawMatrix:
-
 /*Begin drawing one row at a time. Load in value from matrix and make compares.
 Depending on value of row, the bits will translate correctly and be saved in register "end"
 Finally, each row outputs "end" to corresponding port*/
@@ -389,13 +358,10 @@ outputrow_0:
 	out PORTB, temp1
 	call delay1
 	nop
-
 	ldi temp3, 0b00110000
 	out PORTC, temp3
 	out PORTD, r1
 	out PORTB, r1
-
-
 calcrow_1:
 	ldd temp1, Y+1
 	ldi end, 0b00000000
@@ -473,11 +439,9 @@ outputrow_1:
 	out PORTB, temp1
 	call delay1
 	nop
-
 	out PORTC, temp3
 	out PORTD, r1
 	out PORTB, r1
-
 calcrow_2:
 	ldd temp1, Y+2
 	ldi end, 0b00000000
@@ -555,12 +519,9 @@ outputrow_2:
 	out PORTB, temp1
 	call delay1
 	nop
-
 	out PORTC, temp3
 	out PORTD, r1
 	out PORTB, r1
-
-
 calcrow_3:
 	ldd temp1, Y+3
 	ldi end, 0b00000000
@@ -715,11 +676,9 @@ outputrow_4:
 	out PORTB, temp1
 	call delay1
 	nop
-
 	out PORTC, temp3
 	out PORTD, r1
 	out PORTB, r1
-
 calcrow_5:
 	ldd temp1, Y+5
 	ldi end, 0b00000000
@@ -796,11 +755,9 @@ outputrow_5:
 	out PORTB, temp1
 	call delay1
 	nop
-
 	out PORTC, temp3
 	out PORTD, r1
 	out PORTB, r1
-
 calcrow_6:
 	ldd temp1, Y+6
 	ldi end, 0b00000000
@@ -877,11 +834,9 @@ outputrow_6:
 	out PORTB, temp1
 	call delay1
 	nop
-
 	out PORTC, temp3
 	out PORTD, r1
 	out PORTB, r1
-
 calcrow_7:
 	ldd temp1, Y+7
 	ldi end, 0b00000000
@@ -958,11 +913,9 @@ outputrow_7:
 	out PORTB, temp1
 	call delay1
 	nop
-
 	out PORTC, temp3
 	out PORTD, r1
 	out PORTB, r1
-	
 	jmp main
 	nop
 	;Draw matrix ends
@@ -984,21 +937,9 @@ wait1:
 	jmp wait1
 	nop
 	lds temp3, ADCH
-
-	jmp joyinputY //test
+	jmp joyinputY
 	nop
 
-	;Compare input and branch accordingly
-
-/*	
-	cpi temp3, 100
-	brsh west
-	nop
-	cpi temp3, 5
-	brlo east
-	nop
-	note to self: compares innan Y-axeln
-	*/
 joyinputY:				//Listen to joystick (Y-axis)
 	ldi		temp1, 0b00000100			
 	lds		temp2, ADMUX
@@ -1016,19 +957,17 @@ wait2:
 	sbrc temp2, ADSC
 	jmp wait2
 	nop
-	lds temp4, ADCH //ändrade till temp4 från temp3
-
-	jmp compareinput //tmp
+	lds temp4, ADCH	
+	jmp compareinput
 	nop
-// yntt
-compareinput:	
-	cpi temp3, 100
-	brsh west
+compareinput:	;Compare input and branch accordingly. Set direction
+	cpi temp3, 140
+	brsh east
 	nop
 	cpi temp3, 5
-	brlo east
+	brlo west
 	nop	
-	cpi temp4, 90
+	cpi temp4, 40
 	brsh north
 	nop
 	cpi temp4, 1
@@ -1037,23 +976,37 @@ compareinput:
 	jmp exitinput			;Exit if no input 
 	nop
 north:
+	cpi direction, 0b00000100
+	breq exitinput
+	nop	
 	ldi direction, 0b00001000
 	jmp calcDirection
 	nop
 south:
+	cpi direction, 0b00001000
+	breq exitinput
+	nop
 	ldi direction, 0b00000100
 	jmp calcDirection
 	nop
 west:
+	cpi direction, 0b00000001
+	breq exitinput
+	nop
 	ldi direction, 0b00000010
 	jmp calcDirection 
 	nop
 east:
+	cpi direction, 0b00000010
+	breq exitinput
+	nop
 	ldi direction, 0b00000001
 	jmp calcDirection
 	nop
+exitinput:					;Reset input and go back to main after moving
+	sts ADCH, r1
+	ret
 calcDirection:				;Checks value of "direction" and moves snake's head accordingly
-	std Y+7, direction ;tmp
 	sbrc direction, 0
 	jmp moveWest
 	nop
@@ -1070,31 +1023,67 @@ calcDirection:				;Checks value of "direction" and moves snake's head accordingl
 	nop
 moveWest:					;Move sideways = read old position of head,
 	ld temp1, Z				;subtract/add LSB of X position (bit value 16), 
-	subi temp1, -16			;then insert new value back to Z
+	cpi temp1, 112			;then insert new value back to Z
+	brsh wrapAroundWest
+	nop
+	subi temp1, -16			
+	st Z, temp1
+	jmp exitinput
+	nop
+wrapAroundWest:
+	andi temp1, 0b00001111
 	st Z, temp1
 	jmp exitinput
 	nop
 moveEast:					
 	ld temp1, Z
+	cpi temp1, 16
+	brlo wrapAroundEast
+	nop
 	subi temp1, 16
+	st Z, temp1
+	jmp exitinput
+	nop
+wrapAroundEast:
+	ori temp1, 0b01110000
 	st Z, temp1
 	jmp exitinput
 	nop
 moveNorth:					;Move upwards/downwards = read old position,
 	ld temp1, Z				;subtract/add LSB of Y position (bit value 1),
-	subi temp1, 1			;then insert new value back to Z
+	mov temp2, temp1		;then insert new value back to Z
+	andi temp2, 0b00001111
+	cpi temp2, 0
+	breq wrapAroundNorth
+	nop	
+	subi temp1, 1
+	st Z, temp1
+	jmp exitinput
+	nop
+wrapAroundNorth:
+	ldi temp2, 0b00000111
+	andi temp1, 0b01110000
+	or temp1, temp2
 	st Z, temp1
 	jmp exitinput
 	nop
 moveSouth:
 	ld temp1, Z
+	mov temp2, temp1
+	andi temp2, 0b00001111
+	cpi temp2, 7
+	breq wrapAroundSouth
+	nop
 	subi temp1, -1
 	st Z, temp1
 	jmp exitinput
 	nop
-exitinput:					;Go back to main after moving
-	ret
-
+wrapAroundSouth:
+	andi temp1, 0b01110000
+	or temp1, r1
+	st Z, temp1
+	jmp exitinput
+	nop
 resetMatrix:				;Troubleshooting, reset matrix
 	st Y, r1
     std Y+1, r1
@@ -1120,51 +1109,3 @@ gameUpdateTimer:
 	ldi updateGame, 0b00000001
 	reti
 	nop
-/* *********** Gamla ADMUX värden **************
-	//////// VERSION 1.0 ////////////
-
-	X-axeln
-	lds temp2, ADMUX
-	ldi temp3, 0b00000101
-	or temp2, temp3
-	sts ADMUX, temp2
-	
-	Y-axeln
-	lds temp2, ADMUX
-	ldi temp3, 0b11111110
-	and temp2, temp3
-	or temp2, temp3
-	sts ADMUX, temp2
-
-	////////// VERSION 2.0 ///////////////
-	
-	X-axeln
-	;ADMUX
-	lds temp2, ADMUX
-	andi temp2, 0b11111000
-	ldi temp3, 0b00000101
-	or temp2, temp3
-	sts ADMUX, temp2
-	;ADSCRA
-	lds temp2, ADCSRA
-	ori	temp2, 0b01000000
-	sts ADCSRA, temp2
-
-	Y-axeln
-	//ADMUX
-	lds temp2, ADMUX
-	ldi temp3, 0b00000100
-	andi temp2, 0b11111000
-	or temp2, temp3
-	sts ADMUX, temp2
-	//ADSCRA
-	lds temp2, ADCSRA
-	ori	temp2, 0b01000000
-	sts ADCSRA, temp2
-	
-	/////// VERSION 3.0 (nuvarande) /////////
-	För att återställa:
-	Ändra init tillbaka till det utkommenterade högst upp, 
-	ersätt X & Y input till version 2 (wait1 & 2 är oförändrade)
-
-*/
