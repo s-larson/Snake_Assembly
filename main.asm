@@ -6,7 +6,7 @@
 ;
 /* 
 	Fixa:
-	-Ormen ska inte kunna vända 180 grader, prio
+	-Ormen ska inte kunna vända 180 grader
 	-Mat
 	-Kollision
 
@@ -21,12 +21,12 @@
 .DEF temp4 = r20
 .DEF updateGame = r21
 .DEF loopcounter = r22
-.DEF food = r23
+.DEF totalLength = r23
 .DEF length = r24
 .DEF direction = r25
 
 .DSEG
-snakebody:		.BYTE 16
+snakebody:		.BYTE 64
 matrix:			.BYTE 8
 
 .CSEG
@@ -52,7 +52,8 @@ init:
 	ldi YH, HIGH(matrix)
 	ldi YL, LOW(matrix)
 	ldi length, 4
-	ldi food, 0
+	mov totalLength, length
+	inc totalLength
 	ldi loopcounter, 0
 	ldi direction, 0b00000001
 	
@@ -65,6 +66,10 @@ init:
 	std Z+2, temp1	
 	ldi temp1, 0b01000001
 	std Z+3, temp1
+
+	//Food
+	call locateFood
+	nop
 
 	// Matrix
 	st Y, r1
@@ -121,17 +126,14 @@ updatesnake:
 	nop	
 	call joystickinput			// Listen to input. This modifies values in Z
 	nop
+	call detectCollision
+	nop
 	call moveBody
 	nop
 	call translatePositions		// Translates coordinates (Z) to matrix (Y)
 	nop
 	ldi updateGame, 0			// Reset flag to update game
 returntomain:
-	ret
-	nop
-makeSureNothingFuckedUp: //troubleshooting
-	st Y, food
-	inc food
 	ret
 	nop
 moveBody:						// Update body relative to previous head position
@@ -156,7 +158,7 @@ moveBody:						// Update body relative to previous head position
 	ret
 	nop
 translatePositions:				// Iterates through Z (positions) to translate into matrix
-	cp length, loopcounter
+	cp totalLength, loopcounter
 	breq exit2
 	nop
 	ld temp1, Z+				// Load position from Z and post increment pointer
@@ -1032,7 +1034,6 @@ east:
 	jmp calcDirection
 	nop
 exitinput:					;Reset input and go back to main after moving
-	sts ADCH, r1
 	ret
 calcDirection:				;Checks value of "direction" and moves snake's head accordingly
 	sbrc direction, 0
@@ -1136,8 +1137,109 @@ delay1:						;Delay called after each output
 		brne L1
 		ret
 		nop
+detectCollision:
+		ld temp1, Z
+	getApple:
+		cp totalLength, loopcounter
+		brne dIncrement
+		nop
+		ld temp2, -Z
+		cp temp1, temp2
+		breq grow
+		nop
+		jmp exitDetection
+		nop
+	dIncrement:
+		ld temp2, Z+
+		inc loopcounter
+		jmp getApple
+		nop 
+	grow:
+		inc length
+		call syncLength
+		nop	
+		ldi loopcounter, 0
+		ldi ZL, LOW(snakebody)
+		jmp locateFood 
+		nop
+	exitDetection:
+		ldi loopcounter, 0
+		ldi ZL, LOW(snakebody)
+		ret
+		nop
+/* iterate
+	detectLoop:
+		cp totalLength, loopcounter
+		brne dIncrement
+		
+		ret
+		nop
+	dIncrement:
+		inc loopcounter
+		jmp detectLoop
+		nop 
+*/
+locateFood:
+	;Pick a "random" position within the grid
+	ldi		temp1, (1<<ADSC)
+	lds		temp2, ADCSRA
+	or		temp2, temp1
+	sts		ADCSRA, temp2
+ADLoop:
+	lds 	temp2, ADCSRA
+	sbrc	temp2, ADSC
+	jmp		ADloop
 
+	lds temp1, ADCH
+	andi temp1, 0b01110111
+	mov temp2, temp1
+	andi temp2, 0b01010101
+	and temp1, temp2
+	com temp1
+	andi temp1, 0b01110111
+	uniquePosition:
+		cp length, loopcounter
+		breq validPosition
+		ld temp2, Z+
+		cp temp2, temp1
+		brne uIncrement
+		nop
+		lds temp3, ADCL
+		sub temp1, temp3
+		andi temp1, 0b01110111
+		ret
+		nop
+	uIncrement:
+		inc loopcounter
+		jmp uniquePosition
+		nop
+	validPosition:
+		ldi ZL, LOW(snakebody)
+		ldi loopcounter, 0
+		jmp positionLoop
+		nop
+	positionLoop:
+		cp totalLength, loopcounter
+		brne increment
+		st Z, temp1
+		jmp exitLocate
+		nop
+	increment:
+		ld temp2, Z+
+		inc loopcounter
+		jmp positionLoop
+		nop
+	exitLocate:
+		ldi ZL, LOW(snakebody)
+		ldi loopcounter, 0
+		ret
+		nop
 gameUpdateTimer:
 	ldi updateGame, 0b00000001
 	reti
+	nop
+syncLength:
+	mov totalLength, length
+	inc totalLength
+	ret
 	nop
