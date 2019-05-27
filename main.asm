@@ -5,13 +5,7 @@
 ; Author : Jonna, Mike, Erik & Simon
 ;
 /* 
-	Fixa:
-	-Ormen ska inte kunna vända 180 grader
-	-Mat
-	-Kollision
-
-	Beware: rör inte temp3 mellan rörelse av huvud/kropp
-
+	SelfCollision sitter i en loop
 */
 
 .DEF end = r16
@@ -24,6 +18,7 @@
 .DEF totalLength = r23
 .DEF length = r24
 .DEF direction = r25
+; random generator = r26
 
 .DSEG
 snakebody:		.BYTE 64
@@ -60,11 +55,11 @@ init:
 	// Snake head
 	ldi temp1, 0b01000100
 	st Z, temp1
-	ldi temp1, 0b01000011
+	ldi temp1, 0b00110100
 	std Z+1, temp1
-	ldi temp1, 0b01000010
+	ldi temp1, 0b00100100
 	std Z+2, temp1	
-	ldi temp1, 0b01000001
+	ldi temp1, 0b00010100
 	std Z+3, temp1
 
 	//Food
@@ -122,14 +117,16 @@ main:
 updatesnake:
 	cpi updateGame, 1			// Check if it's time to update (controlled by interrupts)
 	brne returntomain
-	call resetMatrix
-	nop	
+	call resetMatrix			// Reset matrix before calculating new positions
+	nop
 	call joystickinput			// Listen to input. This modifies values in Z
 	nop
-	call detectCollision
+	call detectCollision		// Check for head/food collision
 	nop
-	call moveBody
+	call checkSelfCollision		// Check for self-collision
 	nop
+	call moveBody				// Move body relative to head
+	nop	
 	call translatePositions		// Translates coordinates (Z) to matrix (Y)
 	nop
 	ldi updateGame, 0			// Reset flag to update game
@@ -143,20 +140,48 @@ moveBody:						// Update body relative to previous head position
 	push length
 	dec length
 	bodyLoop:	
-	cp length, loopcounter
-	breq exitupdate
-	ld temp1, Z
-	st Z+, temp3
-	mov temp3, temp1
-	inc loopcounter	
-	jmp bodyLoop
-	nop
+		cp length, loopcounter
+		breq exitupdate
+		ld temp1, Z
+		st Z+, temp3
+		mov temp3, temp1
+		inc loopcounter	
+		jmp bodyLoop
+		nop
 	exitupdate:
-	ldi loopcounter, 0
-	pop length
-	ldi ZL, LOW(snakebody)
-	ret
-	nop
+		ldi loopcounter, 0
+		pop length
+		ldi ZL, LOW(snakebody)
+		ret
+		nop
+checkSelfCollision:				// Iterates through body and sees if head collides
+	ld temp1, Z+
+	ldi loopcounter, 2			
+	collisionLoop:
+		cp length, loopcounter
+		breq noCollision
+		ld temp2, Z+
+		cp temp1, temp2
+		breq collisionFound
+		nop
+		jmp cIncrement
+		nop
+	cIncrement:
+		inc loopcounter
+		jmp collisionLoop
+		nop
+	collisionFound:
+		call resetMatrix
+		nop
+		jmp collisionFound
+		nop
+		//jmp gameOver
+		//nop 
+	noCollision:
+		ldi loopcounter, 0
+		ldi ZL, LOW(snakebody)
+		ret
+		nop
 translatePositions:				// Iterates through Z (positions) to translate into matrix
 	cp totalLength, loopcounter
 	breq exit2
@@ -317,65 +342,65 @@ calcrow_0:
 	cpi temp1, 0b10000000
 	brlo calc64_0
 	nop
-	ldi r26, 0b01000000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b01000000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b10000000
 calc64_0:
 	cpi temp1, 0b01000000
 	brlo calc32_0
 	nop
-	ldi r26, 0b10000000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b10000000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b01000000
 calc32_0:
 	cpi temp1, 0b00100000
 	brlo calc16_0
 	nop
-	ldi r26, 0b00000001
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000001
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00100000
 calc16_0:
 	cpi temp1, 0b00010000
 	brlo calc8_0
 	nop
-	ldi r26, 0b00000010
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000010
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00010000
 calc8_0:
 	cpi temp1, 0b00001000
 	brlo calc4_0
 	nop
-	ldi r26, 0b00000100
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000100
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00001000
 calc4_0:
 	cpi temp1, 0b00000100
 	brlo calc2_0
 	nop
-	ldi r26, 0b00001000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00001000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000100
 calc2_0:
 	cpi temp1, 0b00000010
 	brlo calc1_0
 	nop
-	ldi r26, 0b00010000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00010000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000010
 calc1_0:
 	cpi temp1, 0b00000001
 	brlo outputrow_0
 	nop
-	ldi r26, 0b00100000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00100000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000001
 outputrow_0:
 	ldi temp1, 0b00000001
@@ -398,65 +423,65 @@ calcrow_1:
 	cpi temp1, 0b10000000
 	brlo calc64_1
 	nop
-	ldi r26, 0b01000000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b01000000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b10000000
 calc64_1:
 	cpi temp1, 0b01000000
 	brlo calc32_1
 	nop
-	ldi r26, 0b10000000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b10000000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b01000000
 calc32_1:
 	cpi temp1, 0b00100000
 	brlo calc16_1
 	nop
-	ldi r26, 0b00000001
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000001
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00100000
 calc16_1:
 	cpi temp1, 0b00010000
 	brlo calc8_1
 	nop
-	ldi r26, 0b00000010
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000010
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00010000
 calc8_1:
 	cpi temp1, 0b00001000
 	brlo calc4_1
 	nop
-	ldi r26, 0b00000100
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000100
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00001000
 calc4_1:
 	cpi temp1, 0b00000100
 	brlo calc2_1
 	nop
-	ldi r26, 0b00001000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00001000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000100
 calc2_1:
 	cpi temp1, 0b00000010
 	brlo calc1_1
 	nop
-	ldi r26, 0b00010000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00010000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000010
 calc1_1:
 	cpi temp1, 0b00000001
 	brlo outputrow_1
 	nop
-	ldi r26, 0b00100000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00100000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000001
 outputrow_1:
 	ldi temp1, 0b00000010
@@ -478,65 +503,65 @@ calcrow_2:
 	cpi temp1, 0b10000000
 	brlo calc64_2
 	nop
-	ldi r26, 0b01000000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b01000000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b10000000
 calc64_2:
 	cpi temp1, 0b01000000
 	brlo calc32_2
 	nop
-	ldi r26, 0b10000000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b10000000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b01000000
 calc32_2:
 	cpi temp1, 0b00100000
 	brlo calc16_2
 	nop
-	ldi r26, 0b00000001
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000001
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00100000
 calc16_2:
 	cpi temp1, 0b00010000
 	brlo calc8_2
 	nop
-	ldi r26, 0b00000010
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000010
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00010000
 calc8_2:
 	cpi temp1, 0b00001000
 	brlo calc4_2
 	nop
-	ldi r26, 0b00000100
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000100
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00001000
 calc4_2:
 	cpi temp1, 0b00000100
 	brlo calc2_2
 	nop
-	ldi r26, 0b00001000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00001000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000100
 calc2_2:
 	cpi temp1, 0b00000010
 	brlo calc1_2
 	nop
-	ldi r26, 0b00010000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00010000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000010
 calc1_2:
 	cpi temp1, 0b00000001
 	brlo outputrow_2
 	nop
-	ldi r26, 0b00100000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00100000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000001
 outputrow_2:
 	ldi temp1, 0b00000100
@@ -558,65 +583,65 @@ calcrow_3:
 	cpi temp1, 0b10000000
 	brlo calc64_3
 	nop
-	ldi r26, 0b01000000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b01000000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b10000000
 calc64_3:
 	cpi temp1, 0b01000000
 	brlo calc32_3
 	nop
-	ldi r26, 0b10000000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b10000000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b01000000
 calc32_3:
 	cpi temp1, 0b00100000
 	brlo calc16_3
 	nop
-	ldi r26, 0b00000001
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000001
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00100000
 calc16_3:
 	cpi temp1, 0b00010000
 	brlo calc8_3
 	nop
-	ldi r26, 0b00000010
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000010
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00010000
 calc8_3:
 	cpi temp1, 0b00001000
 	brlo calc4_3
 	nop
-	ldi r26, 0b00000100
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000100
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00001000
 calc4_3:
 	cpi temp1, 0b00000100
 	brlo calc2_3
 	nop
-	ldi r26, 0b00001000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00001000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000100
 calc2_3:
 	cpi temp1, 0b00000010
 	brlo calc1_3
 	nop
-	ldi r26, 0b00010000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00010000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000010
 calc1_3:
 	cpi temp1, 0b00000001
 	brlo outputrow_3
 	nop
-	ldi r26, 0b00100000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00100000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000001
 outputrow_3:
 	ldi temp1, 0b00001000
@@ -635,65 +660,65 @@ calcrow_4:
 	cpi temp1, 0b10000000
 	brlo calc64_4
 	nop
-	ldi r26, 0b01000000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b01000000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b10000000
 calc64_4:
 	cpi temp1, 0b01000000
 	brlo calc32_4
 	nop
-	ldi r26, 0b10000000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b10000000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b01000000
 calc32_4:
 	cpi temp1, 0b00100000
 	brlo calc16_4
 	nop
-	ldi r26, 0b00000001
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000001
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00100000
 calc16_4:
 	cpi temp1, 0b00010000
 	brlo calc8_4
 	nop
-	ldi r26, 0b00000010
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000010
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00010000
 calc8_4:
 	cpi temp1, 0b00001000
 	brlo calc4_4
 	nop
-	ldi r26, 0b00000100
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000100
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00001000
 calc4_4:
 	cpi temp1, 0b00000100
 	brlo calc2_4
 	nop
-	ldi r26, 0b00001000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00001000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000100
 calc2_4:
 	cpi temp1, 0b00000010
 	brlo calc1_4
 	nop
-	ldi r26, 0b00010000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00010000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000010
 calc1_4:
 	cpi temp1, 0b00000001
 	brlo outputrow_4
 	nop
-	ldi r26, 0b00100000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00100000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000001
 outputrow_4:
 	out PORTC, r1
@@ -715,65 +740,65 @@ calcrow_5:
 	cpi temp1, 0b10000000
 	brlo calc64_5
 	nop
-	ldi r26, 0b01000000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b01000000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b10000000
 calc64_5:
 	cpi temp1, 0b01000000
 	brlo calc32_5
 	nop
-	ldi r26, 0b10000000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b10000000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b01000000
 calc32_5:
 	cpi temp1, 0b00100000
 	brlo calc16_5
 	nop
-	ldi r26, 0b00000001
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000001
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00100000
 calc16_5:
 	cpi temp1, 0b00010000
 	brlo calc8_5
 	nop
-	ldi r26, 0b00000010
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000010
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00010000
 calc8_5:
 	cpi temp1, 0b00001000
 	brlo calc4_5
 	nop
-	ldi r26, 0b00000100
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000100
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00001000
 calc4_5:
 	cpi temp1, 0b00000100
 	brlo calc2_5
 	nop
-	ldi r26, 0b00001000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00001000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000100
 calc2_5:
 	cpi temp1, 0b00000010
 	brlo calc1_5
 	nop
-	ldi r26, 0b00010000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00010000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000010
 calc1_5:
 	cpi temp1, 0b00000001
 	brlo outputrow_5
 	nop
-	ldi r26, 0b00100000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00100000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000001
 outputrow_5:
 	mov temp1, end
@@ -794,65 +819,65 @@ calcrow_6:
 	cpi temp1, 0b10000000
 	brlo calc64_6
 	nop
-	ldi r26, 0b01000000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b01000000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b10000000
 calc64_6:
 	cpi temp1, 0b01000000
 	brlo calc32_6
 	nop
-	ldi r26, 0b10000000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b10000000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b01000000
 calc32_6:
 	cpi temp1, 0b00100000
 	brlo calc16_6
 	nop
-	ldi r26, 0b00000001
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000001
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00100000
 calc16_6:
 	cpi temp1, 0b00010000
 	brlo calc8_6
 	nop
-	ldi r26, 0b00000010
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000010
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00010000
 calc8_6:
 	cpi temp1, 0b00001000
 	brlo calc4_6
 	nop
-	ldi r26, 0b00000100
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000100
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00001000
 calc4_6:
 	cpi temp1, 0b00000100
 	brlo calc2_6
 	nop
-	ldi r26, 0b00001000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00001000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000100
 calc2_6:
 	cpi temp1, 0b00000010
 	brlo calc1_6
 	nop
-	ldi r26, 0b00010000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00010000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000010
 calc1_6:
 	cpi temp1, 0b00000001
 	brlo outputrow_6
 	nop
-	ldi r26, 0b00100000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00100000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000001
 outputrow_6:
 	mov temp1, end
@@ -873,65 +898,65 @@ calcrow_7:
 	cpi temp1, 0b10000000
 	brlo calc64_7
 	nop
-	ldi r26, 0b01000000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b01000000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b10000000
 calc64_7:
 	cpi temp1, 0b01000000
 	brlo calc32_7
 	nop
-	ldi r26, 0b10000000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b10000000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b01000000
 calc32_7:
 	cpi temp1, 0b00100000
 	brlo calc16_7
 	nop
-	ldi r26, 0b00000001
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000001
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00100000
 calc16_7:
 	cpi temp1, 0b00010000
 	brlo calc8_7
 	nop
-	ldi r26, 0b00000010
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000010
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00010000
 calc8_7:
 	cpi temp1, 0b00001000
 	brlo calc4_7
 	nop
-	ldi r26, 0b00000100
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00000100
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00001000
 calc4_7:
 	cpi temp1, 0b00000100
 	brlo calc2_7
 	nop
-	ldi r26, 0b00001000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00001000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000100
 calc2_7:
 	cpi temp1, 0b00000010
 	brlo calc1_7
 	nop
-	ldi r26, 0b00010000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00010000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000010
 calc1_7:
 	cpi temp1, 0b00000001
 	brlo outputrow_7
 	nop
-	ldi r26, 0b00100000
-	neg r26
-	sub end, r26
+	ldi temp2, 0b00100000
+	neg temp2
+	sub end, temp2
 	subi temp1, 0b00000001
 outputrow_7:
 	mov temp1, end
@@ -967,6 +992,7 @@ wait1:
 	jmp wait1
 	nop
 	lds temp3, ADCH
+	add r26, temp3
 	jmp joyinputY
 	nop
 
@@ -987,9 +1013,55 @@ wait2:
 	sbrc temp2, ADSC
 	jmp wait2
 	nop
-	lds temp4, ADCH	
+	lds temp4, ADCH
+	add r26, temp4 ;for random spawn point
+
 	jmp compareinput
 	nop
+east:
+	cpi direction, 0b00000010
+	breq moveWest
+	nop
+	ldi direction, 0b00000001
+	jmp calcDirection
+	nop
+moveEast:					
+	ld temp1, Z
+	mov temp3, temp1
+	cpi temp1, 16
+	brlo wrapAroundEast
+	nop
+	subi temp1, 16
+	st Z, temp1
+	jmp exitinput
+	nop
+wrapAroundEast:
+	ori temp1, 0b01110000
+	st Z, temp1
+	jmp exitinput
+	nop
+west:
+	cpi direction, 0b00000001
+	breq moveEast
+	nop
+	ldi direction, 0b00000010
+	jmp calcDirection 
+	nop
+moveWest:                   ;Move sideways = read old position of head,
+    ld temp1, Z             ;subtract/add LSB of X position (bit value 16), 
+    mov temp3, temp1		;then insert new value back to Z
+    cpi temp1, 112            
+    brsh wrapAroundWest
+    nop
+    subi temp1, -16            
+    st Z, temp1
+    jmp exitinput
+    nop
+wrapAroundWest:
+    andi temp1, 0b00001111
+    st Z, temp1
+    jmp exitinput
+    nop
 compareinput:	;Compare input and branch accordingly. Set direction
 	cpi temp3, 140
 	brsh east
@@ -1007,78 +1079,10 @@ compareinput:	;Compare input and branch accordingly. Set direction
 	nop
 north:
 	cpi direction, 0b00000100
-	breq exitinput
+	breq moveSouth
 	nop	
 	ldi direction, 0b00001000
 	jmp calcDirection
-	nop
-south:
-	cpi direction, 0b00001000
-	breq exitinput
-	nop
-	ldi direction, 0b00000100
-	jmp calcDirection
-	nop
-west:
-	cpi direction, 0b00000001
-	breq exitinput
-	nop
-	ldi direction, 0b00000010
-	jmp calcDirection 
-	nop
-east:
-	cpi direction, 0b00000010
-	breq exitinput
-	nop
-	ldi direction, 0b00000001
-	jmp calcDirection
-	nop
-exitinput:					;Reset input and go back to main after moving
-	ret
-calcDirection:				;Checks value of "direction" and moves snake's head accordingly
-	sbrc direction, 0
-	jmp moveWest
-	nop
-	sbrc direction, 1
-	jmp moveEast
-	nop
-	sbrc direction, 2
-	jmp moveSouth
-	nop
-	sbrc direction, 3
-	jmp moveNorth
-	nop
-	jmp exitinput
-	nop
-moveWest:					;Move sideways = read old position of head,
-	ld temp1, Z				;subtract/add LSB of X position (bit value 16), 
-	mov temp3, temp1		;then insert new value back to Z
-	cpi temp1, 112			
-	brsh wrapAroundWest
-	nop
-	subi temp1, -16			
-	st Z, temp1
-	jmp exitinput
-	nop
-wrapAroundWest:
-	andi temp1, 0b00001111
-	st Z, temp1
-	jmp exitinput
-	nop
-moveEast:					
-	ld temp1, Z
-	mov temp3, temp1
-	cpi temp1, 16
-	brlo wrapAroundEast
-	nop
-	subi temp1, 16
-	st Z, temp1
-	jmp exitinput
-	nop
-wrapAroundEast:
-	ori temp1, 0b01110000
-	st Z, temp1
-	jmp exitinput
 	nop
 moveNorth:					;Move upwards/downwards = read old position,
 	ld temp1, Z				;subtract/add LSB of Y position (bit value 1),
@@ -1099,6 +1103,13 @@ wrapAroundNorth:
 	st Z, temp1
 	jmp exitinput
 	nop
+south:
+	cpi direction, 0b00001000
+	breq moveNorth
+	nop
+	ldi direction, 0b00000100
+	jmp calcDirection
+	nop
 moveSouth:
 	ld temp1, Z
 	mov temp3, temp1
@@ -1117,7 +1128,28 @@ wrapAroundSouth:
 	st Z, temp1
 	jmp exitinput
 	nop
-resetMatrix:				;Troubleshooting, reset matrix
+exitinput:					;Reset input and go back to main after moving
+	ret
+calcDirection:				;Checks value of "direction" and moves snake's head accordingly
+	sbrc direction, 0
+	jmp moveWest
+	nop
+	sbrc direction, 1
+	jmp moveEast
+	nop
+	sbrc direction, 2
+	jmp moveSouth
+	nop
+	sbrc direction, 3
+	jmp moveNorth
+	nop
+	jmp exitinput
+	nop
+
+
+
+
+resetMatrix:				;Reset matrix
 	st Y, r1
     std Y+1, r1
     std Y+2, r1
@@ -1138,12 +1170,12 @@ delay1:						;Delay called after each output
 		ret
 		nop
 detectCollision:
-		ld temp1, Z
+		ld temp1, Z ;head
 	getApple:
 		cp totalLength, loopcounter
 		brne dIncrement
 		nop
-		ld temp2, -Z
+		ld temp2, -Z ;food
 		cp temp1, temp2
 		breq grow
 		nop
@@ -1167,6 +1199,73 @@ detectCollision:
 		ldi ZL, LOW(snakebody)
 		ret
 		nop
+locateFood:
+	;Pick a "random" position within the grid	
+	 mov temp1, r26
+	 andi temp1, 0b01110111 ;Convert to coordinate
+	 locationLoop:
+	 ;Compare to snake
+	 ld temp2, Z+
+	 cp temp1, temp2
+	 
+	 ;If collision found
+	 breq pickNewValue
+	 nop
+
+	 cp length, loopcounter
+	 breq foundFoodLocation
+	 nop
+	 inc loopcounter
+	 jmp locationLoop
+	 nop
+	 pickNewValue:
+		lds temp2, ADCH
+		add temp1, temp2
+		com temp1
+		andi temp1, 0b01110111
+		ldi loopcounter, 0
+		ldi ZL, LOW(snakebody)
+		jmp locationLoop
+		nop
+	 foundFoodLocation:
+		ldi loopcounter, 0
+		ldi ZL, LOW(snakebody)
+		jmp insertNewFoodPosition
+		nop
+
+insertNewFoodPosition:
+		;Routine for inserting the new position into game matrix
+		;(Food is placed in last)
+		cp totalLength, loopcounter
+		brne increment
+		st Z, temp1
+		jmp exitLocate
+		nop
+	increment:
+		ld temp2, Z+
+		inc loopcounter
+		jmp insertNewFoodPosition
+		nop
+	exitLocate:
+		ldi ZL, LOW(snakebody)
+		ldi loopcounter, 0
+		ret
+		nop
+gameUpdateTimer:		; Flag set by interrupt to update game
+	ldi updateGame, 0b00000001
+	reti
+	nop
+syncLength:				; Called each time length is incremented
+	mov totalLength, length
+	inc totalLength
+	ret
+	nop
+gameOver:
+	call resetMatrix
+	nop
+	jmp gameOver
+	nop
+
 /* iterate
 	detectLoop:
 		cp totalLength, loopcounter
@@ -1179,20 +1278,41 @@ detectCollision:
 		jmp detectLoop
 		nop 
 */
-locateFood:
-	;Pick a "random" position within the grid
-	lds temp1, ADCH	
-	uniquePosition: ;Cycle until food does not collide with snake
+
+/*	
+	gammal sheet
+	uniquePosition: 
+		;Cycle until food does not collide with snake
+		;If no part of snake collides with food, insert the new position into food matrix
+		;If snake collides with food, pick a new position (based on ADCH and multiplication)
 		cp length, loopcounter
 		breq validPosition
 		nop
-		subi temp1, -1
-		andi temp1, 0b01110111
-	iterateBody:
+		inc temp1
+		mul temp2, temp1
+		andi temp2, 0b00000111
+		andi temp1, 0b01110000
+		or temp1, temp2
 		ld temp2, Z+
+		cp temp2, temp1
+		breq uniquePosition
+		nop
+
+		jmp uniquePosition
+		nop
+	iterateBody:
+		;Iterate through every body part and compare it to the potential food position
+		cp length, loopcounter
+		breq validPosition
+		nop
+		ld temp2, Z+
+		;See if they collide 
 		cp temp2, temp1
 		brne uIncrement
 		nop
+		;Pick a new position and reset loop counter + pointer
+		ldi ZL, LOW(snakebody)
+		ldi loopcounter, 0
 		jmp uniquePosition
 		nop
 	uIncrement:
@@ -1202,30 +1322,6 @@ locateFood:
 	validPosition:
 		ldi ZL, LOW(snakebody)
 		ldi loopcounter, 0
-		jmp pointToAppleLoop
+		jmp insertNewFoodPosition
 		nop
-	pointToAppleLoop:
-		cp totalLength, loopcounter
-		brne increment
-		st Z, temp1
-		jmp exitLocate
-		nop
-	increment:
-		ld temp2, Z+
-		inc loopcounter
-		jmp pointToAppleLoop
-		nop
-	exitLocate:
-		ldi ZL, LOW(snakebody)
-		ldi loopcounter, 0
-		ret
-		nop
-gameUpdateTimer:
-	ldi updateGame, 0b00000001
-	reti
-	nop
-syncLength:
-	mov totalLength, length
-	inc totalLength
-	ret
-	nop
+*/
