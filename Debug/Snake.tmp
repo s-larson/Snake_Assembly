@@ -25,7 +25,7 @@
   <snakebody><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>29</LINE></snakebody>
   <matrix><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>30</LINE></matrix>
   <init><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>40</LINE></init>
-  <gameUpdateTimer><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1237</LINE></gameUpdateTimer>
+  <gameUpdateTimer><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1223</LINE></gameUpdateTimer>
   <locateFood><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1182</LINE></locateFood>
   <resetAndDraw><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>107</LINE></resetAndDraw>
   <drawMatrix><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>310</LINE></drawMatrix>
@@ -154,13 +154,13 @@
   <dIncrement><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1152</LINE></dIncrement>
   <grow><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1157</LINE></grow>
   <exitDetection><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1165</LINE></exitDetection>
-  <syncLength><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1241</LINE></syncLength>
-  <ADLoop><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1188</LINE></ADLoop>
-  <uniquePosition><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1200</LINE></uniquePosition>
-  <validPosition><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1216</LINE></validPosition>
-  <uIncrement><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1212</LINE></uIncrement>
-  <positionLoop><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1221</LINE></positionLoop>
-  <increment><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1227</LINE></increment>
-  <exitLocate><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1232</LINE></exitLocate>
+  <syncLength><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1227</LINE></syncLength>
+  <uniquePosition><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1185</LINE></uniquePosition>
+  <validPosition><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1202</LINE></validPosition>
+  <iterateBody><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1191</LINE></iterateBody>
+  <uIncrement><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1198</LINE></uIncrement>
+  <pointToAppleLoop><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1207</LINE></pointToAppleLoop>
+  <increment><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1213</LINE></increment>
+  <exitLocate><FILE>C:\Users\GuCa\Desktop\Snake\Snake\main.asm</FILE><LINE>1218</LINE></exitLocate>
  </LABELS>
 </ASSEMBLER_INFO>

@@ -1181,44 +1181,30 @@ detectCollision:
 */
 locateFood:
 	;Pick a "random" position within the grid
-	ldi		temp1, (1<<ADSC)
-	lds		temp2, ADCSRA
-	or		temp2, temp1
-	sts		ADCSRA, temp2
-ADLoop:
-	lds 	temp2, ADCSRA
-	sbrc	temp2, ADSC
-	jmp		ADloop
-
-	lds temp1, ADCH
-	andi temp1, 0b01110111
-	mov temp2, temp1
-	andi temp2, 0b01010101
-	and temp1, temp2
-	com temp1
-	andi temp1, 0b01110111
-	uniquePosition:
+	lds temp1, ADCH	
+	uniquePosition: ;Cycle until food does not collide with snake
 		cp length, loopcounter
 		breq validPosition
+		nop
+		subi temp1, -1
+		andi temp1, 0b01110111
+	iterateBody:
 		ld temp2, Z+
 		cp temp2, temp1
 		brne uIncrement
 		nop
-		lds temp3, ADCL
-		sub temp1, temp3
-		andi temp1, 0b01110111
-		ret
+		jmp uniquePosition
 		nop
 	uIncrement:
 		inc loopcounter
-		jmp uniquePosition
+		jmp iterateBody
 		nop
 	validPosition:
 		ldi ZL, LOW(snakebody)
 		ldi loopcounter, 0
-		jmp positionLoop
+		jmp pointToAppleLoop
 		nop
-	positionLoop:
+	pointToAppleLoop:
 		cp totalLength, loopcounter
 		brne increment
 		st Z, temp1
@@ -1227,7 +1213,7 @@ ADLoop:
 	increment:
 		ld temp2, Z+
 		inc loopcounter
-		jmp positionLoop
+		jmp pointToAppleLoop
 		nop
 	exitLocate:
 		ldi ZL, LOW(snakebody)

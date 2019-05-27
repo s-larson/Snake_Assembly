@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Mon May 27 13:03:52 2019
+AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Mon May 27 13:39:01 2019
 
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc'
 [builtin](2): Including file 'C:/Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.2.209\avrasm\inc\m328pdef.inc'
@@ -1020,7 +1020,7 @@ AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Mon May 27 13:03:5
 000000 940c 0023                 	jmp init
 000002 0000                      	nop
                                  .ORG 0x0020
-000020 940c 0479                 	jmp gameUpdateTimer
+000020 940c 0468                 	jmp gameUpdateTimer
 000022 0000                      	nop
                                  
                                  init:
@@ -2142,7 +2142,7 @@ AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Mon May 27 13:03:5
 000434 0000                      		nop 
                                  	grow:
 000435 9583                      		inc length
-000436 940e 047c                 		call syncLength
+000436 940e 046b                 		call syncLength
 000438 0000                      		nop	
 000439 e060                      		ldi loopcounter, 0
 00043a e0e0                      		ldi ZL, LOW(snakebody)
@@ -2167,67 +2167,53 @@ AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Mon May 27 13:03:5
                                  */
                                  locateFood:
                                  	;Pick a "random" position within the grid
-000442 e410                      	ldi		temp1, (1<<ADSC)
-000443 9120 007a                 	lds		temp2, ADCSRA
-000445 2b21                      	or		temp2, temp1
-000446 9320 007a                 	sts		ADCSRA, temp2
-                                 ADLoop:
-000448 9120 007a                 	lds 	temp2, ADCSRA
-00044a fd26                      	sbrc	temp2, ADSC
-00044b 940c 0448                 	jmp		ADloop
-                                 
-00044d 9110 0079                 	lds temp1, ADCH
-00044f 7717                      	andi temp1, 0b01110111
-000450 2f21                      	mov temp2, temp1
-000451 7525                      	andi temp2, 0b01010101
-000452 2312                      	and temp1, temp2
-000453 9510                      	com temp1
-000454 7717                      	andi temp1, 0b01110111
-                                 	uniquePosition:
-000455 1786                      		cp length, loopcounter
-000456 f071                      		breq validPosition
-000457 9121                      		ld temp2, Z+
-000458 1721                      		cp temp2, temp1
-000459 f439                      		brne uIncrement
-00045a 0000                      		nop
-00045b 9130 0078                 		lds temp3, ADCL
-00045d 1b13                      		sub temp1, temp3
-00045e 7717                      		andi temp1, 0b01110111
-00045f 9508                      		ret
-000460 0000                      		nop
+000442 9110 0079                 	lds temp1, ADCH	
+                                 	uniquePosition: ;Cycle until food does not collide with snake
+000444 1786                      		cp length, loopcounter
+000445 f071                      		breq validPosition
+000446 0000                      		nop
+000447 5f1f                      		subi temp1, -1
+000448 7717                      		andi temp1, 0b01110111
+                                 	iterateBody:
+000449 9121                      		ld temp2, Z+
+00044a 1721                      		cp temp2, temp1
+00044b f421                      		brne uIncrement
+00044c 0000                      		nop
+00044d 940c 0444                 		jmp uniquePosition
+00044f 0000                      		nop
                                  	uIncrement:
-000461 9563                      		inc loopcounter
-000462 940c 0455                 		jmp uniquePosition
-000464 0000                      		nop
+000450 9563                      		inc loopcounter
+000451 940c 0449                 		jmp iterateBody
+000453 0000                      		nop
                                  	validPosition:
-000465 e0e0                      		ldi ZL, LOW(snakebody)
-000466 e060                      		ldi loopcounter, 0
-000467 940c 046a                 		jmp positionLoop
-000469 0000                      		nop
-                                 	positionLoop:
-00046a 1776                      		cp totalLength, loopcounter
-00046b f421                      		brne increment
-00046c 8310                      		st Z, temp1
-00046d 940c 0475                 		jmp exitLocate
-00046f 0000                      		nop
+000454 e0e0                      		ldi ZL, LOW(snakebody)
+000455 e060                      		ldi loopcounter, 0
+000456 940c 0459                 		jmp pointToAppleLoop
+000458 0000                      		nop
+                                 	pointToAppleLoop:
+000459 1776                      		cp totalLength, loopcounter
+00045a f421                      		brne increment
+00045b 8310                      		st Z, temp1
+00045c 940c 0464                 		jmp exitLocate
+00045e 0000                      		nop
                                  	increment:
-000470 9121                      		ld temp2, Z+
-000471 9563                      		inc loopcounter
-000472 940c 046a                 		jmp positionLoop
-000474 0000                      		nop
+00045f 9121                      		ld temp2, Z+
+000460 9563                      		inc loopcounter
+000461 940c 0459                 		jmp pointToAppleLoop
+000463 0000                      		nop
                                  	exitLocate:
-000475 e0e0                      		ldi ZL, LOW(snakebody)
-000476 e060                      		ldi loopcounter, 0
-000477 9508                      		ret
-000478 0000                      		nop
+000464 e0e0                      		ldi ZL, LOW(snakebody)
+000465 e060                      		ldi loopcounter, 0
+000466 9508                      		ret
+000467 0000                      		nop
                                  gameUpdateTimer:
-000479 e051                      	ldi updateGame, 0b00000001
-00047a 9518                      	reti
-00047b 0000                      	nop
+000468 e051                      	ldi updateGame, 0b00000001
+000469 9518                      	reti
+00046a 0000                      	nop
                                  syncLength:
-00047c 2f78                      	mov totalLength, length
-00047d 9573                      	inc totalLength
-00047e 9508                      	ret
+00046b 2f78                      	mov totalLength, length
+00046c 9573                      	inc totalLength
+00046d 9508                      	ret
 
 
 RESOURCE USE INFORMATION
@@ -2247,37 +2233,37 @@ counted separately from r26..r31 here.
 "ATmega328P" register use summary:
 x  :   0 y  :  40 z  :  26 r0 :   0 r1 :  32 r2 :   0 r3 :   0 r4 :   0 
 r5 :   0 r6 :   0 r7 :   0 r8 :   0 r9 :   0 r10:   0 r11:   0 r12:   0 
-r13:   0 r14:   0 r15:   0 r16:  95 r17: 277 r18:  57 r19:  46 r20:  32 
+r13:   0 r14:   0 r15:   0 r16:  95 r17: 270 r18:  49 r19:  44 r20:  32 
 r21:   4 r22:  17 r23:   7 r24:   9 r25:  13 r26: 192 r27:   0 r28:   1 
 r29:   1 r30:   7 r31:   1 
 Registers used: 18 out of 35 (51.4%)
 
 "ATmega328P" instruction use summary:
-.lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   1 
-andi  :  29 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
+.lds  :   0 .sts  :   0 adc   :   0 add   :   0 adiw  :   0 and   :   0 
+andi  :  26 asr   :   0 bclr  :   0 bld   :   0 brbc  :   0 brbs  :   0 
 brcc  :   0 brcs  :   0 break :   0 breq  :  26 brge  :   0 brhc  :   0 
 brhs  :   0 brid  :   0 brie  :   0 brlo  :  67 brlt  :   0 brmi  :   0 
 brne  :   6 brpl  :   0 brsh  :   3 brtc  :   0 brts  :   0 brvc  :   0 
 brvs  :   0 bset  :   0 bst   :   0 call  :  16 cbi   :   0 cbr   :   0 
 clc   :   0 clh   :   0 cli   :   0 cln   :   0 clr   :   0 cls   :   0 
-clt   :   0 clv   :   0 clz   :   0 com   :   1 cp    :   7 cpc   :   0 
+clt   :   0 clv   :   0 clz   :   0 com   :   0 cp    :   7 cpc   :   0 
 cpi   :  93 cpse  :   0 dec   :   3 eor   :   0 fmul  :   0 fmuls :   0 
 fmulsu:   0 icall :   0 ijmp  :   0 in    :   0 inc   :   7 jmp   :  53 
-ld    :  14 ldd   :  14 ldi   : 136 lds   :  14 lpm   :   0 lsl   :   0 
-lsr   :   4 mov   :  28 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
-neg   :  64 nop   : 174 or    :  16 ori   :   6 out   :  47 pop   :   1 
-push  :   1 rcall :   0 ret   :  10 reti  :   1 rjmp  :   0 rol   :   0 
+ld    :  14 ldd   :  14 ldi   : 135 lds   :  11 lpm   :   0 lsl   :   0 
+lsr   :   4 mov   :  27 movw  :   0 mul   :   0 muls  :   0 mulsu :   0 
+neg   :  64 nop   : 175 or    :  15 ori   :   6 out   :  47 pop   :   1 
+push  :   1 rcall :   0 ret   :   9 reti  :   1 rjmp  :   0 rol   :   0 
 ror   :   0 sbc   :   0 sbci  :   0 sbi   :   0 sbic  :   0 sbis  :   0 
-sbiw  :   0 sbr   :   0 sbrc  :   7 sbrs  :   0 sec   :   0 seh   :   0 
+sbiw  :   0 sbr   :   0 sbrc  :   6 sbrs  :   0 sec   :   0 seh   :   0 
 sei   :   1 sen   :   0 ser   :   0 ses   :   0 set   :   0 sev   :   0 
-sez   :   0 sleep :   0 spm   :   0 st    :  14 std   :  24 sts   :   9 
-sub   :  65 subi  :  69 swap  :   0 tst   :   0 wdr   :   0 
-Instructions used: 35 out of 113 (31.0%)
+sez   :   0 sleep :   0 spm   :   0 st    :  14 std   :  24 sts   :   8 
+sub   :  64 subi  :  70 swap  :   0 tst   :   0 wdr   :   0 
+Instructions used: 33 out of 113 (29.2%)
 
 "ATmega328P" memory use summary [bytes]:
 Segment   Begin    End      Code   Data   Used    Size   Use%
 ---------------------------------------------------------------
-[.cseg] 0x000000 0x000900   2246      0   2246   32768   6.9%
+[.cseg] 0x000000 0x0008de   2212      0   2212   32768   6.8%
 [.dseg] 0x000100 0x000148      0     72     72    2048   3.5%
 [.eseg] 0x000000 0x000000      0      0      0    1024   0.0%
 

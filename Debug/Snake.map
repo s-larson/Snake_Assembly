@@ -1,5 +1,5 @@
 
-AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Mon May 27 13:03:52 2019
+AVRASM ver. 2.2.7  C:\Users\GuCa\Desktop\Snake\Snake\main.asm Mon May 27 13:39:01 2019
 
 
 EQU  SIGNATURE_000 0000001e
@@ -708,7 +708,7 @@ DEF  direction    r25
 DSEG snakebody    00000100
 DSEG matrix       00000140
 CSEG init         00000023
-CSEG gameUpdateTimer 00000479
+CSEG gameUpdateTimer 00000468
 CSEG locateFood   00000442
 CSEG resetAndDraw 0000005b
 CSEG drawMatrix   00000123
@@ -837,11 +837,11 @@ CSEG getApple     00000426
 CSEG dIncrement   00000430
 CSEG grow         00000435
 CSEG exitDetection 0000043e
-CSEG syncLength   0000047c
-CSEG ADLoop       00000448
-CSEG uniquePosition 00000455
-CSEG validPosition 00000465
-CSEG uIncrement   00000461
-CSEG positionLoop 0000046a
-CSEG increment    00000470
-CSEG exitLocate   00000475
+CSEG syncLength   0000046b
+CSEG uniquePosition 00000444
+CSEG validPosition 00000454
+CSEG iterateBody  00000449
+CSEG uIncrement   00000450
+CSEG pointToAppleLoop 00000459
+CSEG increment    0000045f
+CSEG exitLocate   00000464
